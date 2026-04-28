@@ -43,7 +43,7 @@ export function CommunityFeed() {
 
   const communities = [
     { id: 1, name: 'Vertex Club', type: 'office' as const, members: 570, businesses: 42, description: 'Бизнес-клуб в сердце финансового квартала.', website: 'https://vertexclub.kz' },
-    { id: 'hani', name: 'bloom', type: 'retail' as const, members: 1840, businesses: 64, description: 'Бонусная экосистема bloom — кэшбэк и офферы от партнёров.' },
+    { id: 'hani', name: 'hani', type: 'retail' as const, members: 1840, businesses: 64, description: 'Бонусная экосистема hani — кэшбэк и офферы от партнёров.' },
     { id: 2, name: 'NexLab', type: 'tech' as const, members: 320, businesses: 18, description: 'Технологическое сообщество стартапов и инноваций.' },
     { id: 3, name: 'Vega Forum', type: 'district' as const, members: 210, businesses: 27, description: 'Деловое сообщество выставочного района.' },
   ];
@@ -114,16 +114,9 @@ export function CommunityFeed() {
                       </svg>
                     </button>
                   ) : community.id === 'hani' ? (
-                    <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedCommunity(community); }} className="w-10 h-10 rounded-xl bg-white flex items-center justify-center flex-shrink-0 p-1 shadow-sm border border-border overflow-hidden">
-                      {/* bloom — four-petal flower */}
-                      <svg viewBox="0 0 64 64" className="w-full h-full">
-                        <circle cx="32" cy="20" r="10" fill="#F06292" opacity="0.85"/>
-                        <circle cx="44" cy="32" r="10" fill="#F06292" opacity="0.85"/>
-                        <circle cx="32" cy="44" r="10" fill="#F06292" opacity="0.85"/>
-                        <circle cx="20" cy="32" r="10" fill="#F06292" opacity="0.85"/>
-                        <circle cx="32" cy="32" r="7"  fill="#E91E63"/>
-                      </svg>
-                    </button>
+                    <Link to="/user/community/hani" onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm border border-border">
+                      <img src="/hani.jpeg" alt="hani" className="w-full h-full object-cover" />
+                    </Link>
                   ) : community.id === 2 ? (
                     <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedCommunity(community); }} className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden" style={{background:'#0F172A'}}>
                       {/* NexLab — hexagon grid + N lettermark */}
