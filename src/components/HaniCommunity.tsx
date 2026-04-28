@@ -60,17 +60,17 @@ const STAMP_CARDS = [
 const EVENTS = [
   {
     id: 1, title: 'Мастер-класс по тортам', date: 'Сб, 19 апр · 11:00',
-    location: 'Hani Kitchen, Астана',
+    location: 'Hani Kitchen, Астана', photo: '/hani-masterclass.jpeg',
     friends: [{ initials: 'KD', color: '#f06ac8' }, { initials: 'AB', color: '#7c6af0' }],
   },
   {
     id: 2, title: 'Дегустация новых десертов', date: 'Вс, 20 апр · 14:00',
-    location: 'Hani Café, ТРЦ Mega',
+    location: 'Hani Café, ТРЦ Mega', photo: '/hani-tasting.jpeg',
     friends: [{ initials: 'DS', color: '#f06a6a' }],
   },
   {
     id: 3, title: 'Розыгрыш среди участников hani', date: 'Пт, 25 апр · 18:00',
-    location: 'Instagram Live',
+    location: 'Instagram Live', photo: '/hani-giveaway.jpeg',
     friends: [],
   },
 ];
@@ -401,11 +401,10 @@ export function HaniCommunity() {
             {EVENTS.map(ev => {
               const gone = rsvped.has(ev.id);
               return (
-                <div key={ev.id} className="bg-card border border-border rounded-2xl p-4">
-                  <div className="flex gap-3">
-                    <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: '#CC8F0015' }}>
-                      <Calendar className="w-5 h-5" style={{ color: '#CC8F00' }} />
-                    </div>
+                <div key={ev.id} className="bg-card border border-border rounded-2xl overflow-hidden">
+                  <img src={ev.photo} alt={ev.title} className="w-full h-36 object-cover" />
+                  <div className="p-4">
+                  <div className="flex gap-3 mb-0">
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm mb-0.5">{ev.title}</p>
                       <p className="text-xs text-muted-foreground mb-0.5">{ev.date}</p>
@@ -432,6 +431,7 @@ export function HaniCommunity() {
                   >
                     {gone ? 'Записался ✓' : 'Записаться'}
                   </button>
+                  </div>
                 </div>
               );
             })}
