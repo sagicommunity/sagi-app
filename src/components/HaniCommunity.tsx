@@ -102,11 +102,11 @@ const NEWS = [
 ];
 
 const CONNECTIONS = [
-  { id: 1, name: 'Aigerim Bekova',  role: 'Кондитер',      photo: '/conn-aigerim.jpeg', visits: 14 },
-  { id: 2, name: 'Dauren Seitkali', role: 'Бариста',       photo: '/conn-dauren.jpeg',  visits: 9  },
-  { id: 3, name: 'Kamila Dosova',   role: 'Маркетолог',    photo: '/conn-kamila.jpeg',  visits: 6  },
-  { id: 4, name: 'Arman Bekzhan',   role: 'Дизайнер',      photo: '/conn-arman.jpeg',   visits: 17 },
-  { id: 5, name: 'Alina Sova',      role: 'Event Manager', photo: '/conn-alina.jpeg',   visits: 11 },
+  { id: 1, name: 'Aigerim Bekova',  role: 'Кондитер',      photo: '/conn-aigerim.jpeg' },
+  { id: 2, name: 'Dauren Seitkali', role: 'Бариста',       photo: '/conn-dauren.jpeg'  },
+  { id: 3, name: 'Kamila Dosova',   role: 'Маркетолог',    photo: '/conn-kamila.jpeg'  },
+  { id: 4, name: 'Arman Bekzhan',   role: 'Дизайнер',      photo: '/conn-arman.jpeg'   },
+  { id: 5, name: 'Alina Sova',      role: 'Event Manager', photo: '/conn-alina.jpeg'   },
 ];
 
 const VACANCIES = [
@@ -604,10 +604,6 @@ export function HaniCommunity() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold truncate">{person.name}</p>
                   <p className="text-xs text-muted-foreground">{person.role}</p>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <p className="text-sm font-bold" style={{ color: '#CC8F00' }}>{person.visits}</p>
-                  <p className="text-[10px] text-muted-foreground">визитов</p>
                 </div>
               </div>
             ))}
