@@ -41,27 +41,19 @@ const CROSS_BONUSES = [
 const STAMP_CARDS = [
   {
     id: 1,
-    business: 'Master Coffee',
-    photo: '/master-coffee.jpeg',
+    business: 'hani · Кофе',
+    photo: '/hani.jpeg',
     reward: 'Кофе в подарок',
     total: 10,
     collected: 7,
   },
   {
     id: 2,
-    business: 'Happy Cake',
-    photo: '/happy-cake.jpeg',
-    reward: 'Торт 500г в подарок',
-    total: 8,
-    collected: 3,
-  },
-  {
-    id: 3,
-    business: 'Hani Café',
+    business: 'hani · Десерты',
     photo: '/hani.jpeg',
     reward: 'Десерт в подарок',
-    total: 6,
-    collected: 6,
+    total: 8,
+    collected: 3,
   },
 ];
 
