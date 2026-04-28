@@ -110,10 +110,10 @@ const CONNECTIONS = [
 ];
 
 const VACANCIES = [
-  { id: 1, title: 'Бариста', location: 'Hani Café · Mega', type: 'Полная занятость' },
-  { id: 2, title: 'Кондитер', location: 'Hani Kitchen, Астана', type: 'Полная занятость' },
-  { id: 3, title: 'Менеджер зала', location: 'Hani Café · Khan Shatyr', type: 'Частичная' },
-  { id: 4, title: 'SMM-специалист', location: 'Удалённо', type: 'Проект' },
+  { id: 1, title: 'Бариста', location: 'Hani Café · Mega', type: 'Полная занятость', photo: '/vacancy-barista.jpeg', link: 'https://hanicc.kz' },
+  { id: 2, title: 'Кондитер', location: 'Hani Kitchen, Астана', type: 'Полная занятость', photo: '/vacancy-konditer.jpeg', link: 'https://hanicc.kz' },
+  { id: 3, title: 'Менеджер зала', location: 'Hani Café · Khan Shatyr', type: 'Частичная', photo: '/vacancy-manager.jpeg', link: 'https://hanicc.kz' },
+  { id: 4, title: 'SMM-специалист', location: 'Удалённо', type: 'Проект', photo: '/vacancy-smm.jpeg', link: 'https://hanicc.kz' },
 ];
 
 const TABS: { key: Tab; label: string; icon: typeof ShoppingBag }[] = [
@@ -561,17 +561,28 @@ export function HaniCommunity() {
         {tab === 'vacancies' && (
           <div className="space-y-3">
             {VACANCIES.map(v => (
-              <div key={v.id} className="flex items-center gap-3 bg-card border border-border rounded-2xl p-4">
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: '#CC8F0015' }}>
-                  <Briefcase className="w-5 h-5" style={{ color: '#CC8F00' }} />
+              <div key={v.id} className="bg-card border border-border rounded-2xl overflow-hidden">
+                <img src={v.photo} alt={v.title} className="w-full h-36 object-cover" />
+                <div className="p-4">
+                  <div className="flex items-start justify-between gap-2 mb-3">
+                    <div>
+                      <p className="font-semibold text-sm">{v.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{v.location}</p>
+                    </div>
+                    <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 mt-0.5" style={{ background: '#CC8F0015', color: '#CC8F00' }}>
+                      {v.type}
+                    </span>
+                  </div>
+                  <a
+                    href={v.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full py-2 rounded-xl text-sm font-medium text-center transition-colors"
+                    style={{ background: HANI_GRADIENT, color: '#1A1500' }}
+                  >
+                    Откликнуться
+                  </a>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm">{v.title}</p>
-                  <p className="text-xs text-muted-foreground">{v.location}</p>
-                </div>
-                <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: '#CC8F0015', color: '#CC8F00' }}>
-                  {v.type}
-                </span>
               </div>
             ))}
           </div>
