@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { ChevronLeft, Search, Star, ShoppingBag, Repeat2, Zap, X, Calendar, CheckSquare, Newspaper, Info, Users, Coffee } from 'lucide-react';
+import { ChevronLeft, Search, Star, ShoppingBag, Repeat2, Zap, X, Calendar, CheckSquare, Newspaper, Info, Users, Coffee, Briefcase } from 'lucide-react';
 import { Link } from 'react-router';
 
 const HANI_GRADIENT = 'linear-gradient(135deg, #F5C400 0%, #E6A800 50%, #CC8F00 100%)';
 const HANI_DARK_BG  = 'linear-gradient(to bottom, #3A2E00, #1A1500)';
 
-type Tab = 'bonuses' | 'offers' | 'cross' | 'stamps' | 'events' | 'tasks' | 'news' | 'info' | 'connections';
+type Tab = 'bonuses' | 'offers' | 'cross' | 'stamps' | 'events' | 'tasks' | 'news' | 'info' | 'vacancies' | 'connections';
 
 const USER = { bonuses: 1240, cashback: 5.0 };
 
@@ -109,6 +109,13 @@ const CONNECTIONS = [
   { id: 5, name: 'Alina Sova',      role: 'Event Manager', initials: 'AS', color: '#E6A800', visits: 11 },
 ];
 
+const VACANCIES = [
+  { id: 1, title: 'Бариста', location: 'Hani Café · Mega', type: 'Полная занятость' },
+  { id: 2, title: 'Кондитер', location: 'Hani Kitchen, Астана', type: 'Полная занятость' },
+  { id: 3, title: 'Менеджер зала', location: 'Hani Café · Khan Shatyr', type: 'Частичная' },
+  { id: 4, title: 'SMM-специалист', location: 'Удалённо', type: 'Проект' },
+];
+
 const TABS: { key: Tab; label: string; icon: typeof ShoppingBag }[] = [
   { key: 'bonuses',     label: 'Бонусы',     icon: Star        },
   { key: 'offers',      label: 'Офферы',     icon: ShoppingBag },
@@ -118,6 +125,7 @@ const TABS: { key: Tab; label: string; icon: typeof ShoppingBag }[] = [
   { key: 'tasks',       label: 'Задания',    icon: CheckSquare },
   { key: 'news',        label: 'Новости',    icon: Newspaper   },
   { key: 'info',        label: 'Инфо',       icon: Info        },
+  { key: 'vacancies',   label: 'Вакансии',   icon: Briefcase   },
   { key: 'connections', label: 'Контакты',   icon: Users       },
 ];
 
@@ -546,6 +554,26 @@ export function HaniCommunity() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* ══ ВАКАНСИИ ══ */}
+        {tab === 'vacancies' && (
+          <div className="space-y-3">
+            {VACANCIES.map(v => (
+              <div key={v.id} className="flex items-center gap-3 bg-card border border-border rounded-2xl p-4">
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: '#CC8F0015' }}>
+                  <Briefcase className="w-5 h-5" style={{ color: '#CC8F00' }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm">{v.title}</p>
+                  <p className="text-xs text-muted-foreground">{v.location}</p>
+                </div>
+                <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: '#CC8F0015', color: '#CC8F00' }}>
+                  {v.type}
+                </span>
+              </div>
+            ))}
           </div>
         )}
 
