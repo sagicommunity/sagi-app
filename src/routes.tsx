@@ -34,6 +34,7 @@ import { AdminCommunityBuilder } from './components/admin/AdminCommunityBuilder'
 import { BusinessCommunityPage } from './components/business/BusinessCommunityPage';
 import { NetworkPage } from './components/NetworkPage';
 import { HaniCommunity } from './components/HaniCommunity';
+import { HighvillCommunity } from './components/HighvillCommunity';
 import { SagiLanding } from './components/SagiLanding';
 import { AppStoreLanding } from './components/AppStoreLanding';
 
@@ -60,6 +61,7 @@ export const router = createBrowserRouter([
       { path: 'join-community', Component: JoinCommunity },
       { path: 'network', Component: NetworkPage },
       { path: 'community/hani', Component: HaniCommunity },
+      { path: 'community/highvill', Component: HighvillCommunity },
     ],
   },
   {

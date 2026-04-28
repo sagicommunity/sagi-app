@@ -44,6 +44,7 @@ export function CommunityFeed() {
   const communities = [
     { id: 1, name: 'Vertex Club', type: 'office' as const, members: 570, businesses: 42, description: 'Бизнес-клуб в сердце финансового квартала.', website: 'https://vertexclub.kz' },
     { id: 'hani', name: 'hani', type: 'retail' as const, members: 1840, businesses: 64, description: 'Бонусная экосистема hani — кэшбэк и офферы от партнёров.' },
+    { id: 'highvill', name: 'Highvill Isim', type: 'office' as const, members: 324, businesses: 4, description: 'Жилой комплекс Highvill Isim — офферы для жителей.' },
     { id: 2, name: 'NexLab', type: 'tech' as const, members: 320, businesses: 18, description: 'Технологическое сообщество стартапов и инноваций.' },
     { id: 3, name: 'Vega Forum', type: 'district' as const, members: 210, businesses: 27, description: 'Деловое сообщество выставочного района.' },
   ];
@@ -116,6 +117,23 @@ export function CommunityFeed() {
                   ) : community.id === 'hani' ? (
                     <Link to="/user/community/hani" onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm border border-border">
                       <img src="/hani.jpeg" alt="hani" className="w-full h-full object-cover" />
+                    </Link>
+                  ) : community.id === 'highvill' ? (
+                    <Link to="/user/community/highvill" onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm border border-border bg-white flex items-center justify-center p-1">
+                      <svg viewBox="0 0 64 64" className="w-full h-full">
+                        <rect x="10" y="20" width="18" height="36" rx="2" fill="#1D4ED8"/>
+                        <rect x="36" y="10" width="18" height="46" rx="2" fill="#2563EB"/>
+                        <rect x="13" y="24" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
+                        <rect x="20" y="24" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
+                        <rect x="13" y="33" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
+                        <rect x="20" y="33" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
+                        <rect x="39" y="14" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
+                        <rect x="47" y="14" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
+                        <rect x="39" y="23" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
+                        <rect x="47" y="23" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
+                        <rect x="39" y="32" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
+                        <rect x="47" y="32" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
+                      </svg>
                     </Link>
                   ) : community.id === 2 ? (
                     <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedCommunity(community); }} className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden" style={{background:'#0F172A'}}>
