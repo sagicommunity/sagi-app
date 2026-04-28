@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { ChevronLeft, Search, Star, ShoppingBag, Repeat2, Gift, Zap, X } from 'lucide-react';
+import { ChevronLeft, Search, Star, ShoppingBag, Repeat2, Gift, Zap, X, Calendar, CheckSquare, Newspaper, Info, Users, Coffee } from 'lucide-react';
 import { Link } from 'react-router';
 
 const HANI_GRADIENT = 'linear-gradient(135deg, #F5C400 0%, #E6A800 50%, #CC8F00 100%)';
 const HANI_DARK_BG  = 'linear-gradient(to bottom, #3A2E00, #1A1500)';
 
-type Tab = 'bonuses' | 'offers' | 'cross';
+type Tab = 'bonuses' | 'offers' | 'cross' | 'stamps' | 'events' | 'tasks' | 'news' | 'info' | 'connections';
 
 const USER = { bonuses: 1240, cashback: 5.0 };
 
@@ -38,10 +38,95 @@ const CROSS_BONUSES = [
   { id: 6, name: 'AIFC Academy',  category: 'Образование', bonus: '2%', color: '#F4511E', photo: '/aifc-academy.jpeg' },
 ];
 
+const STAMP_CARDS = [
+  {
+    id: 1,
+    business: 'Master Coffee',
+    photo: '/master-coffee.jpeg',
+    reward: 'Кофе в подарок',
+    total: 10,
+    collected: 7,
+  },
+  {
+    id: 2,
+    business: 'Happy Cake',
+    photo: '/happy-cake.jpeg',
+    reward: 'Торт 500г в подарок',
+    total: 8,
+    collected: 3,
+  },
+  {
+    id: 3,
+    business: 'Hani Café',
+    photo: '/hani.jpeg',
+    reward: 'Десерт в подарок',
+    total: 6,
+    collected: 6,
+  },
+];
+
+const EVENTS = [
+  {
+    id: 1, title: 'Мастер-класс по тортам', date: 'Сб, 19 апр · 11:00',
+    location: 'Hani Kitchen, Астана',
+    friends: [{ initials: 'KD', color: '#f06ac8' }, { initials: 'AB', color: '#7c6af0' }],
+  },
+  {
+    id: 2, title: 'Дегустация новых десертов', date: 'Вс, 20 апр · 14:00',
+    location: 'Hani Café, ТРЦ Mega',
+    friends: [{ initials: 'DS', color: '#f06a6a' }],
+  },
+  {
+    id: 3, title: 'Розыгрыш среди участников hani', date: 'Пт, 25 апр · 18:00',
+    location: 'Instagram Live',
+    friends: [],
+  },
+];
+
+const TASKS = [
+  { id: 1, title: 'Купи кофе 3 раза за месяц', reward: '+50 бонусов', done: false },
+  { id: 2, title: 'Оставь отзыв в Instagram', reward: '+30 бонусов', done: false },
+  { id: 3, title: 'Пригласи друга в hani', reward: '+100 бонусов', done: true },
+  { id: 4, title: 'Заполни профиль', reward: '+20 бонусов', done: true },
+  { id: 5, title: 'Попробуй новинку меню', reward: '+40 бонусов', done: false },
+];
+
+const NEWS = [
+  {
+    id: 1, author: 'hani', time: '2ч назад',
+    text: 'Новый вкус капучино с карамелью уже доступен во всех наших кофейнях! Попробуй и получи +20 бонусов.',
+    image: '/master-coffee.jpeg',
+  },
+  {
+    id: 2, author: 'hani Events', time: '1д назад',
+    text: 'Записывайтесь на мастер-класс по украшению тортов 19 апреля. Места ограничены — только для участников клуба.',
+    image: '/happy-cake.jpeg',
+  },
+  {
+    id: 3, author: 'hani', time: '3д назад',
+    text: 'Мы открыли новую точку в ТРЦ Mega! Приходи и получи приветственный кофе в подарок при первом посещении.',
+    image: '/hani.jpeg',
+  },
+];
+
+const CONNECTIONS = [
+  { id: 1, name: 'Aigerim Bekova',  role: 'Кондитер',    initials: 'AB', color: '#F5C400', visits: 14 },
+  { id: 2, name: 'Dauren Seitkali', role: 'Бариста',     initials: 'DS', color: '#CC8F00', visits: 9  },
+  { id: 3, name: 'Kamila Dosova',   role: 'Маркетолог',  initials: 'KD', color: '#E040FB', visits: 6  },
+  { id: 4, name: 'Arman Bekzhan',   role: 'Дизайнер',    initials: 'AK', color: '#6aaff0', visits: 17 },
+  { id: 5, name: 'Alina Sova',      role: 'Event Manager', initials: 'AS', color: '#E6A800', visits: 11 },
+];
+
 const TABS: { key: Tab; label: string; icon: typeof ShoppingBag }[] = [
-  { key: 'bonuses', label: 'Мои бонусы',   icon: Star },
-  { key: 'offers',  label: 'Офферы',        icon: ShoppingBag },
-  { key: 'cross',   label: 'Кросс бонусы', icon: Repeat2 },
+  { key: 'bonuses',     label: 'Бонусы',     icon: Star        },
+  { key: 'offers',      label: 'Офферы',     icon: ShoppingBag },
+  { key: 'cross',       label: 'Кросс',      icon: Repeat2     },
+  { key: 'stamps',      label: 'Штампики',   icon: Coffee      },
+  { key: 'events',      label: 'События',    icon: Calendar    },
+  { key: 'tasks',       label: 'Задания',    icon: CheckSquare },
+  { key: 'news',        label: 'Новости',    icon: Newspaper   },
+  { key: 'info',        label: 'Инфо',       icon: Info        },
+  { key: 'connections', label: 'Контакты',   icon: Users       },
 ];
 
 export function HaniCommunity() {
@@ -50,6 +135,8 @@ export function HaniCommunity() {
   const [selectedCategory, setCategory] = useState('all');
   const [showBusinesses, setShowBusinesses] = useState(false);
   const [bizSearch, setBizSearch]           = useState('');
+  const [taskDone, setTaskDone]             = useState<Set<number>>(new Set());
+  const [rsvped, setRsvped]                 = useState<Set<number>>(new Set());
 
   const filteredOffers = OFFERS.filter(o => {
     const matchCat    = selectedCategory === 'all' || o.category === selectedCategory;
@@ -64,7 +151,7 @@ export function HaniCommunity() {
 
   const tabStyle = (key: Tab) => tab === key ? { background: HANI_GRADIENT } : {};
   const tabClass = (key: Tab, extra = '') =>
-    `flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${extra} ${
+    `flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${extra} ${
       tab === key ? 'text-[#1A1500]' : 'bg-input-background text-muted-foreground hover:text-foreground'
     }`;
   const chipStyle = (active: boolean) => active ? { background: HANI_GRADIENT } : {};
@@ -111,7 +198,7 @@ export function HaniCommunity() {
       {/* ─── TABS ─── */}
       <div className="sticky top-0 z-40 bg-card border-b border-border">
         <div className="max-w-md mx-auto px-4 pt-3 pb-2">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-1.5">
             {TABS.map((tb, idx) => {
               const isLastOdd = TABS.length % 2 !== 0 && idx === TABS.length - 1;
               return (
@@ -121,7 +208,7 @@ export function HaniCommunity() {
                   className={tabClass(tb.key, isLastOdd ? 'col-span-2' : '')}
                   style={tabStyle(tb.key)}
                 >
-                  <tb.icon className="w-3.5 h-3.5" />
+                  <tb.icon className="w-3 h-3" />
                   {tb.label}
                 </button>
               );
@@ -244,10 +331,7 @@ export function HaniCommunity() {
             </div>
             <div className="grid grid-cols-3 gap-2.5">
               {CROSS_BONUSES.map(b => (
-                <div
-                  key={b.id}
-                  className="rounded-2xl overflow-hidden flex flex-col cursor-pointer border border-transparent hover:border-yellow-300 transition-all bg-card"
-                >
+                <div key={b.id} className="rounded-2xl overflow-hidden flex flex-col cursor-pointer border border-transparent hover:border-yellow-300 transition-all bg-card">
                   <div className="w-full aspect-square overflow-hidden">
                     <img src={b.photo} alt={b.name} className="w-full h-full object-cover" />
                   </div>
@@ -259,6 +343,256 @@ export function HaniCommunity() {
               ))}
             </div>
           </>
+        )}
+
+        {/* ══ ШТАМПИКИ ══ */}
+        {tab === 'stamps' && (
+          <div className="space-y-4">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Собирай штампики при каждом посещении — и получай подарки от hani.
+            </p>
+            {STAMP_CARDS.map(card => {
+              const done = card.collected >= card.total;
+              return (
+                <div key={card.id} className="bg-card border border-border rounded-2xl overflow-hidden">
+                  {/* Header */}
+                  <div className="flex items-center gap-3 p-4 pb-3">
+                    <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0">
+                      <img src={card.photo} alt={card.business} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-bold">{card.business}</p>
+                      <p className="text-xs text-muted-foreground">Награда: {card.reward}</p>
+                    </div>
+                    {done && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-[#1A1500]" style={{ background: HANI_GRADIENT }}>
+                        Готово!
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Stamp grid */}
+                  <div className="px-4 pb-4">
+                    <div className="grid grid-cols-5 gap-2 mb-3">
+                      {Array.from({ length: card.total }).map((_, i) => {
+                        const filled = i < card.collected;
+                        return (
+                          <div
+                            key={i}
+                            className="aspect-square rounded-xl flex items-center justify-center border-2 transition-all"
+                            style={filled
+                              ? { background: HANI_GRADIENT, borderColor: '#CC8F00' }
+                              : { borderColor: 'var(--border)', background: 'var(--input-background)' }
+                            }
+                          >
+                            {filled
+                              ? <Coffee className="w-4 h-4 text-[#1A1500]" />
+                              : <Coffee className="w-4 h-4 text-muted-foreground opacity-30" />
+                            }
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">{card.collected} из {card.total} штампов</span>
+                      {done
+                        ? <span className="text-xs font-bold" style={{ color: '#CC8F00' }}>Заберите подарок!</span>
+                        : <span className="text-xs text-muted-foreground">Ещё {card.total - card.collected}</span>
+                      }
+                    </div>
+                    {/* Progress bar */}
+                    <div className="w-full bg-muted rounded-full h-1.5 mt-2 overflow-hidden">
+                      <div
+                        className="h-1.5 rounded-full transition-all"
+                        style={{ width: `${(card.collected / card.total) * 100}%`, background: HANI_GRADIENT }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ══ СОБЫТИЯ ══ */}
+        {tab === 'events' && (
+          <div className="space-y-3">
+            {EVENTS.map(ev => {
+              const gone = rsvped.has(ev.id);
+              return (
+                <div key={ev.id} className="bg-card border border-border rounded-2xl p-4">
+                  <div className="flex gap-3">
+                    <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: '#CC8F0015' }}>
+                      <Calendar className="w-5 h-5" style={{ color: '#CC8F00' }} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm mb-0.5">{ev.title}</p>
+                      <p className="text-xs text-muted-foreground mb-0.5">{ev.date}</p>
+                      <p className="text-xs text-muted-foreground">{ev.location}</p>
+                    </div>
+                  </div>
+                  {ev.friends.length > 0 && (
+                    <div className="flex items-center gap-2 mt-3">
+                      <div className="flex -space-x-2">
+                        {ev.friends.map(f => (
+                          <div key={f.initials} className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold border-2 border-card"
+                            style={{ background: f.color + '30', color: f.color }}>
+                            {f.initials}
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground">из твоих контактов идут</p>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setRsvped(prev => { const s = new Set(prev); gone ? s.delete(ev.id) : s.add(ev.id); return s; })}
+                    className="mt-3 w-full py-2 rounded-xl text-sm font-medium transition-colors"
+                    style={gone ? { background: HANI_GRADIENT, color: '#1A1500' } : { background: '#CC8F0015', color: '#CC8F00' }}
+                  >
+                    {gone ? 'Записался ✓' : 'Записаться'}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ══ ЗАДАНИЯ ══ */}
+        {tab === 'tasks' && (
+          <div className="space-y-3">
+            <div className="rounded-2xl p-3 flex items-center gap-3 mb-1" style={{ background: '#CC8F0015' }}>
+              <Star size={16} style={{ color: '#CC8F00' }} fill="#CC8F00" />
+              <p className="text-xs font-medium" style={{ color: '#CC8F00' }}>
+                Выполняй задания и копи бонусы быстрее
+              </p>
+            </div>
+            {TASKS.map(task => {
+              const done = taskDone.has(task.id) || task.done;
+              return (
+                <div key={task.id} className={`bg-card border rounded-2xl p-4 flex items-center gap-3 ${done ? 'border-[#CC8F00]/30 opacity-70' : 'border-border'}`}>
+                  <button
+                    onClick={() => !task.done && setTaskDone(prev => {
+                      const s = new Set(prev);
+                      done ? s.delete(task.id) : s.add(task.id);
+                      return s;
+                    })}
+                    className="w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-colors"
+                    style={done ? { background: HANI_GRADIENT, borderColor: '#CC8F00' } : { borderColor: 'var(--muted-foreground)' }}
+                  >
+                    {done && <span className="text-[#1A1500] text-xs font-bold">✓</span>}
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-medium ${done ? 'line-through text-muted-foreground' : ''}`}>{task.title}</p>
+                  </div>
+                  <span className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap font-medium" style={{ background: '#CC8F0015', color: '#CC8F00' }}>
+                    {task.reward}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ══ НОВОСТИ ══ */}
+        {tab === 'news' && (
+          <div className="space-y-3">
+            {NEWS.map(post => (
+              <div key={post.id} className="bg-card border border-border rounded-2xl overflow-hidden">
+                <img src={post.image} alt="" className="w-full h-40 object-cover" />
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full overflow-hidden">
+                        <img src="/hani.jpeg" alt="hani" className="w-full h-full object-cover" />
+                      </div>
+                      <p className="text-xs font-semibold">{post.author}</p>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">{post.time}</p>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{post.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ══ ИНФО ══ */}
+        {tab === 'info' && (
+          <div className="space-y-4">
+            <div className="bg-card border border-border rounded-2xl overflow-hidden">
+              <img src="/hani.jpeg" alt="hani" className="w-full h-36 object-cover" />
+              <div className="p-4">
+                <h2 className="font-bold text-base mb-1">hani — сеть кондитерских-кофеен</h2>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+                  Hani основана в 2019 году в Астане. Сеть специализируется на авторских тортах, десертах и specialty кофе.
+                  Каждый продукт создаётся вручную из натуральных ингредиентов.
+                </p>
+                <a href="https://hanicc.kz" target="_blank" rel="noopener noreferrer"
+                  className="text-xs font-bold hover:underline" style={{ color: '#CC8F00' }}>
+                  hanicc.kz
+                </a>
+              </div>
+            </div>
+
+            <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
+              <h3 className="text-sm font-bold">Участие в клубе</h3>
+              {[
+                { icon: '☕', text: 'Каждая покупка — бонусы на счёт' },
+                { icon: '🎂', text: 'Эксклюзивные скидки для участников' },
+                { icon: '🎁', text: 'Подарки за штампики и задания' },
+                { icon: '🤝', text: 'Кросс-бонусы у партнёров hani' },
+              ].map(item => (
+                <div key={item.icon} className="flex items-center gap-3">
+                  <span className="text-lg">{item.icon}</span>
+                  <p className="text-sm text-muted-foreground">{item.text}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-card border border-border rounded-2xl p-4">
+              <h3 className="text-sm font-bold mb-3">Наши точки</h3>
+              {[
+                { name: 'Hani Kitchen', address: 'пр. Мангилик Ел, 55' },
+                { name: 'Hani Café · Mega', address: 'ТРЦ Mega, 1 этаж' },
+                { name: 'Hani Café · Khan Shatyr', address: 'ТРЦ Khan Shatyr, 2 этаж' },
+              ].map(loc => (
+                <div key={loc.name} className="flex items-start gap-2 mb-2 last:mb-0">
+                  <span className="text-[#CC8F00] mt-0.5">📍</span>
+                  <div>
+                    <p className="text-sm font-medium">{loc.name}</p>
+                    <p className="text-xs text-muted-foreground">{loc.address}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ══ КОНТАКТЫ (CONNECTIONS) ══ */}
+        {tab === 'connections' && (
+          <div className="space-y-3">
+            <p className="text-xs text-muted-foreground">
+              Твои контакты, которые тоже посещают hani
+            </p>
+            {CONNECTIONS.map(person => (
+              <div key={person.id} className="flex items-center gap-3 bg-card border border-border rounded-2xl p-3">
+                <div
+                  className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
+                  style={{ background: person.color + '25', color: person.color }}
+                >
+                  {person.initials}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold truncate">{person.name}</p>
+                  <p className="text-xs text-muted-foreground">{person.role}</p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <p className="text-sm font-bold" style={{ color: '#CC8F00' }}>{person.visits}</p>
+                  <p className="text-[10px] text-muted-foreground">визитов</p>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
 
       </div>
