@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, Search, Star, ShoppingBag, Repeat2, Gift, Zap, X, Calendar, CheckSquare, Newspaper, Info, Users, Coffee } from 'lucide-react';
+import { ChevronLeft, Search, Star, ShoppingBag, Repeat2, Zap, X, Calendar, CheckSquare, Newspaper, Info, Users, Coffee } from 'lucide-react';
 import { Link } from 'react-router';
 
 const HANI_GRADIENT = 'linear-gradient(135deg, #F5C400 0%, #E6A800 50%, #CC8F00 100%)';
@@ -310,17 +310,6 @@ export function HaniCommunity() {
         {/* ══ КРОСС БОНУСЫ ══ */}
         {tab === 'cross' && (
           <>
-            <div className="rounded-2xl bg-card border border-border p-4 flex items-start gap-3 mb-4">
-              <div className="w-8 h-8 rounded-xl bg-yellow-100 flex items-center justify-center flex-shrink-0">
-                <Gift size={16} className="text-yellow-600" />
-              </div>
-              <div>
-                <div className="text-sm font-bold text-foreground mb-0.5">Как это работает?</div>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Оплачивай у партнёров hani и получай кросс-бонусы на свой счёт. Бонусы суммируются и не сгорают.
-                </p>
-              </div>
-            </div>
             <div className="grid grid-cols-3 gap-2.5">
               {CROSS_BONUSES.map(b => (
                 <div key={b.id} className="rounded-2xl overflow-hidden flex flex-col cursor-pointer border border-transparent hover:border-yellow-300 transition-all bg-card">
