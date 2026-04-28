@@ -102,11 +102,11 @@ const NEWS = [
 ];
 
 const CONNECTIONS = [
-  { id: 1, name: 'Aigerim Bekova',  role: 'Кондитер',    initials: 'AB', color: '#F5C400', visits: 14 },
-  { id: 2, name: 'Dauren Seitkali', role: 'Бариста',     initials: 'DS', color: '#CC8F00', visits: 9  },
-  { id: 3, name: 'Kamila Dosova',   role: 'Маркетолог',  initials: 'KD', color: '#E040FB', visits: 6  },
-  { id: 4, name: 'Arman Bekzhan',   role: 'Дизайнер',    initials: 'AK', color: '#6aaff0', visits: 17 },
-  { id: 5, name: 'Alina Sova',      role: 'Event Manager', initials: 'AS', color: '#E6A800', visits: 11 },
+  { id: 1, name: 'Aigerim Bekova',  role: 'Кондитер',      photo: '/conn-aigerim.jpeg', visits: 14 },
+  { id: 2, name: 'Dauren Seitkali', role: 'Бариста',       photo: '/conn-dauren.jpeg',  visits: 9  },
+  { id: 3, name: 'Kamila Dosova',   role: 'Маркетолог',    photo: '/conn-kamila.jpeg',  visits: 6  },
+  { id: 4, name: 'Arman Bekzhan',   role: 'Дизайнер',      photo: '/conn-arman.jpeg',   visits: 17 },
+  { id: 5, name: 'Alina Sova',      role: 'Event Manager', photo: '/conn-alina.jpeg',   visits: 11 },
 ];
 
 const VACANCIES = [
@@ -596,12 +596,11 @@ export function HaniCommunity() {
             </p>
             {CONNECTIONS.map(person => (
               <div key={person.id} className="flex items-center gap-3 bg-card border border-border rounded-2xl p-3">
-                <div
-                  className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-                  style={{ background: person.color + '25', color: person.color }}
-                >
-                  {person.initials}
-                </div>
+                <img
+                  src={person.photo}
+                  alt={person.name}
+                  className="w-11 h-11 rounded-full object-cover flex-shrink-0"
+                />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold truncate">{person.name}</p>
                   <p className="text-xs text-muted-foreground">{person.role}</p>
