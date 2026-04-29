@@ -60,10 +60,10 @@ export function CategoryOffers() {
     { id: 4, business: 'Sakura Kitchen', offer: t('offerGiftVouchers'), category: 'food', type: 'restaurant', exclusive: true, photo: '/sakura-kitchen.jpeg' },
     { id: 5, business: 'The Loft', offer: t('offer10OffFoodBar'), category: 'food', type: 'restaurant', exclusive: false, photo: '/the-loft.jpeg' },
     { id: 6, business: 'Noma Grill', offer: t('offer10OffFoodBar'), category: 'food', type: 'restaurant', exclusive: false, photo: '/noma-grill.jpeg' },
-    { id: 7, business: 'Atlas Bar', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'restaurant', exclusive: false },
-    { id: 8, business: 'Rooftop Café', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'cafe', exclusive: false },
-    { id: 9, business: 'Olivia Bistro', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'restaurant', exclusive: false },
-    { id: 10, business: 'La Piazza', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'restaurant', exclusive: false },
+    { id: 7, business: 'Atlas Bar', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'restaurant', exclusive: false, photo: '/chez-georges.jpeg' },
+    { id: 8, business: 'Rooftop Café', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'cafe', exclusive: false, photo: '/master-coffee.jpeg' },
+    { id: 9, business: 'Olivia Bistro', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'restaurant', exclusive: false, photo: '/hani-tasting.jpeg' },
+    { id: 10, business: 'La Piazza', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'restaurant', exclusive: false, photo: '/hani-masterclass.jpeg' },
     { id: 11, business: 'Grand Vega Hotel', offer: t('offer15OffBestRate'), category: 'hotel', type: 'hotel', exclusive: true },
     { id: 12, business: 'Serene Lake Resort', offer: t('offer10OffBestRate'), category: 'hotel', type: 'hotel', exclusive: false },
     { id: 13, business: 'Meridian Hotel', offer: t('offer15OffBestRate'), category: 'hotel', type: 'hotel', exclusive: true },
@@ -75,25 +75,25 @@ export function CategoryOffers() {
     { id: 19, business: 'Skyline Hotel', offer: t('offer10OffSpaRate'), category: 'hotel', type: 'hotel', exclusive: true },
     { id: 20, business: 'Atlas Moscow', offer: t('offerCorporateDiscount'), category: 'hotel', type: 'hotel', exclusive: false },
     { id: 21, business: 'Birch Wellness Resort', offer: t('offer10OffStay'), category: 'hotel', type: 'hotel', exclusive: false },
-    { id: 22, business: 'Aura Beauty', offer: t('offer10OffServices'), category: 'beauty', type: 'spa', exclusive: false },
+    { id: 22, business: 'Aura Beauty', offer: t('offer10OffServices'), category: 'beauty', type: 'spa', exclusive: false, photo: '/rafe-beauty.jpeg' },
     { id: 23, business: 'SmileCare Clinic', offer: t('offer10to15OffDental'), category: 'beauty', type: 'healthcare', exclusive: false },
     { id: 24, business: 'Lotus Medical', offer: t('offerCorporateDiscount'), category: 'beauty', type: 'healthcare', exclusive: false },
-    { id: 25, business: 'Iron Grid Gym', offer: t('offerCorporateDiscount'), category: 'fitness', type: 'fitness', exclusive: false },
+    { id: 25, business: 'Iron Grid Gym', offer: t('offerCorporateDiscount'), category: 'fitness', type: 'fitness', exclusive: false, photo: '/bronx-fitness.jpeg' },
     { id: 26, business: 'Eagle Golf Studio', offer: t('offer20to30Off'), category: 'fitness', type: 'fitness', exclusive: false },
     { id: 27, business: 'Kinetic Club', offer: t('offerCorporateDiscount'), category: 'fitness', type: 'fitness', exclusive: false },
     { id: 28, business: 'EduShield', offer: t('offerInsurancePackages'), category: 'healthcare', type: 'healthcare', exclusive: false },
     { id: 29, business: 'MedGlobal', offer: t('offerCorporateDiscount'), category: 'healthcare', type: 'healthcare', exclusive: false },
-    { id: 30, business: 'Vertex Academy', offer: t('offer10OffTraining'), category: 'education', type: 'education', exclusive: true },
+    { id: 30, business: 'Vertex Academy', offer: t('offer10OffTraining'), category: 'education', type: 'education', exclusive: true, photo: '/aifc-academy.jpeg' },
     { id: 31, business: 'Nova University', offer: t('offerCorporateDiscount'), category: 'education', type: 'education', exclusive: false },
     { id: 32, business: 'Crest School', offer: t('offerCorporateDiscount'), category: 'education', type: 'education', exclusive: false },
     { id: 33, business: 'Apex Business School', offer: t('offerCorporateDiscount'), category: 'education', type: 'education', exclusive: false },
     { id: 34, business: 'International Academy', offer: t('offer10OffTuition'), category: 'education', type: 'education', exclusive: false },
     { id: 35, business: 'Little Stars', offer: t('offerDiscountEntrance'), category: 'education', type: 'education', exclusive: false },
-    { id: 36, business: 'SkyLink Airways', offer: t('offerCorporateDiscount'), category: 'travel', type: 'travel', exclusive: true },
-    { id: 37, business: 'WanderKZ', offer: t('offerCorporateDiscount'), category: 'travel', type: 'travel', exclusive: false },
+    { id: 36, business: 'SkyLink Airways', offer: t('offerCorporateDiscount'), category: 'travel', type: 'travel', exclusive: true, photo: '/tours.jpeg' },
+    { id: 37, business: 'WanderKZ', offer: t('offerCorporateDiscount'), category: 'travel', type: 'travel', exclusive: false, photo: '/burabay.jpeg' },
     { id: 38, business: 'Horizon Travel', offer: t('offerCorporateDiscount'), category: 'travel', type: 'travel', exclusive: false },
     { id: 39, business: 'MoveEasy Relocation', offer: t('offer10OffRelocation'), category: 'travel', type: 'travel', exclusive: false },
-    { id: 40, business: 'Flora Bloom', offer: t('offer10Off'), category: 'retail', type: 'retail', exclusive: false },
+    { id: 40, business: 'Flora Bloom', offer: t('offer10Off'), category: 'retail', type: 'retail', exclusive: false, photo: '/ana-flowers.jpeg' },
     { id: 41, business: 'LinkMobile', offer: t('offerSpecialMobilePackage'), category: 'retail', type: 'retail', exclusive: false },
     { id: 42, business: 'TalentBridge', offer: t('offerCorporateDiscount'), category: 'retail', type: 'retail', exclusive: false },
   ];
@@ -353,7 +353,7 @@ export function CategoryOffers() {
                   {offer.photo ? (
                     <img src={offer.photo} alt={offer.business} className="w-full h-24 object-cover" />
                   ) : (
-                    <div className="p-3 pb-0">
+                    <div className="w-full h-24 flex items-center justify-center" style={{ background: { restaurant: 'linear-gradient(135deg,#1a0800,#3d1500)', cafe: 'linear-gradient(135deg,#1a1000,#3d2800)', hotel: 'linear-gradient(135deg,#00101a,#001f3d)', spa: 'linear-gradient(135deg,#1a0020,#2d0040)', fitness: 'linear-gradient(135deg,#001a08,#003d18)', education: 'linear-gradient(135deg,#00101f,#001a3d)', healthcare: 'linear-gradient(135deg,#001a1a,#003030)', travel: 'linear-gradient(135deg,#000d1a,#001630)', retail: 'linear-gradient(135deg,#1a0010,#35001f)' }[offer.type] ?? 'linear-gradient(135deg,#111,#222)' }}>
                       <BusinessLogo name={offer.business} type={offer.type} size="md" />
                     </div>
                   )}
