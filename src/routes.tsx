@@ -50,6 +50,8 @@ export const router = createBrowserRouter([
     Component: UserRoot,
     children: [
       { index: true, Component: CommunityFeed },
+      { path: 'community/hani', Component: HaniCommunity },
+      { path: 'community/highvill', Component: HighvillCommunity },
       { path: 'community/:id', Component: CategoryOffers },
       { path: 'offer/:id', Component: OfferDetail },
       { path: 'profile', Component: Profile },
@@ -60,8 +62,6 @@ export const router = createBrowserRouter([
       { path: 'profile/support', Component: SupportSettings },
       { path: 'join-community', Component: JoinCommunity },
       { path: 'network', Component: NetworkPage },
-      { path: 'community/hani', Component: HaniCommunity },
-      { path: 'community/highvill', Component: HighvillCommunity },
     ],
   },
   {
