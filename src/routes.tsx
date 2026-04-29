@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { RoleLanding } from './components/RoleLanding';
 import { AuthLanding } from './components/auth/AuthLanding';
 import { Login } from './components/auth/Login';
@@ -62,6 +62,7 @@ export const router = createBrowserRouter([
       { path: 'profile/support', Component: SupportSettings },
       { path: 'join-community', Component: JoinCommunity },
       { path: 'network', Component: NetworkPage },
+      { path: '*', element: <Navigate to="/user" replace /> },
     ],
   },
   {
@@ -95,4 +96,5 @@ export const router = createBrowserRouter([
       { path: 'community/:id', Component: AdminCommunityBuilder },
     ],
   },
+  { path: '*', element: <Navigate to="/user" replace /> },
 ]);
