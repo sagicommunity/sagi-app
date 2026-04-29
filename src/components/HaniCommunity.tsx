@@ -126,7 +126,6 @@ const TABS: { key: Tab; label: string; icon: typeof ShoppingBag }[] = [
   { key: 'news',        label: 'Новости',    icon: Newspaper   },
   { key: 'info',        label: 'Инфо',       icon: Info        },
   { key: 'vacancies',   label: 'Вакансии',   icon: Briefcase   },
-  { key: 'connections', label: 'Контакты',   icon: Users       },
 ];
 
 export function HaniCommunity() {
