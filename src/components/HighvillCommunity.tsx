@@ -10,19 +10,23 @@ type Tab = 'offers' | 'events' | 'news';
 
 const OFFERS = [
   {
-    id: 1, business: 'Tap Tatti', category: 'Ресторан', discount: '-10% на всё меню',
+    id: 1, business: 'Tap Tatti', businessType: 'restaurant' as const,
+    category: 'Ресторан', discount: '-10% на всё меню',
     photo: '/tap-tatti.jpeg', tag: 'Еда',
   },
   {
-    id: 2, business: 'Delish', category: 'Кафе', discount: 'Десерт в подарок при заказе от 3 000 ₸',
+    id: 2, business: 'Delish', businessType: 'cafe' as const,
+    category: 'Кафе', discount: 'Десерт в подарок при заказе от 3 000 ₸',
     photo: '/delish.jpeg', tag: 'Еда',
   },
   {
-    id: 3, business: 'Master Coffee', category: 'Кофейня', discount: '-15% на кофе и напитки',
+    id: 3, business: 'Master Coffee', businessType: 'cafe' as const,
+    category: 'Кофейня', discount: '-15% на кофе и напитки',
     photo: '/master-coffee.jpeg', tag: 'Кофе',
   },
   {
-    id: 4, business: 'Drinkit', category: 'Напитки', discount: 'Второй напиток в подарок',
+    id: 4, business: 'Drinkit', businessType: 'cafe' as const,
+    category: 'Напитки', discount: 'Второй напиток в подарок',
     photo: '/drinkit.jpeg', tag: 'Напитки',
   },
 ];
@@ -165,7 +169,8 @@ export function HighvillCommunity() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               {filtered.map(offer => (
-                <Link key={offer.id} to="/user/offer/1"
+                <Link key={offer.id} to={`/user/offer/${offer.id}`}
+                  state={{ business: offer.business, businessType: offer.businessType, category: offer.category, discount: offer.discount, photo: offer.photo, color: HV_COLOR, gradient: HV_GRADIENT }}
                   className="flex flex-col bg-card border border-border rounded-2xl overflow-hidden hover:border-[#3B82F6] transition-colors">
                   <img src={offer.photo} alt={offer.business} className="w-full h-24 object-cover" />
                   <div className="p-3 flex flex-col flex-1">

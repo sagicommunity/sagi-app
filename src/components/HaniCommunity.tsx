@@ -18,8 +18,8 @@ const CATEGORIES = [
 ];
 
 const OFFERS = [
-  { id: 1, title: '-20% на всё меню', business: 'Hani Kitchen', category: 'cake' },
-  { id: 2, title: 'Кофе в подарок',   business: 'Hani Café',    category: 'coffee' },
+  { id: 1, title: '-20% на всё меню', business: 'Hani Kitchen', category: 'cake',   photo: '/happy-cake.jpeg',    businessType: 'restaurant' as const },
+  { id: 2, title: 'Кофе в подарок',   business: 'Hani Café',    category: 'coffee', photo: '/master-coffee.jpeg', businessType: 'cafe'       as const },
 ];
 
 const BUSINESSES = [
@@ -306,7 +306,9 @@ export function HaniCommunity() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               {filteredOffers.map(offer => (
-                <Link key={offer.id} to="/user/offer/1" className="flex flex-col bg-card border border-border rounded-2xl p-3 hover:border-[#CC8F00] transition-colors">
+                <Link key={offer.id} to={`/user/offer/${offer.id}`}
+                  state={{ business: offer.business, businessType: offer.businessType, category: offer.category === 'cake' ? 'Кондитерская' : 'Кофейня', discount: offer.title, photo: offer.photo, color: '#CC8F00', gradient: HANI_GRADIENT }}
+                  className="flex flex-col bg-card border border-border rounded-2xl p-3 hover:border-[#CC8F00] transition-colors">
                   <div className="w-10 h-10 rounded-xl overflow-hidden mb-2 flex-shrink-0">
                     <img src="/hani.jpeg" alt="hani" className="w-full h-full object-cover" />
                   </div>
