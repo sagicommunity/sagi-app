@@ -347,7 +347,9 @@ export function CategoryOffers() {
             })()}
             <div className="grid grid-cols-2 gap-3">
               {filteredOffers.map((offer) => (
-                <Link key={offer.id} to={`/user/offer/${offer.id}`} className="flex flex-col bg-card border border-border rounded-2xl overflow-hidden hover:border-[#10b981] transition-colors">
+                <Link key={offer.id} to={`/user/offer/${offer.id}`}
+                  state={{ business: offer.business, businessType: offer.type, category: offer.type === 'cafe' ? 'Кафе' : offer.type === 'restaurant' ? 'Ресторан' : offer.type === 'hotel' ? 'Отель' : offer.type === 'spa' ? 'Спа и красота' : offer.type === 'fitness' ? 'Фитнес' : offer.type === 'education' ? 'Образование' : offer.type === 'healthcare' ? 'Медицина' : offer.type === 'travel' ? 'Путешествия' : 'Ретейл', discount: offer.offer, photo: offer.photo, color: '#10b981', gradient: 'linear-gradient(135deg, #34d399 0%, #059669 100%)' }}
+                  className="flex flex-col bg-card border border-border rounded-2xl overflow-hidden hover:border-[#10b981] transition-colors">
                   {offer.photo ? (
                     <img src={offer.photo} alt={offer.business} className="w-full h-24 object-cover" />
                   ) : (
