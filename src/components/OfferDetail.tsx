@@ -52,7 +52,13 @@ export function OfferDetail() {
           {/* Business card */}
           <div className="bg-card rounded-2xl border border-border p-6 shadow-lg">
             <div className="flex items-start gap-4">
-              <BusinessLogo name={business} type={bizType} size="lg" />
+              {photo ? (
+                <div className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0">
+                  <img src={photo} alt={business} className="w-full h-full object-cover" />
+                </div>
+              ) : (
+                <BusinessLogo name={business} type={bizType} size="lg" />
+              )}
               <div className="flex-1">
                 <h1 className="mb-0.5 py-2">{business}</h1>
                 <p className="text-sm text-muted-foreground">{category}</p>
