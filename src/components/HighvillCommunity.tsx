@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, Search, ShoppingBag, Calendar, Newspaper, MapPin } from 'lucide-react';
+import { ChevronLeft, Search, ShoppingBag, Calendar, Newspaper, MapPin, Users } from 'lucide-react';
 import { Link } from 'react-router';
 
 const HV_GRADIENT = 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 50%, #1E40AF 100%)';
@@ -113,6 +113,14 @@ export function HighvillCommunity() {
               <MapPin className="w-3 h-3" />
               <span>ул. Шамши Калдаякова 3</span>
             </div>
+            <Link
+              to="/user/network?community=Highvill"
+              className="flex items-center gap-1.5 mt-3 px-4 py-1.5 rounded-full text-xs font-medium transition-opacity hover:opacity-80"
+              style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.8)' }}
+            >
+              <Users className="w-3.5 h-3.5" />
+              324 участника
+            </Link>
           </div>
         </div>
       </div>

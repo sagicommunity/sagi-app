@@ -41,6 +41,7 @@ interface Person {
 const MY_COMMUNITIES = [
   { id: 'AIFC', label: 'AIFC' },
   { id: 'hani', label: 'hani' },
+  { id: 'Highvill', label: 'Highvill Isim' },
   { id: 'TechHub', label: 'Tech Hub KZ' },
   { id: 'StartupConnect', label: 'Startup Connect' },
 ];
@@ -413,6 +414,39 @@ const people: Person[] = [
     mutualCount: 2, mutualNames: ['Madina', 'Dana'],
     location: 'Astana, Kazakhstan',
     socials: { linkedin: '#', instagram: '#', telegram: '#' }, community: 'hani',
+  },
+  {
+    id: 34, name: 'Asel Nurlanovna', role: 'Архитектор',
+    tags: ['Дизайн', 'Интерьер', 'Highvill'],
+    bio: 'Живёт в Highvill Isim. Занимается дизайном интерьеров и архитектурным консалтингом.',
+    aiSummary: ['Специалист по дизайну интерьеров жилых комплексов.', 'Резидент Highvill Isim — полезный контакт для соседей.', 'Открыта к коллаборациям с застройщиками.'],
+    connections: 18, projects: 22, years: 8,
+    color: '#2563EB', initials: 'AN', connectLabel: 'Connect',
+    mutualCount: 2, mutualNames: ['Kamila', 'Arman'],
+    location: 'Astana, Kazakhstan',
+    socials: { linkedin: '#', instagram: '#' }, community: 'Highvill',
+  },
+  {
+    id: 35, name: 'Ruslan Abdrakhmanov', role: 'Финансовый аналитик',
+    tags: ['Инвестиции', 'Недвижимость', 'Fintech'],
+    bio: 'Резидент Highvill Isim. Консультирует по инвестициям в недвижимость Астаны.',
+    aiSummary: ['Глубокая экспертиза в инвестиционной оценке жилой недвижимости.', 'Полезен для соседей, интересующихся доходной недвижимостью.', '4 общих контакта делают знакомство легким.'],
+    connections: 24, projects: 14, years: 9,
+    color: '#1D4ED8', initials: 'RA', connectLabel: 'Connect',
+    mutualCount: 4, mutualNames: ['Daniyar', 'Timur', 'Saniya'],
+    location: 'Astana, Kazakhstan',
+    socials: { linkedin: '#', telegram: '#', whatsapp: '#' }, community: 'Highvill',
+  },
+  {
+    id: 36, name: 'Dinara Seitkali', role: 'Педиатр',
+    tags: ['Медицина', 'Дети', 'Здоровье'],
+    bio: 'Врач-педиатр, живёт в Highvill Isim с семьёй. Волонтёр детских программ.',
+    aiSummary: ['Педиатр с 10-летним опытом в частной практике.', 'Активный участник соседского сообщества Highvill.', 'Полезный контакт для семей с детьми в комплексе.'],
+    connections: 11, projects: 5, years: 10,
+    color: '#3B82F6', initials: 'DS', connectLabel: 'Connect',
+    mutualCount: 1, mutualNames: ['Asel'],
+    location: 'Astana, Kazakhstan',
+    socials: { instagram: '#', whatsapp: '#' }, community: 'Highvill',
   },
 ];
 
