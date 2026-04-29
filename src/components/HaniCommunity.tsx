@@ -174,12 +174,22 @@ export function HaniCommunity() {
             </div>
             <h1 className="text-white font-bold text-lg leading-tight">hani</h1>
             <p className="text-white/70 text-xs mt-0.5 font-medium">Сеть кондитерских-кофеен в Астане</p>
-            <button
-              onClick={() => setShowBusinesses(true)}
-              className="text-white/50 text-xs mt-1 hover:text-white transition-colors"
-            >
-              4 партнёра
-            </button>
+            <div className="flex items-center gap-3 mt-1">
+              <Link
+                to="/user/network?community=hani"
+                className="flex items-center gap-1 text-white/50 text-xs hover:text-white transition-colors"
+              >
+                <Users className="w-3 h-3" />
+                1 840 участников
+              </Link>
+              <span className="text-white/20 text-xs">·</span>
+              <button
+                onClick={() => setShowBusinesses(true)}
+                className="text-white/50 text-xs hover:text-white transition-colors"
+              >
+                4 партнёра
+              </button>
+            </div>
           </div>
         </div>
       </div>
