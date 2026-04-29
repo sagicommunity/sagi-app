@@ -948,7 +948,7 @@ export function NetworkPage() {
                           : 'text-muted-foreground'
                       }`}
                     >
-                      Мои контакты
+                      Мои connections
                     </button>
                   </div>
                 </div>
