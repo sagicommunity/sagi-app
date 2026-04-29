@@ -198,21 +198,18 @@ export function HaniCommunity() {
       {/* ─── TABS ─── */}
       <div className="sticky top-0 z-40 bg-card border-b border-border">
         <div className="max-w-md mx-auto px-4 pt-3 pb-2">
-          <div className="grid grid-cols-2 gap-1.5">
-            {TABS.map((tb, idx) => {
-              const isLastOdd = TABS.length % 2 !== 0 && idx === TABS.length - 1;
-              return (
-                <button
-                  key={tb.key}
-                  onClick={() => { setTab(tb.key); setSearchQuery(''); setCategory('all'); }}
-                  className={tabClass(tb.key, isLastOdd ? 'col-span-2' : '')}
-                  style={tabStyle(tb.key)}
-                >
-                  <tb.icon className="w-3 h-3" />
-                  {tb.label}
-                </button>
-              );
-            })}
+          <div className="grid grid-cols-3 gap-1.5">
+            {TABS.map((tb) => (
+              <button
+                key={tb.key}
+                onClick={() => { setTab(tb.key); setSearchQuery(''); setCategory('all'); }}
+                className={tabClass(tb.key)}
+                style={tabStyle(tb.key)}
+              >
+                <tb.icon className="w-3 h-3" />
+                {tb.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
