@@ -818,9 +818,11 @@ export function NetworkPage() {
   const [connected, setConnected] = useState<Set<number>>(new Set());
   const [activeCommunity, setActiveCommunity] = useState<string | null>(searchParams.get('community'));
   const [activeCity, setActiveCity] = useState<string | null>(null);
+  const [memberFilter, setMemberFilter] = useState<'all' | 'friends'>('all');
 
   const filtered = people.filter(p => {
     if (activeCommunity && p.community !== activeCommunity) return false;
+    if (activeCommunity && memberFilter === 'friends' && !connected.has(p.id)) return false;
     if (activeCity && !(p.location ?? '').toLowerCase().includes(activeCity.toLowerCase())) return false;
     if (!search.trim()) return true;
     const q = search.toLowerCase();
@@ -900,7 +902,7 @@ export function NetworkPage() {
               {/* Community filter pills */}
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
                 <button
-                  onClick={() => setActiveCommunity(null)}
+                  onClick={() => { setActiveCommunity(null); setMemberFilter('all'); }}
                   className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
                     activeCommunity === null
                       ? 'bg-[#10b981] text-white border-[#10b981]'
@@ -912,7 +914,7 @@ export function NetworkPage() {
                 {MY_COMMUNITIES.map(c => (
                   <button
                     key={c.id}
-                    onClick={() => setActiveCommunity(activeCommunity === c.id ? null : c.id)}
+                    onClick={() => { setActiveCommunity(activeCommunity === c.id ? null : c.id); setMemberFilter('all'); }}
                     className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
                       activeCommunity === c.id
                         ? 'bg-[#10b981] text-white border-[#10b981]'
@@ -923,6 +925,34 @@ export function NetworkPage() {
                   </button>
                 ))}
               </div>
+
+              {/* Member sub-filter — shown only when a community is selected */}
+              {activeCommunity && (
+                <div className="flex items-center gap-2 mt-2 mb-1">
+                  <div className="flex items-center bg-muted rounded-xl p-1 gap-1">
+                    <button
+                      onClick={() => setMemberFilter('all')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        memberFilter === 'all'
+                          ? 'bg-card text-foreground shadow-sm'
+                          : 'text-muted-foreground'
+                      }`}
+                    >
+                      Все участники
+                    </button>
+                    <button
+                      onClick={() => setMemberFilter('friends')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        memberFilter === 'friends'
+                          ? 'bg-card text-[#10b981] shadow-sm'
+                          : 'text-muted-foreground'
+                      }`}
+                    >
+                      Мои контакты
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* City filter pills */}
               <div className="flex gap-2 overflow-x-auto pb-0.5 scrollbar-hide">
