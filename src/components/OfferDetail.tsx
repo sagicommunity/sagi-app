@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import { ChevronLeft, X } from 'lucide-react';
+import { ChevronLeft, X, UserPlus, Clock, CheckCircle2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router';
 import { BusinessLogo } from './BusinessLogo';
+import { useLanguage } from '../context/LanguageContext';
 
 type BusinessType = 'restaurant' | 'cafe' | 'education' | 'spa' | 'retail' | 'office' | 'school' | 'district' | 'tech' | 'hotel' | 'fitness' | 'healthcare' | 'travel';
+
+type JoinStatus = 'none' | 'pending' | 'accepted' | 'member';
 
 interface OfferState {
   business: string;
@@ -13,9 +16,11 @@ interface OfferState {
   photo?: string;
   color: string;
   gradient: string;
+  joinStatus?: JoinStatus;
 }
 
 export function OfferDetail() {
+  const { t } = useLanguage();
   const [showQR, setShowQR] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,6 +33,7 @@ export function OfferDetail() {
   const photo      = s.photo;
   const color      = s.color        ?? '#10b981';
   const gradient   = s.gradient     ?? 'linear-gradient(135deg, #34d399 0%, #059669 100%)';
+  const [joinStatus, setJoinStatus] = useState<JoinStatus>(s.joinStatus ?? 'none');
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -63,35 +69,66 @@ export function OfferDetail() {
                 <h1 className="mb-0.5 py-2">{business}</h1>
                 <p className="text-sm text-muted-foreground">{category}</p>
               </div>
+              {joinStatus === 'none' && (
+                <button
+                  onClick={() => setJoinStatus('pending')}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors flex-shrink-0 text-white"
+                  style={{ background: color }}
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  {t('joinCommunity')}
+                </button>
+              )}
+              {joinStatus === 'pending' && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold flex-shrink-0"
+                  style={{ background: '#f59e0b20', color: '#f59e0b' }}>
+                  <Clock className="w-3.5 h-3.5" />
+                  {t('requestSent')}
+                </div>
+              )}
+              {joinStatus === 'accepted' && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold flex-shrink-0"
+                  style={{ background: `${color}20`, color }}>
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  {t('requestAccepted')}
+                </div>
+              )}
+              {joinStatus === 'member' && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold flex-shrink-0"
+                  style={{ background: `${color}20`, color }}>
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  {t('alreadyMember')}
+                </div>
+              )}
             </div>
           </div>
 
           {/* Offer card */}
           <div className="mt-4 rounded-2xl p-6 text-white" style={{ background: gradient }}>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm opacity-90">Активная акция</span>
-              <span className="text-xs px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full">Активен</span>
+              <span className="text-sm opacity-90">{t('activePromo')}</span>
+              <span className="text-xs px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full">{t('activeStatus')}</span>
             </div>
             <h2 className="mb-2">{discount}</h2>
-            <p className="text-sm opacity-90 mb-4">Действует при предъявлении карты участника</p>
-            <div className="text-xs opacity-75">Действует до: 30 апреля 2026</div>
+            <p className="text-sm opacity-90 mb-4">{t('validWithMemberCard')}</p>
+            <div className="text-xs opacity-75">{t('validUntilDate')}</div>
           </div>
 
           {/* How to redeem */}
           <div className="mt-4 p-4 bg-card border border-border rounded-2xl">
-            <h3 className="mb-3">Как использовать</h3>
+            <h3 className="mb-3">{t('howToUse')}</h3>
             <ol className="space-y-2 text-sm text-muted-foreground">
               <li className="flex gap-2">
                 <span style={{ color }}>1.</span>
-                <span>Откройте приложение Sagi и найдите этот оффер</span>
+                <span>{t('howToUseStep1')}</span>
               </li>
               <li className="flex gap-2">
                 <span style={{ color }}>2.</span>
-                <span>Нажмите «Использовать» и покажите QR-код кассиру</span>
+                <span>{t('howToUseStep2')}</span>
               </li>
               <li className="flex gap-2">
                 <span style={{ color }}>3.</span>
-                <span>Получите скидку при оплате</span>
+                <span>{t('howToUseStep3')}</span>
               </li>
             </ol>
           </div>
@@ -101,7 +138,7 @@ export function OfferDetail() {
             className="w-full mt-4 py-4 text-white rounded-2xl hover:shadow-lg transition-shadow font-semibold"
             style={{ background: gradient }}
           >
-            Использовать
+            {t('useOffer')}
           </button>
         </div>
       </div>
@@ -110,12 +147,12 @@ export function OfferDetail() {
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setShowQR(false)}>
           <div className="bg-card rounded-3xl p-6 w-full max-w-xs text-center" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Показать кассиру</h3>
+              <h3 className="font-semibold">{t('showToCashier')}</h3>
               <button onClick={() => setShowQR(false)} className="w-8 h-8 rounded-full bg-input-background flex items-center justify-center">
                 <X className="w-4 h-4 text-muted-foreground" />
               </button>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">Покажите QR-код сотруднику для получения скидки</p>
+            <p className="text-xs text-muted-foreground mb-4">{t('showQrToStaff')}</p>
             <div className="relative inline-block mb-4 p-[3px]">
               <svg className="absolute inset-0 w-full h-full pointer-events-none rounded-2xl overflow-visible" viewBox="0 0 192 192" style={{ filter: `drop-shadow(0 0 8px ${color}) drop-shadow(0 0 16px ${color})` }}>
                 <rect x="3" y="3" width="186" height="186" rx="13" ry="13"
@@ -155,7 +192,7 @@ export function OfferDetail() {
               </div>
             </div>
             <p className="text-xs font-mono text-muted-foreground">SAGI · 2026 · 0042</p>
-            <p className="text-xs text-muted-foreground mt-1">Действителен в течение 15 минут</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('validFor15Min')}</p>
           </div>
         </div>
       )}

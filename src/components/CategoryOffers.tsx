@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
-import { ChevronLeft, Search, UtensilsCrossed, GraduationCap, Sparkles, ShoppingBag, Building2, Dumbbell, HeartPulse, Plane, Calendar, CheckSquare, Briefcase, Newspaper, Camera, X } from 'lucide-react';
-import { Link, useLocation } from 'react-router';
+import React, { useState, useRef } from 'react';
+import { ChevronLeft, Search, UtensilsCrossed, GraduationCap, Sparkles, ShoppingBag, Building2, Dumbbell, HeartPulse, Plane, Calendar, CheckSquare, Briefcase, Newspaper, Camera, X, MapPin } from 'lucide-react';
+import { Link, useLocation, useParams } from 'react-router';
 import { useLanguage } from '../context/LanguageContext';
 import { BusinessLogo } from './BusinessLogo';
 
@@ -16,6 +16,8 @@ interface NewsPost {
 type BizType = 'restaurant' | 'cafe' | 'education' | 'spa' | 'retail' | 'hotel' | 'fitness' | 'healthcare' | 'travel';
 type Tab = 'offers' | 'events' | 'tasks' | 'vacancies' | 'news';
 
+type JoinStatus = 'none' | 'pending' | 'accepted' | 'member';
+
 interface Offer {
   id: number;
   business: string;
@@ -24,10 +26,73 @@ interface Offer {
   type: BizType;
   exclusive: boolean;
   photo?: string;
+  communityIds?: string[];
+  joinStatus?: JoinStatus;
 }
+
+const COMMUNITY_CONFIG: Record<string, {
+  name: string; members: number; businesses: number; description: string; descriptionKey?: string; website?: string; addressKey?: string;
+  logo: React.ReactNode;
+}> = {
+  '1': {
+    name: 'Vertex Club', members: 570, businesses: 42,
+    description: 'Vertex Club — бизнес-клуб в сердце финансового квартала. Открыт для резидентов, инвесторов и экспертов.',
+    website: 'vertexclub.kz',
+    logo: (
+      <svg viewBox="0 0 64 64" className="w-full h-full">
+        <polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="none" stroke="#00695C" strokeWidth="3.5"/>
+        <polyline points="18,22 32,44 46,22" fill="none" stroke="#00695C" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+  },
+  '4': {
+    name: 'English Quarter', members: 480, businesses: 21,
+    description: '', descriptionKey: 'descEnglishQuarter',
+    addressKey: 'addressEnglishQuarter',
+    logo: <img src="/english-quarter.jpeg" alt="English Quarter" className="w-full h-full object-cover" />,
+  },
+  '5': {
+    name: 'French Quarter', members: 390, businesses: 17,
+    description: '', descriptionKey: 'descFrenchQuarter',
+    addressKey: 'addressFrenchQuarter',
+    logo: <img src="/french-quarter.jpeg" alt="French Quarter" className="w-full h-full object-cover" />,
+  },
+  '6': {
+    name: 'Italian Quarter', members: 345, businesses: 14,
+    description: '', descriptionKey: 'descItalianQuarter',
+    addressKey: 'addressItalianQuarter',
+    logo: <img src="/italian-quarter.jpeg" alt="Italian Quarter" className="w-full h-full object-cover" />,
+  },
+  '2': {
+    name: 'NexLab', members: 320, businesses: 18,
+    description: 'Технологическое сообщество стартапов и инноваций.',
+    logo: (
+      <svg viewBox="0 0 64 64" className="w-full h-full">
+        <rect width="64" height="64" fill="#0F172A"/>
+        <polygon points="32,5 56,18.5 56,45.5 32,59 8,45.5 8,18.5" fill="none" stroke="#3B82F6" strokeWidth="2" opacity="0.5"/>
+        <line x1="20" y1="18" x2="20" y2="46" stroke="#3B82F6" strokeWidth="3.5" strokeLinecap="round"/>
+        <line x1="44" y1="18" x2="44" y2="46" stroke="#3B82F6" strokeWidth="3.5" strokeLinecap="round"/>
+        <line x1="20" y1="18" x2="44" y2="46" stroke="#3B82F6" strokeWidth="3.5" strokeLinecap="round"/>
+      </svg>
+    ),
+  },
+  '3': {
+    name: 'Vega Forum', members: 210, businesses: 27,
+    description: 'Деловое сообщество выставочного района.',
+    logo: (
+      <svg viewBox="0 0 64 64" className="w-full h-full">
+        <rect width="64" height="64" fill="#0D1B2A"/>
+        <polygon points="32,7 36.5,27.5 57,32 36.5,36.5 32,57 27.5,36.5 7,32 27.5,27.5" fill="white" opacity="0.92"/>
+        <circle cx="32" cy="32" r="5" fill="#60A5FA"/>
+      </svg>
+    ),
+  },
+};
 
 export function CategoryOffers() {
   const { t } = useLanguage();
+  const { id } = useParams<{ id: string }>();
+  const community = COMMUNITY_CONFIG[id ?? '1'] ?? COMMUNITY_CONFIG['1'];
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
   const [tab, setTab] = useState<Tab>('offers');
@@ -54,48 +119,54 @@ export function CategoryOffers() {
   ];
 
   const offers: Offer[] = [
-    { id: 1, business: 'Brew Society', offer: t('offer10OffBevFull'), category: 'food', type: 'cafe', exclusive: false, photo: '/brew-society.jpeg' },
-    { id: 2, business: 'Le Bistro', offer: t('offer10OffFood'), category: 'food', type: 'restaurant', exclusive: true, photo: '/le-bistro.jpeg' },
-    { id: 3, business: 'Daily Grind', offer: t('offer20OffBar'), category: 'food', type: 'cafe', exclusive: false, photo: '/daily-grind.jpeg' },
-    { id: 4, business: 'Sakura Kitchen', offer: t('offerGiftVouchers'), category: 'food', type: 'restaurant', exclusive: true, photo: '/sakura-kitchen.jpeg' },
-    { id: 5, business: 'The Loft', offer: t('offer10OffFoodBar'), category: 'food', type: 'restaurant', exclusive: false, photo: '/the-loft.jpeg' },
-    { id: 6, business: 'Noma Grill', offer: t('offer10OffFoodBar'), category: 'food', type: 'restaurant', exclusive: false, photo: '/noma-grill.jpeg' },
-    { id: 7, business: 'Atlas Bar', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'restaurant', exclusive: false, photo: '/chez-georges.jpeg' },
-    { id: 8, business: 'Rooftop Café', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'cafe', exclusive: false, photo: '/master-coffee.jpeg' },
-    { id: 9, business: 'Olivia Bistro', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'restaurant', exclusive: false, photo: '/hani-tasting.jpeg' },
-    { id: 10, business: 'La Piazza', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'restaurant', exclusive: false, photo: '/hani-masterclass.jpeg' },
-    { id: 11, business: 'Grand Vega Hotel', offer: t('offer15OffBestRate'), category: 'hotel', type: 'hotel', exclusive: true },
-    { id: 12, business: 'Serene Lake Resort', offer: t('offer10OffBestRate'), category: 'hotel', type: 'hotel', exclusive: false },
-    { id: 13, business: 'Meridian Hotel', offer: t('offer15OffBestRate'), category: 'hotel', type: 'hotel', exclusive: true },
-    { id: 14, business: 'Pinnacle Suites', offer: t('offerCorporateRate'), category: 'hotel', type: 'hotel', exclusive: true },
-    { id: 15, business: 'Crystal Bay Resort', offer: t('offerCorporateDiscount'), category: 'hotel', type: 'hotel', exclusive: false },
-    { id: 16, business: 'Heritage House', offer: t('offerCorporateDiscount'), category: 'hotel', type: 'hotel', exclusive: false },
-    { id: 17, business: 'Pagoda Palace', offer: t('offerCorporateDiscount'), category: 'hotel', type: 'hotel', exclusive: false },
-    { id: 18, business: 'Birchwood Inn', offer: t('offer15OffStay'), category: 'hotel', type: 'hotel', exclusive: false },
-    { id: 19, business: 'Skyline Hotel', offer: t('offer10OffSpaRate'), category: 'hotel', type: 'hotel', exclusive: true },
-    { id: 20, business: 'Atlas Moscow', offer: t('offerCorporateDiscount'), category: 'hotel', type: 'hotel', exclusive: false },
-    { id: 21, business: 'Birch Wellness Resort', offer: t('offer10OffStay'), category: 'hotel', type: 'hotel', exclusive: false },
-    { id: 22, business: 'Aura Beauty', offer: t('offer10OffServices'), category: 'beauty', type: 'spa', exclusive: false, photo: '/rafe-beauty.jpeg' },
-    { id: 23, business: 'SmileCare Clinic', offer: t('offer10to15OffDental'), category: 'beauty', type: 'healthcare', exclusive: false },
-    { id: 24, business: 'Lotus Medical', offer: t('offerCorporateDiscount'), category: 'beauty', type: 'healthcare', exclusive: false },
-    { id: 25, business: 'Iron Grid Gym', offer: t('offerCorporateDiscount'), category: 'fitness', type: 'fitness', exclusive: false, photo: '/bronx-fitness.jpeg' },
-    { id: 26, business: 'Eagle Golf Studio', offer: t('offer20to30Off'), category: 'fitness', type: 'fitness', exclusive: false },
-    { id: 27, business: 'Kinetic Club', offer: t('offerCorporateDiscount'), category: 'fitness', type: 'fitness', exclusive: false },
-    { id: 28, business: 'EduShield', offer: t('offerInsurancePackages'), category: 'healthcare', type: 'healthcare', exclusive: false },
-    { id: 29, business: 'MedGlobal', offer: t('offerCorporateDiscount'), category: 'healthcare', type: 'healthcare', exclusive: false },
-    { id: 30, business: 'Vertex Academy', offer: t('offer10OffTraining'), category: 'education', type: 'education', exclusive: true, photo: '/aifc-academy.jpeg' },
-    { id: 31, business: 'Nova University', offer: t('offerCorporateDiscount'), category: 'education', type: 'education', exclusive: false },
-    { id: 32, business: 'Crest School', offer: t('offerCorporateDiscount'), category: 'education', type: 'education', exclusive: false },
-    { id: 33, business: 'Apex Business School', offer: t('offerCorporateDiscount'), category: 'education', type: 'education', exclusive: false },
-    { id: 34, business: 'International Academy', offer: t('offer10OffTuition'), category: 'education', type: 'education', exclusive: false },
-    { id: 35, business: 'Little Stars', offer: t('offerDiscountEntrance'), category: 'education', type: 'education', exclusive: false },
-    { id: 36, business: 'SkyLink Airways', offer: t('offerCorporateDiscount'), category: 'travel', type: 'travel', exclusive: true, photo: '/tours.jpeg' },
-    { id: 37, business: 'WanderKZ', offer: t('offerCorporateDiscount'), category: 'travel', type: 'travel', exclusive: false, photo: '/burabay.jpeg' },
-    { id: 38, business: 'Horizon Travel', offer: t('offerCorporateDiscount'), category: 'travel', type: 'travel', exclusive: false },
-    { id: 39, business: 'MoveEasy Relocation', offer: t('offer10OffRelocation'), category: 'travel', type: 'travel', exclusive: false },
-    { id: 40, business: 'Flora Bloom', offer: t('offer10Off'), category: 'retail', type: 'retail', exclusive: false, photo: '/ana-flowers.jpeg' },
-    { id: 41, business: 'LinkMobile', offer: t('offerSpecialMobilePackage'), category: 'retail', type: 'retail', exclusive: false },
-    { id: 42, business: 'TalentBridge', offer: t('offerCorporateDiscount'), category: 'retail', type: 'retail', exclusive: false },
+    { id: 1, business: 'Brew Society', offer: t('offer10OffBevFull'), category: 'food', type: 'cafe', exclusive: false, photo: '/brew-society.jpeg', joinStatus: 'member' },
+    { id: 2, business: 'Le Bistro', offer: t('offer10OffFood'), category: 'food', type: 'restaurant', exclusive: true, photo: '/le-bistro.jpeg', joinStatus: 'accepted' },
+    { id: 3, business: 'Daily Grind', offer: t('offer20OffBar'), category: 'food', type: 'cafe', exclusive: false, photo: '/daily-grind.jpeg', joinStatus: 'member' },
+    { id: 4, business: 'Sakura Kitchen', offer: t('offerGiftVouchers'), category: 'food', type: 'restaurant', exclusive: true, photo: '/sakura-kitchen.jpeg', joinStatus: 'pending' },
+    { id: 5, business: 'The Loft', offer: t('offer10OffFoodBar'), category: 'food', type: 'restaurant', exclusive: false, photo: '/the-loft.jpeg', joinStatus: 'none' },
+    { id: 6, business: 'Noma Grill', offer: t('offer10OffFoodBar'), category: 'food', type: 'restaurant', exclusive: false, photo: '/noma-grill.jpeg', joinStatus: 'none' },
+    { id: 7, business: 'Atlas Bar', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'restaurant', exclusive: false, photo: '/chez-georges.jpeg', joinStatus: 'accepted' },
+    { id: 8, business: 'Rooftop Café', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'cafe', exclusive: false, photo: '/master-coffee.jpeg', joinStatus: 'pending' },
+    { id: 9, business: 'Olivia Bistro', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'restaurant', exclusive: false, photo: '/hani-tasting.jpeg', joinStatus: 'none' },
+    { id: 10, business: 'La Piazza', offer: t('offer10OffFoodDrinks'), category: 'food', type: 'restaurant', exclusive: false, photo: '/hani-masterclass.jpeg', joinStatus: 'none' },
+    { id: 11, business: 'Grand Vega Hotel', offer: t('offer15OffBestRate'), category: 'hotel', type: 'hotel', exclusive: true, photo: '/grand-vega-hotel.jpeg', joinStatus: 'member' },
+    { id: 12, business: 'Serene Lake Resort', offer: t('offer10OffBestRate'), category: 'hotel', type: 'hotel', exclusive: false, joinStatus: 'none' },
+    { id: 13, business: 'Meridian Hotel', offer: t('offer15OffBestRate'), category: 'hotel', type: 'hotel', exclusive: true, joinStatus: 'pending' },
+    { id: 14, business: 'Pinnacle Suites', offer: t('offerCorporateRate'), category: 'hotel', type: 'hotel', exclusive: true, joinStatus: 'none' },
+    { id: 15, business: 'Crystal Bay Resort', offer: t('offerCorporateDiscount'), category: 'hotel', type: 'hotel', exclusive: false, joinStatus: 'accepted' },
+    { id: 16, business: 'Heritage House', offer: t('offerCorporateDiscount'), category: 'hotel', type: 'hotel', exclusive: false, joinStatus: 'none' },
+    { id: 17, business: 'Pagoda Palace', offer: t('offerCorporateDiscount'), category: 'hotel', type: 'hotel', exclusive: false, joinStatus: 'none' },
+    { id: 18, business: 'Birchwood Inn', offer: t('offer15OffStay'), category: 'hotel', type: 'hotel', exclusive: false, joinStatus: 'pending' },
+    { id: 19, business: 'Skyline Hotel', offer: t('offer10OffSpaRate'), category: 'hotel', type: 'hotel', exclusive: true, joinStatus: 'none' },
+    { id: 20, business: 'Atlas Moscow', offer: t('offerCorporateDiscount'), category: 'hotel', type: 'hotel', exclusive: false, joinStatus: 'none' },
+    { id: 21, business: 'Birch Wellness Resort', offer: t('offer10OffStay'), category: 'hotel', type: 'hotel', exclusive: false, joinStatus: 'none' },
+    { id: 22, business: 'Aura Beauty', offer: t('offer10OffServices'), category: 'beauty', type: 'spa', exclusive: false, photo: '/rafe-beauty.jpeg', joinStatus: 'accepted' },
+    { id: 23, business: 'SmileCare Clinic', offer: t('offer10to15OffDental'), category: 'beauty', type: 'healthcare', exclusive: false, joinStatus: 'none' },
+    { id: 24, business: 'Lotus Medical', offer: t('offerCorporateDiscount'), category: 'beauty', type: 'healthcare', exclusive: false, joinStatus: 'pending' },
+    { id: 25, business: 'Iron Grid Gym', offer: t('offerCorporateDiscount'), category: 'fitness', type: 'fitness', exclusive: false, photo: '/bronx-fitness.jpeg', joinStatus: 'member' },
+    { id: 26, business: 'Eagle Golf Studio', offer: t('offer20to30Off'), category: 'fitness', type: 'fitness', exclusive: false, joinStatus: 'none' },
+    { id: 27, business: 'Kinetic Club', offer: t('offerCorporateDiscount'), category: 'fitness', type: 'fitness', exclusive: false, joinStatus: 'accepted' },
+    { id: 28, business: 'EduShield', offer: t('offerInsurancePackages'), category: 'healthcare', type: 'healthcare', exclusive: false, joinStatus: 'none' },
+    { id: 29, business: 'MedGlobal', offer: t('offerCorporateDiscount'), category: 'healthcare', type: 'healthcare', exclusive: false, joinStatus: 'pending' },
+    { id: 30, business: 'Vertex Academy', offer: t('offer10OffTraining'), category: 'education', type: 'education', exclusive: true, photo: '/aifc-academy.jpeg', joinStatus: 'member' },
+    { id: 31, business: 'Nova University', offer: t('offerCorporateDiscount'), category: 'education', type: 'education', exclusive: false, joinStatus: 'none' },
+    { id: 32, business: 'Crest School', offer: t('offerCorporateDiscount'), category: 'education', type: 'education', exclusive: false, joinStatus: 'accepted' },
+    { id: 33, business: 'Apex Business School', offer: t('offerCorporateDiscount'), category: 'education', type: 'education', exclusive: false, joinStatus: 'none' },
+    { id: 34, business: 'International Academy', offer: t('offer10OffTuition'), category: 'education', type: 'education', exclusive: false, joinStatus: 'pending' },
+    { id: 35, business: 'Little Stars', offer: t('offerDiscountEntrance'), category: 'education', type: 'education', exclusive: false, joinStatus: 'none' },
+    { id: 36, business: 'SkyLink Airways', offer: t('offerCorporateDiscount'), category: 'travel', type: 'travel', exclusive: true, photo: '/tours.jpeg', joinStatus: 'member' },
+    { id: 37, business: 'WanderKZ', offer: t('offerCorporateDiscount'), category: 'travel', type: 'travel', exclusive: false, photo: '/burabay.jpeg', joinStatus: 'accepted' },
+    { id: 38, business: 'Horizon Travel', offer: t('offerCorporateDiscount'), category: 'travel', type: 'travel', exclusive: false, joinStatus: 'none' },
+    { id: 39, business: 'MoveEasy Relocation', offer: t('offer10OffRelocation'), category: 'travel', type: 'travel', exclusive: false, joinStatus: 'pending' },
+    { id: 40, business: 'Flora Bloom', offer: t('offer10Off'), category: 'retail', type: 'retail', exclusive: false, photo: '/ana-flowers.jpeg', joinStatus: 'member' },
+    { id: 41, business: 'LinkMobile', offer: t('offerSpecialMobilePackage'), category: 'retail', type: 'retail', exclusive: false, joinStatus: 'none' },
+    { id: 42, business: 'TalentBridge', offer: t('offerCorporateDiscount'), category: 'retail', type: 'retail', exclusive: false, joinStatus: 'accepted' },
+    { id: 43, business: 'TapTatti', offer: t('offerTapTatti'), category: 'food', type: 'cafe', exclusive: false, photo: '/tap-tatti.jpeg', communityIds: ['4','5','6'], joinStatus: 'member' },
+    { id: 44, business: 'Master Coffee', offer: t('offerMasterCoffeeQuarter'), category: 'food', type: 'cafe', exclusive: false, photo: '/master-coffee.jpeg', communityIds: ['4','5','6'], joinStatus: 'member' },
+    { id: 45, business: 'Delish', offer: t('offerDelish'), category: 'food', type: 'restaurant', exclusive: false, photo: '/delish.jpeg', communityIds: ['4','5','6'], joinStatus: 'member' },
+    { id: 46, business: 'Aq Anyz', offer: t('offerAqAnyz'), category: 'food', type: 'restaurant', exclusive: false, photo: '/aq-anyz.jpeg', communityIds: ['4','5','6'], joinStatus: 'accepted' },
+    { id: 47, business: 'hani', offer: t('offerHaniBonus'), category: 'retail', type: 'retail', exclusive: false, photo: '/hani.jpeg', communityIds: ['4','5','6'], joinStatus: 'member' },
+    { id: 48, business: 'Tary', offer: t('offerTary'), category: 'food', type: 'restaurant', exclusive: false, photo: '/tary.jpeg', communityIds: ['4','5','6'], joinStatus: 'pending' },
   ];
 
   const events = [
@@ -174,7 +245,12 @@ export function CategoryOffers() {
     setNewsPosts(prev => prev.map(p => p.id === postId ? { ...p, image: url } : p));
   };
 
-  const filteredOffers = offers.filter((o) => {
+  const isQuarterCommunity = id === '4' || id === '5' || id === '6';
+  const communityOffers = isQuarterCommunity
+    ? offers.filter(o => o.communityIds?.includes(id ?? ''))
+    : offers.filter(o => !o.communityIds);
+
+  const filteredOffers = communityOffers.filter((o) => {
     const matchCat = selectedCategory === 'all' || o.category === selectedCategory;
     const matchSearch = o.business.toLowerCase().includes(searchQuery.toLowerCase()) || o.offer.toLowerCase().includes(searchQuery.toLowerCase());
     const matchBiz = selectedBusiness === 'all' || o.business === selectedBusiness;
@@ -201,26 +277,33 @@ export function CategoryOffers() {
           </Link>
           {/* Centered icon + name */}
           <div className="flex flex-col items-center">
-            <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-2 shadow-lg p-2">
-              <svg viewBox="0 0 64 64" className="w-full h-full">
-                <polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="none" stroke="#00695C" strokeWidth="3.5"/>
-                <polyline points="18,22 32,44 46,22" fill="none" stroke="#00695C" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+            <div className="w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center mb-2 shadow-lg">
+              {community.logo}
             </div>
-            <h1 className="text-white font-bold text-lg leading-tight">Vertex Club</h1>
+            <h1 className="text-white font-bold text-lg leading-tight">{community.name}</h1>
             <p className="text-white/60 text-xs mt-0.5 flex items-center justify-center gap-1">
-              <Link to="/user/network" className="hover:text-white transition-colors underline-offset-2 hover:underline">570 {t('members')}</Link>
+              <Link to="/user/network" className="hover:text-white transition-colors underline-offset-2 hover:underline">{community.members} {t('members')}</Link>
               <span>·</span>
-              <button onClick={() => setShowBusinesses(true)} className="hover:text-white transition-colors underline-offset-2 hover:underline">42 {t('businesses')}</button>
+              <button onClick={() => setShowBusinesses(true)} className="hover:text-white transition-colors underline-offset-2 hover:underline">{community.businesses} {t('businesses')}</button>
             </p>
+            {community.addressKey && (
+              <div className="flex items-center gap-1 mt-1.5 text-white/40 text-xs">
+                <MapPin className="w-3 h-3" />
+                <span>{t(community.addressKey as Parameters<typeof t>[0])}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Description */}
       <div className="max-w-md mx-auto px-4 py-3">
-        <p className="text-xs text-muted-foreground leading-relaxed">Vertex Club — бизнес-клуб в сердце финансового квартала. Открыт для резидентов, инвесторов и экспертов.</p>
-        <a href="https://vertexclub.kz" target="_blank" rel="noopener noreferrer" className="text-xs text-[#10b981] mt-1 block hover:underline">vertexclub.kz</a>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+                  {community.descriptionKey ? t(community.descriptionKey as Parameters<typeof t>[0]) : community.description}
+                </p>
+        {community.website && (
+          <a href={`https://${community.website}`} target="_blank" rel="noopener noreferrer" className="text-xs text-[#10b981] mt-1 block hover:underline">{community.website}</a>
+        )}
       </div>
 
       {/* Tab switcher — 2-column grid */}
@@ -348,7 +431,7 @@ export function CategoryOffers() {
             <div className="grid grid-cols-2 gap-3">
               {filteredOffers.map((offer) => (
                 <Link key={offer.id} to={`/user/offer/${offer.id}`}
-                  state={{ business: offer.business, businessType: offer.type, category: offer.type === 'cafe' ? 'Кафе' : offer.type === 'restaurant' ? 'Ресторан' : offer.type === 'hotel' ? 'Отель' : offer.type === 'spa' ? 'Спа и красота' : offer.type === 'fitness' ? 'Фитнес' : offer.type === 'education' ? 'Образование' : offer.type === 'healthcare' ? 'Медицина' : offer.type === 'travel' ? 'Путешествия' : 'Ретейл', discount: offer.offer, photo: offer.photo, color: '#10b981', gradient: 'linear-gradient(135deg, #34d399 0%, #059669 100%)' }}
+                  state={{ business: offer.business, businessType: offer.type, category: offer.type === 'cafe' ? 'Кафе' : offer.type === 'restaurant' ? 'Ресторан' : offer.type === 'hotel' ? 'Отель' : offer.type === 'spa' ? 'Спа и красота' : offer.type === 'fitness' ? 'Фитнес' : offer.type === 'education' ? 'Образование' : offer.type === 'healthcare' ? 'Медицина' : offer.type === 'travel' ? 'Путешествия' : 'Ретейл', discount: offer.offer, photo: offer.photo, color: '#10b981', gradient: 'linear-gradient(135deg, #34d399 0%, #059669 100%)', joinStatus: (id === '4' || id === '5' || id === '6') ? 'member' : 'none' }}
                   className="flex flex-col bg-card border border-border rounded-2xl overflow-hidden hover:border-[#10b981] transition-colors">
                   {offer.photo ? (
                     <img src={offer.photo} alt={offer.business} className="w-full h-24 object-cover" />
@@ -550,7 +633,7 @@ export function CategoryOffers() {
 
       {/* Businesses modal */}
       {showBusinesses && (() => {
-        const unique = Array.from(new Map(offers.map(o => [o.business, o])).values());
+        const unique = Array.from(new Map(communityOffers.map(o => [o.business, o])).values());
         const filtered = unique.filter(o =>
           (bizCategory === 'all' || o.category === bizCategory) &&
           o.business.toLowerCase().includes(bizSearch.toLowerCase())

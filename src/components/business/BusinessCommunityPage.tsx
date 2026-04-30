@@ -1,10 +1,15 @@
 import { useState } from 'react';
-import { ChevronLeft, ShoppingBag, Calendar, Briefcase, Newspaper, Plus, MoreHorizontal, Pencil, Trash2, ToggleLeft, ToggleRight, X, Check } from 'lucide-react';
+import { ChevronLeft, ShoppingBag, Calendar, Briefcase, Newspaper, Plus, MoreHorizontal, Pencil, Trash2, ToggleLeft, ToggleRight, X, Check, Settings, Star, Repeat2, Zap, Gift } from 'lucide-react';
 import { Link } from 'react-router';
 import { BusinessLogo } from '../BusinessLogo';
 import { useLanguage } from '../../context/LanguageContext';
 
-type Tab = 'offers' | 'events' | 'vacancies' | 'news';
+type Tab = 'offers' | 'events' | 'vacancies' | 'news' | 'bonuses' | 'cross';
+
+interface Modules {
+  bonuses: boolean;
+  cross: boolean;
+}
 
 interface BizOffer {
   id: number;
@@ -35,10 +40,23 @@ interface BizNews {
   time: string;
 }
 
+const HANI_GRADIENT = 'linear-gradient(135deg, #F5C400 0%, #E6A800 50%, #CC8F00 100%)';
+
+const CROSS_BONUSES = [
+  { id: 1, name: 'Chez Georges',  category: 'Ресторан',    bonus: '3%', color: '#CC8F00', photo: '/chez-georges.jpeg' },
+  { id: 2, name: 'Rafe Beauty',   category: 'Спа',         bonus: '5%', color: '#E040FB', photo: '/rafe-beauty.jpeg' },
+  { id: 3, name: 'Ana Flowers',   category: 'Ретейл',      bonus: '2%', color: '#FF6D00', photo: '/ana-flowers.jpeg' },
+  { id: 4, name: 'Master Coffee', category: 'Кофейня',     bonus: '4%', color: '#00BCD4', photo: '/master-coffee.jpeg' },
+  { id: 5, name: 'Bronx Fitness', category: 'Фитнес',      bonus: '3%', color: '#43A047', photo: '/bronx-fitness.jpeg' },
+  { id: 6, name: 'AIFC Academy',  category: 'Образование', bonus: '2%', color: '#F4511E', photo: '/aifc-academy.jpeg' },
+];
+
 export function BusinessCommunityPage() {
   const { t } = useLanguage();
   const [tab, setTab] = useState<Tab>('offers');
   const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [modules, setModules] = useState<Modules>({ bonuses: false, cross: false });
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editText, setEditText] = useState('');
   const [showAddOffer, setShowAddOffer] = useState(false);
@@ -70,12 +88,25 @@ export function BusinessCommunityPage() {
     { id: 2, text: 'The Q2 Networking Breakfast is confirmed for April 17th.', time: '5h ago' },
   ]);
 
-  const tabs: { key: Tab; label: string; icon: typeof Calendar }[] = [
-    { key: 'offers', label: t('offers'), icon: ShoppingBag },
-    { key: 'events', label: 'Events', icon: Calendar },
-    { key: 'vacancies', label: 'Vacancies', icon: Briefcase },
-    { key: 'news', label: 'News', icon: Newspaper },
+  const baseTabs: { key: Tab; label: string; icon: typeof Calendar }[] = [
+    { key: 'offers',    label: t('offers'),      icon: ShoppingBag },
+    { key: 'events',    label: 'Events',         icon: Calendar },
+    { key: 'vacancies', label: 'Vacancies',      icon: Briefcase },
+    { key: 'news',      label: 'News',           icon: Newspaper },
   ];
+  const tabs = [
+    ...baseTabs,
+    ...(modules.bonuses ? [{ key: 'bonuses' as Tab, label: 'Бонусы',       icon: Star }]   : []),
+    ...(modules.cross   ? [{ key: 'cross'   as Tab, label: 'Кросс бонусы', icon: Repeat2 }] : []),
+  ];
+
+  const toggleModule = (key: keyof Modules) => {
+    setModules(prev => {
+      const next = { ...prev, [key]: !prev[key] };
+      if (!next[key] && tab === key) setTab('offers');
+      return next;
+    });
+  };
 
   const toggleMenu = (id: number) => setMenuOpenId(prev => prev === id ? null : id);
 
@@ -134,9 +165,17 @@ export function BusinessCommunityPage() {
       {/* Header */}
       <div className="bg-gradient-to-b from-[#071c12] to-[#0d3d26] px-4 pt-4 pb-5">
         <div className="max-w-md mx-auto">
-          <Link to="/business" className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/10 text-white mb-4">
-            <ChevronLeft className="w-5 h-5" />
-          </Link>
+          <div className="flex items-center justify-between mb-4">
+            <Link to="/business" className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/10 text-white">
+              <ChevronLeft className="w-5 h-5" />
+            </Link>
+            <button
+              onClick={() => setShowSettings(true)}
+              className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/10 text-white"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+          </div>
           <div className="flex flex-col items-center">
             <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-2 shadow-lg p-2">
               <svg viewBox="0 0 64 64" className="w-full h-full">
@@ -451,7 +490,134 @@ export function BusinessCommunityPage() {
           </>
         )}
 
+        {/* BONUSES TAB */}
+        {tab === 'bonuses' && (
+          <div className="space-y-4">
+            <div className="rounded-2xl bg-card border border-border p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Star size={15} className="text-yellow-500" fill="currentColor" />
+                  <span className="text-sm font-bold">Уровень участника: Silver</span>
+                </div>
+                <span className="text-xs text-muted-foreground">760 / 2000</span>
+              </div>
+              <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                <div className="h-2 rounded-full" style={{ width: '38%', background: HANI_GRADIENT }} />
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">Ещё 1 240 бонусов до уровня Gold</p>
+            </div>
+
+            <div className="relative rounded-3xl overflow-hidden p-5" style={{ background: HANI_GRADIENT, color: '#1A1500' }}>
+              <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-black/5" />
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0">
+                    <img src="/hani.jpeg" alt="hani" className="w-full h-full object-cover" />
+                  </div>
+                  <span className="text-sm font-black">hani</span>
+                </div>
+                <div className="flex items-end gap-3 mb-1">
+                  <span className="text-5xl font-black tracking-tight">1 240</span>
+                  <span className="text-lg font-semibold opacity-60 mb-1">бонусов</span>
+                </div>
+                <div className="flex items-center gap-1.5 mt-3">
+                  <div className="bg-black/10 rounded-lg px-2.5 py-1 text-xs font-bold">5% кэшбэк</div>
+                  <div className="bg-black/10 rounded-lg px-2.5 py-1 text-xs font-bold flex items-center gap-1">
+                    <Zap size={10} />Активен
+                  </div>
+                </div>
+              </div>
+              <div className="absolute right-5 bottom-4 text-5xl opacity-80 select-none">🐙</div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2">
+              {[{ label: 'Заработано', value: '3 200' }, { label: 'Потрачено', value: '1 960' }, { label: 'Истекает', value: '15 мая' }].map(s => (
+                <div key={s.label} className="bg-card border border-border rounded-2xl p-3 text-center">
+                  <div className="text-base font-black">{s.value}</div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* CROSS TAB */}
+        {tab === 'cross' && (
+          <>
+            <div className="rounded-2xl bg-card border border-border p-4 flex items-start gap-3 mb-4">
+              <div className="w-8 h-8 rounded-xl bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                <Gift size={16} className="text-yellow-600" />
+              </div>
+              <div>
+                <div className="text-sm font-bold mb-0.5">Кросс-бонусы партнёров</div>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Бонусы, которые участники получают при оплате у партнёров сообщества.
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-2.5">
+              {CROSS_BONUSES.map(b => (
+                <div key={b.id} className="rounded-2xl overflow-hidden flex flex-col bg-card border border-border">
+                  <div className="w-full aspect-square overflow-hidden">
+                    <img src={b.photo} alt={b.name} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="p-2 text-center">
+                    <div className="text-[11px] font-bold leading-tight">{b.name}</div>
+                    <div className="text-sm font-black mt-0.5" style={{ color: b.color }}>+{b.bonus}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
       </div>
+
+      {/* ─── SETTINGS MODAL ─── */}
+      {showSettings && (
+        <div
+          className="fixed inset-0 z-50 flex flex-col justify-end items-center"
+          style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)' }}
+          onClick={() => setShowSettings(false)}
+        >
+          <div
+            className="w-full max-w-md bg-card rounded-t-3xl p-6 pb-10"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="w-10 h-1 rounded-full bg-border mx-auto mb-5" />
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-base font-semibold">Модули сообщества</h2>
+              <button onClick={() => setShowSettings(false)} className="w-8 h-8 rounded-full bg-input-background flex items-center justify-center">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="space-y-3">
+              {([
+                { key: 'bonuses' as keyof Modules, label: 'Бонусы участника', desc: 'Показывает бонусную карту и уровень', icon: Star },
+                { key: 'cross'   as keyof Modules, label: 'Кросс бонусы',     desc: 'Показывает бонусы партнёров',        icon: Repeat2 },
+              ] as const).map(m => (
+                <div key={m.key} className="flex items-center justify-between bg-input-background rounded-2xl p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-card flex items-center justify-center">
+                      <m.icon className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium">{m.label}</div>
+                      <div className="text-xs text-muted-foreground">{m.desc}</div>
+                    </div>
+                  </div>
+                  <button onClick={() => toggleModule(m.key)}>
+                    {modules[m.key]
+                      ? <ToggleRight className="w-8 h-8 text-[#10b981]" />
+                      : <ToggleLeft  className="w-8 h-8 text-muted-foreground" />
+                    }
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

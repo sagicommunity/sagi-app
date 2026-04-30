@@ -26,7 +26,13 @@ const periodData: Record<Period, {
       { title: 'spaDaySpecial', redemptions: 13, uniqueMembers: 9, trend: -2 },
     ],
     communities: [
-      { name: 'AIFC', redemptions: 84, pct: 100 },
+      { name: 'Highvill Ishim', redemptions: 24, pct: 29 },
+      { name: 'English Quarter', redemptions: 17, pct: 20 },
+      { name: 'French Quarter', redemptions: 13, pct: 16 },
+      { name: 'Italian Quarter', redemptions: 12, pct: 14 },
+      { name: 'AIFC', redemptions: 10, pct: 12 },
+      { name: 'Vertex Club', redemptions: 6, pct: 7 },
+      { name: 'Hani', redemptions: 2, pct: 2 },
     ],
   },
   month: {
@@ -41,7 +47,13 @@ const periodData: Record<Period, {
       { title: 'spaDaySpecial', redemptions: 45, uniqueMembers: 31, trend: -4 },
     ],
     communities: [
-      { name: 'AIFC', redemptions: 312, pct: 100 },
+      { name: 'Highvill Ishim', redemptions: 91, pct: 29 },
+      { name: 'English Quarter', redemptions: 62, pct: 20 },
+      { name: 'French Quarter', redemptions: 50, pct: 16 },
+      { name: 'Italian Quarter', redemptions: 43, pct: 14 },
+      { name: 'AIFC', redemptions: 35, pct: 11 },
+      { name: 'Vertex Club', redemptions: 21, pct: 7 },
+      { name: 'Hani', redemptions: 10, pct: 3 },
     ],
   },
   all: {
@@ -56,7 +68,13 @@ const periodData: Record<Period, {
       { title: 'spaDaySpecial', redemptions: 187, uniqueMembers: 129, trend: 0 },
     ],
     communities: [
-      { name: 'AIFC', redemptions: 1247, pct: 100 },
+      { name: 'Highvill Ishim', redemptions: 362, pct: 29 },
+      { name: 'English Quarter', redemptions: 249, pct: 20 },
+      { name: 'French Quarter', redemptions: 200, pct: 16 },
+      { name: 'Italian Quarter', redemptions: 175, pct: 14 },
+      { name: 'AIFC', redemptions: 137, pct: 11 },
+      { name: 'Vertex Club', redemptions: 87, pct: 7 },
+      { name: 'Hani', redemptions: 37, pct: 3 },
     ],
   },
 };
@@ -64,6 +82,9 @@ const periodData: Record<Period, {
 export function BusinessAnalytics() {
   const { t } = useLanguage();
   const [period, setPeriod] = useState<Period>('month');
+  const [communityPeriod, setCommunityPeriod] = useState<Period>('month');
+  const [dateFrom, setDateFrom] = useState('2026-04-01');
+  const [dateTo, setDateTo] = useState('2026-04-30');
 
   const data = periodData[period];
   const maxBar = Math.max(...data.barData);
@@ -180,9 +201,32 @@ export function BusinessAnalytics() {
 
         {/* Community breakdown */}
         <div>
-          <p className="text-sm font-semibold mb-3">{t('redemptionsByCommunity')}</p>
+          <div className="mb-3">
+            <p className="text-sm font-semibold mb-2">Откуда пришли клиенты</p>
+            <div className="flex items-center gap-2">
+              <div className="flex-1 flex items-center gap-1.5 bg-input-background border border-border rounded-xl px-3 py-2">
+                <span className="text-xs text-muted-foreground whitespace-nowrap">От</span>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={e => setDateFrom(e.target.value)}
+                  className="flex-1 bg-transparent text-xs text-foreground outline-none min-w-0"
+                />
+              </div>
+              <span className="text-muted-foreground text-xs flex-shrink-0">—</span>
+              <div className="flex-1 flex items-center gap-1.5 bg-input-background border border-border rounded-xl px-3 py-2">
+                <span className="text-xs text-muted-foreground whitespace-nowrap">До</span>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={e => setDateTo(e.target.value)}
+                  className="flex-1 bg-transparent text-xs text-foreground outline-none min-w-0"
+                />
+              </div>
+            </div>
+          </div>
           <div className="bg-card border border-border rounded-2xl overflow-hidden">
-            {data.communities.map((c, idx) => (
+            {periodData[communityPeriod].communities.map((c, idx) => (
               <div key={c.name}>
                 {idx > 0 && <div className="border-t border-border" />}
                 <div className="p-4">

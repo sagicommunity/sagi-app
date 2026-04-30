@@ -22,29 +22,32 @@ export function CommunityFeed() {
     {
       id: 11, title: t('offer15OffStay'), business: 'Grand Vega Hotel', type: 'hotel' as const,
       gradient: 'linear-gradient(135deg, #0f2d4a 0%, #1a5276 50%, #0a1f33 100%)',
-      tag: 'Hotel',
+      tag: 'Hotel', photo: '/grand-vega-hotel.jpeg',
     },
     {
       id: 2, title: t('offer10OffBev'), business: 'Brew Society', type: 'cafe' as const,
       gradient: 'linear-gradient(135deg, #2d1a06 0%, #7c4a1e 50%, #1a0d03 100%)',
-      tag: 'Café',
+      tag: 'Café', photo: '/brew-society.jpeg',
     },
     {
       id: 22, title: t('offer10OffServices'), business: 'Aura Beauty', type: 'spa' as const,
       gradient: 'linear-gradient(135deg, #2d0f2d 0%, #6b2fa0 50%, #1a0a1a 100%)',
-      tag: 'Beauty',
+      tag: 'Beauty', photo: '/rafe-beauty.jpeg',
     },
     {
       id: 36, title: t('offerCorporateDiscount'), business: 'SkyLink Airways', type: 'travel' as const,
       gradient: 'linear-gradient(135deg, #0a1f2d 0%, #0e5a8a 50%, #071420 100%)',
-      tag: 'Travel',
+      tag: 'Travel', photo: '/tours.jpeg',
     },
   ];
 
   const communities = [
+    { id: 'highvill', name: 'Highvill Isim', type: 'office' as const, members: 324, businesses: 4, description: 'Жилой комплекс Highvill Isim — офферы для жителей.' },
+    { id: 4, name: 'English Quarter', type: 'district' as const, members: 480, businesses: 21, description: 'Жилой район в английском стиле — офферы для резидентов.' },
+    { id: 5, name: 'French Quarter', type: 'district' as const, members: 390, businesses: 17, description: 'Элегантный квартал с французской архитектурой.' },
+    { id: 6, name: 'Italian Quarter', type: 'district' as const, members: 345, businesses: 14, description: 'Уютный квартал с итальянской атмосферой.' },
     { id: 1, name: 'Vertex Club', type: 'office' as const, members: 570, businesses: 42, description: 'Бизнес-клуб в сердце финансового квартала.', website: 'https://vertexclub.kz' },
     { id: 'hani', name: 'hani', type: 'retail' as const, members: 1840, businesses: 64, description: 'Бонусная экосистема hani — кэшбэк и офферы от партнёров.' },
-    { id: 'highvill', name: 'Highvill Isim', type: 'office' as const, members: 324, businesses: 4, description: 'Жилой комплекс Highvill Isim — офферы для жителей.' },
     { id: 2, name: 'NexLab', type: 'tech' as const, members: 320, businesses: 18, description: 'Технологическое сообщество стартапов и инноваций.' },
     { id: 3, name: 'Vega Forum', type: 'district' as const, members: 210, businesses: 27, description: 'Деловое сообщество выставочного района.' },
   ];
@@ -82,8 +85,8 @@ export function CommunityFeed() {
                   </span>
                   {/* Business logo + name row */}
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center flex-shrink-0">
-                      <BusinessLogo name={offer.business} type={offer.type} size="sm" className="opacity-80" />
+                    <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
+                      <img src={offer.photo} alt={offer.business} className="w-full h-full object-cover" />
                     </div>
                     <p className="text-xs font-medium opacity-80 truncate">{offer.business}</p>
                   </div>
@@ -119,21 +122,20 @@ export function CommunityFeed() {
                       <img src="/hani.jpeg" alt="hani" className="w-full h-full object-cover" />
                     </Link>
                   ) : community.id === 'highvill' ? (
-                    <Link to="/user/community/highvill" onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm border border-border bg-white flex items-center justify-center p-1">
-                      <svg viewBox="0 0 64 64" className="w-full h-full">
-                        <rect x="10" y="20" width="18" height="36" rx="2" fill="#1D4ED8"/>
-                        <rect x="36" y="10" width="18" height="46" rx="2" fill="#2563EB"/>
-                        <rect x="13" y="24" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                        <rect x="20" y="24" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                        <rect x="13" y="33" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                        <rect x="20" y="33" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                        <rect x="39" y="14" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                        <rect x="47" y="14" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                        <rect x="39" y="23" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                        <rect x="47" y="23" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
-                        <rect x="39" y="32" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                        <rect x="47" y="32" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                      </svg>
+                    <Link to="/user/community/highvill" onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm border border-border">
+                      <img src="/highvill-isim.jpeg" alt="Highvill Isim" className="w-full h-full object-cover" />
+                    </Link>
+                  ) : community.id === 4 ? (
+                    <Link to="/user/community/4" onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm border border-border">
+                      <img src="/english-quarter.jpeg" alt="Английский квартал" className="w-full h-full object-cover" />
+                    </Link>
+                  ) : community.id === 5 ? (
+                    <Link to="/user/community/5" onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm border border-border">
+                      <img src="/french-quarter.jpeg" alt="Французский квартал" className="w-full h-full object-cover" />
+                    </Link>
+                  ) : community.id === 6 ? (
+                    <Link to="/user/community/6" onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm border border-border">
+                      <img src="/italian-quarter.jpeg" alt="Итальянский квартал" className="w-full h-full object-cover" />
                     </Link>
                   ) : community.id === 2 ? (
                     <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedCommunity(community); }} className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden" style={{background:'#0F172A'}}>
@@ -158,8 +160,14 @@ export function CommunityFeed() {
                   ) : (
                     <BusinessLogo name={community.name} type={community.type} size="md" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedCommunity(community); }} />
                   )}
-                  <div className="flex-1 cursor-pointer" onClick={() => setSelectedCommunity(community)}>
-                    <h3 className="mb-0.5">{community.name}</h3>
+                  <div className="flex-1 cursor-pointer" onClick={() => { if (community.id === 4 || community.id === 5 || community.id === 6) return; setSelectedCommunity(community); }}>
+                    {(community.id === 4 || community.id === 5 || community.id === 6) ? (
+                      <Link to={`/user/community/${community.id}`} className="block mb-0.5">
+                        <h3>{community.name}</h3>
+                      </Link>
+                    ) : (
+                      <h3 className="mb-0.5">{community.name}</h3>
+                    )}
                     <p className="text-sm text-muted-foreground flex items-center gap-1">
                       <Link
                         to="/user/network"

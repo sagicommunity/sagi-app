@@ -88,28 +88,8 @@ export function HighvillCommunity() {
           </Link>
           <div className="flex flex-col items-center">
             {/* Logo */}
-            <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mb-3 shadow-lg p-2">
-              <svg viewBox="0 0 64 64" className="w-full h-full">
-                {/* Building silhouette */}
-                <rect x="10" y="20" width="18" height="36" rx="2" fill="#1D4ED8"/>
-                <rect x="36" y="10" width="18" height="46" rx="2" fill="#2563EB"/>
-                {/* Windows left building */}
-                <rect x="13" y="24" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                <rect x="20" y="24" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                <rect x="13" y="33" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                <rect x="20" y="33" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                <rect x="13" y="42" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                <rect x="20" y="42" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                {/* Windows right building */}
-                <rect x="39" y="14" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                <rect x="47" y="14" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                <rect x="39" y="23" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                <rect x="47" y="23" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
-                <rect x="39" y="32" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                <rect x="47" y="32" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-                <rect x="39" y="41" width="5" height="5" rx="1" fill="white" opacity="0.4"/>
-                <rect x="47" y="41" width="5" height="5" rx="1" fill="white" opacity="0.8"/>
-              </svg>
+            <div className="w-16 h-16 rounded-2xl overflow-hidden mb-3 shadow-lg">
+              <img src="/highvill-isim.jpeg" alt="Highvill Isim" className="w-full h-full object-cover" />
             </div>
             <h1 className="text-white font-bold text-lg leading-tight">Highvill Isim</h1>
             <p className="text-white/60 text-xs mt-0.5">Жилой комплекс · Астана</p>
@@ -170,7 +150,7 @@ export function HighvillCommunity() {
             <div className="grid grid-cols-2 gap-3">
               {filtered.map(offer => (
                 <Link key={offer.id} to={`/user/offer/${offer.id}`}
-                  state={{ business: offer.business, businessType: offer.businessType, category: offer.category, discount: offer.discount, photo: offer.photo, color: HV_COLOR, gradient: HV_GRADIENT }}
+                  state={{ business: offer.business, businessType: offer.businessType, category: offer.category, discount: offer.discount, photo: offer.photo, color: HV_COLOR, gradient: HV_GRADIENT, joinStatus: 'member' }}
                   className="flex flex-col bg-card border border-border rounded-2xl overflow-hidden hover:border-[#3B82F6] transition-colors">
                   <img src={offer.photo} alt={offer.business} className="w-full h-24 object-cover" />
                   <div className="p-3 flex flex-col flex-1">
