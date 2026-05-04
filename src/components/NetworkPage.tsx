@@ -42,6 +42,7 @@ const MY_COMMUNITIES = [
   { id: 'AIFC', label: 'AIFC' },
   { id: 'hani', label: 'hani' },
   { id: 'Highvill', label: 'Highvill Isim' },
+  { id: 'EuropeCity', label: 'Europe City' },
   { id: 'TechHub', label: 'Tech Hub KZ' },
   { id: 'StartupConnect', label: 'Startup Connect' },
 ];

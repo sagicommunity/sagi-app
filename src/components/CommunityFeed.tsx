@@ -43,6 +43,7 @@ export function CommunityFeed() {
 
   const communities = [
     { id: 'highvill', name: 'Highvill Isim', type: 'office' as const, members: 324, businesses: 4, description: 'Жилой комплекс Highvill Isim — офферы для жителей.' },
+    { id: 'europecity', name: 'Europe City', type: 'district' as const, members: 287, businesses: 6, description: 'Европейский жилой квартал — офферы для резидентов.' },
     { id: 4, name: 'English Quarter', type: 'district' as const, members: 480, businesses: 21, description: 'Жилой район в английском стиле — офферы для резидентов.' },
     { id: 5, name: 'French Quarter', type: 'district' as const, members: 390, businesses: 17, description: 'Элегантный квартал с французской архитектурой.' },
     { id: 6, name: 'Italian Quarter', type: 'district' as const, members: 345, businesses: 14, description: 'Уютный квартал с итальянской атмосферой.' },
@@ -124,6 +125,10 @@ export function CommunityFeed() {
                   ) : community.id === 'highvill' ? (
                     <Link to="/user/community/highvill" onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm border border-border">
                       <img src="/highvill-isim.jpeg" alt="Highvill Isim" className="w-full h-full object-cover" />
+                    </Link>
+                  ) : community.id === 'europecity' ? (
+                    <Link to="/user/community/europecity" onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm border border-border">
+                      <img src="/europe_city.jpg" alt="Europe City" className="w-full h-full object-cover" />
                     </Link>
                   ) : community.id === 4 ? (
                     <Link to="/user/community/4" onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm border border-border">
