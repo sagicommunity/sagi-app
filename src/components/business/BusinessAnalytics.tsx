@@ -82,7 +82,7 @@ const periodData: Record<Period, {
 export function BusinessAnalytics() {
   const { t } = useLanguage();
   const [period, setPeriod] = useState<Period>('month');
-  const [communityPeriod, setCommunityPeriod] = useState<Period>('month');
+  const [communityPeriod, _setCommunityPeriod] = useState<Period>('month');
   const [dateFrom, setDateFrom] = useState('2026-04-01');
   const [dateTo, setDateTo] = useState('2026-04-30');
 
