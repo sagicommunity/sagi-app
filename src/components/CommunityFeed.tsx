@@ -6,6 +6,25 @@ import { CommunityModal } from './CommunityModal';
 import { useState } from 'react';
 import sagiLogo from '../assets/sagi-logo.png';
 
+const COMMUNITY_PHOTOS: Record<number, string> = {
+  7:  'fc-ordabasy.jpg',
+  8:  'kazatomprom.jpg',
+  9:  'nurorda.jpg',
+  10: 'alibekov.jpg',
+  11: 'salauatty-astana.jpg',
+  12: 'atameken-business.jpg',
+  13: 'adilet-party.jpg',
+  15: 'mangistaumunaigaz.jpg',
+  16: 'tsho.jpg',
+  17: 'olympic-committee.jpg',
+  18: 'ypo.jpg',
+  19: 'admin-president.jpg',
+  20: 'sensata.png',
+  21: 'svoy-dom.png',
+  23: 'bazis.jpg',
+  24: 'integra.jpg',
+};
+
 export function CommunityFeed() {
   const { t } = useLanguage();
   const [selectedCommunity, setSelectedCommunity] = useState<{
@@ -51,6 +70,22 @@ export function CommunityFeed() {
     { id: 'hani', name: 'hani', type: 'retail' as const, members: 1840, businesses: 64, description: 'Бонусная экосистема hani — кэшбэк и офферы от партнёров.' },
     { id: 2, name: 'NexLab', type: 'tech' as const, members: 320, businesses: 18, description: 'Технологическое сообщество стартапов и инноваций.' },
     { id: 3, name: 'Vega Forum', type: 'district' as const, members: 210, businesses: 27, description: 'Деловое сообщество выставочного района.' },
+    { id: 7, name: 'ФК Ордабасы', type: 'office' as const, members: 1240, businesses: 18, description: 'Профессиональный футбольный клуб «Ордабасы».' },
+    { id: 8, name: 'Казатомпром', type: 'office' as const, members: 3850, businesses: 47, description: 'АО «НАК «Казатомпром» — национальная атомная компания.' },
+    { id: 9, name: 'NurOrda', type: 'district' as const, members: 2170, businesses: 33, description: 'Сообщество района NurOrda.' },
+    { id: 10, name: 'Alibekov', type: 'office' as const, members: 560, businesses: 12, description: 'Сообщество Alibekov.' },
+    { id: 11, name: 'Салауатты Астана', type: 'healthcare' as const, members: 4320, businesses: 58, description: 'Программа здорового образа жизни «Салауатты Астана».' },
+    { id: 12, name: 'Atameken Business', type: 'office' as const, members: 6740, businesses: 112, description: 'НПП «Атамекен» — деловое сообщество предпринимателей.' },
+    { id: 13, name: 'Партия Әділет', type: 'office' as const, members: 8930, businesses: 24, description: 'Политическая партия «Әділет».' },
+    { id: 15, name: 'Мангистаумунайгаз', type: 'office' as const, members: 2460, businesses: 31, description: 'Нефтегазодобывающая компания «Мангистаумунайгаз».' },
+    { id: 16, name: 'ТШО', type: 'office' as const, members: 5120, businesses: 76, description: 'Тенгизшевройл — совместное нефтяное предприятие.' },
+    { id: 17, name: 'Олимпийский комитет', type: 'fitness' as const, members: 1870, businesses: 29, description: 'Национальный олимпийский комитет Республики Казахстан.' },
+    { id: 18, name: 'YPO', type: 'office' as const, members: 430, businesses: 85, description: 'Young Presidents\' Organization — международная организация руководителей.' },
+    { id: 19, name: 'Администрация Президента', type: 'office' as const, members: 3290, businesses: 41, description: 'Администрация Президента Республики Казахстан.' },
+    { id: 20, name: 'Sensata', type: 'tech' as const, members: 780, businesses: 16, description: 'Sensata Technologies — технологическая компания.' },
+    { id: 21, name: 'Свой Дом', type: 'district' as const, members: 1650, businesses: 22, description: 'Жилой комплекс «Свой Дом».' },
+    { id: 23, name: 'Bazis', type: 'office' as const, members: 2080, businesses: 38, description: 'Строительная компания Bazis.' },
+    { id: 24, name: 'Integra', type: 'office' as const, members: 940, businesses: 14, description: 'Компания Integra.' },
   ];
 
   return (
@@ -162,11 +197,15 @@ export function CommunityFeed() {
                         <circle cx="32" cy="32" r="5" fill="#60A5FA"/>
                       </svg>
                     </button>
+                  ) : (typeof community.id === 'number' && community.id >= 7) ? (
+                    <Link to={`/user/community/${community.id}`} onClick={e => e.stopPropagation()} className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm border border-border">
+                      <img src={`/${COMMUNITY_PHOTOS[community.id]}`} alt={community.name} className="w-full h-full object-cover" />
+                    </Link>
                   ) : (
                     <BusinessLogo name={community.name} type={community.type} size="md" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedCommunity(community); }} />
                   )}
-                  <div className="flex-1 cursor-pointer" onClick={() => { if (community.id === 4 || community.id === 5 || community.id === 6) return; setSelectedCommunity(community); }}>
-                    {(community.id === 4 || community.id === 5 || community.id === 6) ? (
+                  <div className="flex-1 cursor-pointer" onClick={() => { if (typeof community.id === 'number' && (community.id === 4 || community.id === 5 || community.id === 6 || community.id >= 7)) return; setSelectedCommunity(community); }}>
+                    {(typeof community.id === 'number' && (community.id === 4 || community.id === 5 || community.id === 6 || community.id >= 7)) ? (
                       <Link to={`/user/community/${community.id}`} className="block mb-0.5">
                         <h3>{community.name}</h3>
                       </Link>

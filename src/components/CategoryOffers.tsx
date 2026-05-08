@@ -87,6 +87,86 @@ const COMMUNITY_CONFIG: Record<string, {
       </svg>
     ),
   },
+  '7': {
+    name: 'ФК Ордабасы', members: 1240, businesses: 18,
+    description: 'Профессиональный футбольный клуб «Ордабасы».',
+    logo: <img src="/fc-ordabasy.jpg" alt="ФК Ордабасы" className="w-full h-full object-cover" />,
+  },
+  '8': {
+    name: 'Казатомпром', members: 3850, businesses: 47,
+    description: 'АО «НАК «Казатомпром» — национальная атомная компания.',
+    logo: <img src="/kazatomprom.jpg" alt="Казатомпром" className="w-full h-full object-cover" />,
+  },
+  '9': {
+    name: 'NurOrda', members: 2170, businesses: 33,
+    description: 'Сообщество района NurOrda.',
+    logo: <img src="/nurorda.jpg" alt="NurOrda" className="w-full h-full object-cover" />,
+  },
+  '10': {
+    name: 'Alibekov', members: 560, businesses: 12,
+    description: 'Сообщество Alibekov.',
+    logo: <img src="/alibekov.jpg" alt="Alibekov" className="w-full h-full object-cover" />,
+  },
+  '11': {
+    name: 'Салауатты Астана', members: 4320, businesses: 58,
+    description: 'Программа здорового образа жизни «Салауатты Астана».',
+    logo: <img src="/salauatty-astana.jpg" alt="Салауатты Астана" className="w-full h-full object-cover" />,
+  },
+  '12': {
+    name: 'Atameken Business', members: 6740, businesses: 112,
+    description: 'НПП «Атамекен» — деловое сообщество предпринимателей.',
+    logo: <img src="/atameken-business.jpg" alt="Atameken Business" className="w-full h-full object-cover" />,
+  },
+  '13': {
+    name: 'Партия Әділет', members: 8930, businesses: 24,
+    description: 'Политическая партия «Әділет».',
+    logo: <img src="/adilet-party.jpg" alt="Партия Әділет" className="w-full h-full object-cover" />,
+  },
+  '15': {
+    name: 'Мангистаумунайгаз', members: 2460, businesses: 31,
+    description: 'Нефтегазодобывающая компания «Мангистаумунайгаз».',
+    logo: <img src="/mangistaumunaigaz.jpg" alt="Мангистаумунайгаз" className="w-full h-full object-cover" />,
+  },
+  '16': {
+    name: 'ТШО', members: 5120, businesses: 76,
+    description: 'Тенгизшевройл — совместное нефтяное предприятие.',
+    logo: <img src="/tsho.jpg" alt="ТШО" className="w-full h-full object-cover" />,
+  },
+  '17': {
+    name: 'Олимпийский комитет', members: 1870, businesses: 29,
+    description: 'Национальный олимпийский комитет Республики Казахстан.',
+    logo: <img src="/olympic-committee.jpg" alt="Олимпийский комитет" className="w-full h-full object-cover" />,
+  },
+  '18': {
+    name: 'YPO', members: 430, businesses: 85,
+    description: 'Young Presidents\' Organization — международная организация руководителей.',
+    logo: <img src="/ypo.jpg" alt="YPO" className="w-full h-full object-cover" />,
+  },
+  '19': {
+    name: 'Администрация Президента', members: 3290, businesses: 41,
+    description: 'Администрация Президента Республики Казахстан.',
+    logo: <img src="/admin-president.jpg" alt="Администрация Президента" className="w-full h-full object-cover" />,
+  },
+  '20': {
+    name: 'Sensata', members: 780, businesses: 16,
+    description: 'Sensata Technologies — технологическая компания.',
+    logo: <img src="/sensata.png" alt="Sensata" className="w-full h-full object-cover" />,
+  },
+  '21': {
+    name: 'Свой Дом', members: 1650, businesses: 22,
+    description: 'Жилой комплекс «Свой Дом».',
+    logo: <img src="/svoy-dom.png" alt="Свой Дом" className="w-full h-full object-cover" />,
+  },
+  '23': {
+    name: 'Bazis', members: 2080, businesses: 38,
+    description: 'Строительная компания Bazis.',
+    logo: <img src="/bazis.jpg" alt="Bazis" className="w-full h-full object-cover" />,
+  },
+  '24': {
+    name: 'Integra', members: 940, businesses: 14,
+    description: 'Компания Integra.',
+    logo: <img src="/integra.jpg" alt="Integra" className="w-full h-full object-cover" />,
+  },
 };
 
 export function CategoryOffers() {
