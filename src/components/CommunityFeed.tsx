@@ -5,6 +5,8 @@ import { BusinessLogo } from './BusinessLogo';
 import { CommunityModal } from './CommunityModal';
 import { useState } from 'react';
 import sagiLogo from '../assets/sagi-logo.png';
+import { useWallet } from '../context/WalletContext';
+import { SagiPlusModal } from './SagiPlusModal';
 
 const COMMUNITY_PHOTOS: Record<number, string> = {
   7:  'fc-ordabasy.jpg',
@@ -27,6 +29,8 @@ const COMMUNITY_PHOTOS: Record<number, string> = {
 
 export function CommunityFeed() {
   const { t } = useLanguage();
+  const { openWallet } = useWallet();
+  const [showSagiPlus, setShowSagiPlus] = useState(false);
   const [selectedCommunity, setSelectedCommunity] = useState<{
     name: string;
     type: 'restaurant' | 'cafe' | 'education' | 'spa' | 'retail' | 'office' | 'school' | 'district' | 'tech' | 'hotel' | 'fitness' | 'healthcare' | 'travel';
@@ -93,7 +97,13 @@ export function CommunityFeed() {
       <div className="sticky top-0 z-40 bg-card border-b border-border">
         <div className="max-w-md mx-auto px-4 py-4 flex items-center gap-3">
           <img src={sagiLogo} alt="Sagi Logo" className="w-10 h-10 rounded-xl" />
-          <h1 className="text-xl">Sagi</h1>
+          <h1 className="text-xl flex-1">Sagi</h1>
+          <button
+            onClick={() => setShowSagiPlus(true)}
+            className="px-4 py-1.5 rounded-xl bg-[#10b981] text-white text-sm font-semibold"
+          >
+            Sagi+
+          </button>
         </div>
       </div>
 
@@ -101,7 +111,12 @@ export function CommunityFeed() {
 
         {/* New Offers */}
         <div>
-          <h2 className="mb-3">{t('newOffers')}</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2>{t('newOffers')}</h2>
+            <button onClick={() => openWallet('community')} className="text-xs text-[#10b981] font-medium hover:underline">
+              {t('showAllOffers')}
+            </button>
+          </div>
           <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
             {featuredOffers.map((offer) => (
               <Link
@@ -255,6 +270,10 @@ export function CommunityFeed() {
           community={selectedCommunity}
           onClose={() => setSelectedCommunity(null)}
         />
+      )}
+
+      {showSagiPlus && (
+        <SagiPlusModal onClose={() => setShowSagiPlus(false)} />
       )}
     </div>
   );

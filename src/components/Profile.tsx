@@ -1,5 +1,27 @@
-import { useState } from 'react';
-import { ChevronRight, Moon, Sun, Bell, HelpCircle, Languages, UserPlus, ArrowLeftRight, LogOut, User as UserIcon, Users, MapPin, Network } from 'lucide-react';
+﻿import { useState } from 'react';
+import { ChevronRight, ChevronDown, Moon, Sun, Bell, HelpCircle, Languages, UserPlus, ArrowLeftRight, LogOut, User as UserIcon, Users, MapPin, Network, Search, X, Settings } from 'lucide-react';
+
+const MemberQR = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 80 80" className={className}>
+    <rect width="80" height="80" fill="white"/>
+    <rect x="4" y="4" width="20" height="20" fill="#0a1a12"/><rect x="7" y="7" width="14" height="14" fill="white"/><rect x="10" y="10" width="8" height="8" fill="#0a1a12"/>
+    <rect x="56" y="4" width="20" height="20" fill="#0a1a12"/><rect x="59" y="7" width="14" height="14" fill="white"/><rect x="62" y="10" width="8" height="8" fill="#0a1a12"/>
+    <rect x="4" y="56" width="20" height="20" fill="#0a1a12"/><rect x="7" y="59" width="14" height="14" fill="white"/><rect x="10" y="62" width="8" height="8" fill="#0a1a12"/>
+    <rect x="28" y="4" width="4" height="4" fill="#0a1a12"/><rect x="36" y="4" width="4" height="4" fill="#0a1a12"/><rect x="44" y="4" width="4" height="4" fill="#0a1a12"/>
+    <rect x="28" y="12" width="4" height="4" fill="#0a1a12"/><rect x="44" y="12" width="4" height="4" fill="#0a1a12"/>
+    <rect x="36" y="20" width="4" height="4" fill="#0a1a12"/>
+    <rect x="4" y="28" width="4" height="4" fill="#0a1a12"/><rect x="12" y="28" width="4" height="4" fill="#0a1a12"/><rect x="20" y="28" width="4" height="4" fill="#0a1a12"/>
+    <rect x="28" y="28" width="4" height="4" fill="#0a1a12"/><rect x="36" y="28" width="4" height="4" fill="#0a1a12"/>
+    <rect x="52" y="28" width="4" height="4" fill="#0a1a12"/><rect x="60" y="28" width="4" height="4" fill="#0a1a12"/><rect x="68" y="28" width="4" height="4" fill="#0a1a12"/>
+    <rect x="4" y="36" width="4" height="4" fill="#0a1a12"/><rect x="20" y="36" width="4" height="4" fill="#0a1a12"/>
+    <rect x="28" y="36" width="4" height="4" fill="#0a1a12"/><rect x="44" y="36" width="4" height="4" fill="#0a1a12"/><rect x="52" y="36" width="4" height="4" fill="#0a1a12"/><rect x="68" y="36" width="4" height="4" fill="#0a1a12"/>
+    <rect x="4" y="44" width="4" height="4" fill="#0a1a12"/><rect x="12" y="44" width="4" height="4" fill="#0a1a12"/>
+    <rect x="36" y="44" width="4" height="4" fill="#0a1a12"/><rect x="52" y="44" width="4" height="4" fill="#0a1a12"/><rect x="60" y="44" width="4" height="4" fill="#0a1a12"/>
+    <rect x="28" y="52" width="4" height="4" fill="#0a1a12"/><rect x="36" y="52" width="4" height="4" fill="#0a1a12"/><rect x="44" y="52" width="4" height="4" fill="#0a1a12"/><rect x="68" y="52" width="4" height="4" fill="#0a1a12"/>
+    <rect x="28" y="60" width="4" height="4" fill="#0a1a12"/><rect x="52" y="60" width="4" height="4" fill="#0a1a12"/><rect x="60" y="60" width="4" height="4" fill="#0a1a12"/>
+    <rect x="28" y="68" width="4" height="4" fill="#0a1a12"/><rect x="36" y="68" width="4" height="4" fill="#0a1a12"/><rect x="44" y="68" width="4" height="4" fill="#0a1a12"/><rect x="52" y="68" width="4" height="4" fill="#0a1a12"/><rect x="68" y="68" width="4" height="4" fill="#0a1a12"/>
+  </svg>
+);
 
 const LinkedInIcon = () => (
   <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
@@ -19,6 +41,7 @@ import sagiLogo from '../assets/sagi-logo.png';
 import { useAuth } from '../context/AuthContext';
 import { RoleSwitcherModal } from './RoleSwitcherModal';
 import { ContactsModal } from './ContactsModal';
+import { MyCalendar } from './MyCalendar';
 import { ConnectionsModal } from './ConnectionsModal';
 
 export function Profile() {
@@ -26,13 +49,15 @@ export function Profile() {
   const { language, t } = useLanguage();
   const { logout } = useAuth();
   const [showSwitcher, setShowSwitcher] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [showContacts, setShowContacts] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
+  const [showMemberQR, setShowMemberQR] = useState(false);
   const getLanguageName = (lang: string) => {
     switch (lang) {
       case 'en': return 'English';
-      case 'ru': return 'Русский';
-      case 'kk': return 'Қазақша';
+      case 'ru': return 'Р СѓСЃСЃРєРёР№';
+      case 'kk': return 'ТљР°Р·Р°Т›С€Р°';
       default: return lang;
     }
   };
@@ -54,7 +79,7 @@ export function Profile() {
             className="w-20 h-20 rounded-full object-cover border-2 border-[#10b981]"
           />
           <div className="flex-1">
-            <h2 className="mb-1">{language === 'en' ? 'Alima Alieva' : 'Алима Алиева'}</h2>
+            <h2 className="mb-1">{language === 'en' ? 'Alima Alieva' : 'РђР»РёРјР° РђР»РёРµРІР°'}</h2>
             <p className="text-sm text-muted-foreground">alima.alieva@example.com</p>
             <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
               <MapPin className="w-3 h-3 shrink-0" />
@@ -96,209 +121,142 @@ export function Profile() {
           </div>
         </div>
 
-        {/* Digital card — premium */}
+        {/* Digital card вЂ” premium */}
         <div
-          className="relative rounded-3xl overflow-hidden shadow-2xl mb-4"
-          style={{ background: 'linear-gradient(135deg, #071c12 0%, #0d4a32 35%, #0a3d2a 65%, #031408 100%)' }}
+          onClick={() => setShowMemberQR(true)}
+          className="relative rounded-3xl overflow-hidden shadow-2xl mb-4 w-full text-left active:scale-[0.98] transition-transform cursor-pointer select-none"
+          style={{ background: 'linear-gradient(135deg, #8e9199 0%, #c8cdd6 18%, #e8eaf0 35%, #f2f4f8 45%, #d8dce6 55%, #a8adb8 72%, #c4c8d2 85%, #9098a8 100%)' }}
         >
           {/* Decorative orbs */}
-          <div className="absolute -top-12 -right-12 w-52 h-52 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.25) 0%, transparent 70%)' }} />
-          <div className="absolute -bottom-16 -left-10 w-60 h-60 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(52,211,153,0.15) 0%, transparent 70%)' }} />
-          {/* Shine */}
-          <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 55%, rgba(255,255,255,0.03) 100%)' }} />
+          <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.35) 0%, transparent 70%)' }} />
+          <div className="absolute -bottom-12 -left-8 w-52 h-52 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(180,185,200,0.25) 0%, transparent 70%)' }} />
+          {/* Metallic shine band */}
+          <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.55) 45%, rgba(255,255,255,0.15) 55%, transparent 75%)' }} />
+          <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 60%, rgba(0,0,0,0.08) 100%)' }} />
 
-          <div className="relative z-10 p-4 text-white">
+          <div className="relative z-10 px-4 pt-3 pb-2 text-[#1a1e2a]">
             {/* Top row: logo + badge */}
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <img src={sagiLogo} alt="Sagi" className="w-7 h-7 rounded-lg" />
-                <span className="text-sm font-bold tracking-[0.18em] text-[#34d399]">SAGI</span>
+                <img src={sagiLogo} alt="Sagi" className="w-6 h-6 rounded-lg" />
+                <span className="text-sm font-bold tracking-[0.18em] text-[#1a1e2a]">SAGI+</span>
               </div>
-              <span className="text-[9px] font-medium tracking-widest uppercase border border-white/20 text-white/50 px-2.5 py-1 rounded-full">
-                Loyalty Club
-              </span>
             </div>
 
             {/* Main content: left info + right QR/barcode stack */}
-            <div className="flex gap-4">
-              {/* Left: member ID, name, stats */}
-              <div className="flex-1 flex flex-col justify-between gap-2">
-                {/* Member ID → AIFC Verified */}
-                <div>
-                  <p className="text-[9px] tracking-[0.2em] uppercase text-white/40 mb-0.5">{t('memberId')}</p>
-                  <p className="font-mono text-xs tracking-[0.18em] text-[#34d399]">{t('aifcVerified')}</p>
-                </div>
+            <div className="flex gap-3">
+              {/* Left: member code, name, stats */}
+              <div className="flex-1 flex flex-col justify-between gap-1.5">
+                {/* Member code вЂ” single line */}
+                <p className="font-mono text-xs tracking-[0.22em] text-[#2a2e3a]/80 whitespace-nowrap">042718</p>
 
                 {/* Name */}
-                <div>
-                  <p className="text-[9px] tracking-[0.15em] uppercase text-white/35 mb-0.5">{t('residentId')}</p>
-                  <p className="text-sm font-semibold tracking-wide">{language === 'en' ? 'Alima Alieva' : 'Алима Алиева'}</p>
-                  <p className="text-[9px] tracking-widest uppercase text-[#34d399]/80 mt-0.5">{t('emeraldTier')}</p>
-                </div>
+                <p className="text-sm font-semibold tracking-wide leading-tight text-[#1a1e2a]">{language === 'en' ? 'Alima Alieva' : 'РђР»РёРјР° РђР»РёРµРІР°'}</p>
 
                 {/* Stats */}
                 <div className="flex gap-4">
                   <div>
-                    <p className="text-[9px] tracking-widest uppercase text-white/35 mb-0.5">{t('communities')}</p>
-                    <p className="text-sm font-bold text-[#34d399]">1</p>
+                    <p className="text-[8px] tracking-widest uppercase text-[#1a1e2a]/45 mb-0.5">{t('communities')}</p>
+                    <p className="text-sm font-bold text-[#1a1e2a]">1</p>
                   </div>
                   <div>
-                    <p className="text-[9px] tracking-widest uppercase text-white/35 mb-0.5">{t('partners')}</p>
-                    <p className="text-sm font-bold text-[#34d399]">42</p>
+                    <p className="text-[8px] tracking-widest uppercase text-[#1a1e2a]/45 mb-0.5">{t('partners')}</p>
+                    <p className="text-sm font-bold text-[#1a1e2a]">42</p>
                   </div>
                 </div>
               </div>
 
               {/* Right: QR on top, barcode beneath */}
-              <div className="flex flex-col items-center gap-2">
-                {/* QR code */}
-                <div className="bg-white rounded-xl p-1.5 shadow-lg">
-                  <svg viewBox="0 0 80 80" className="w-14 h-14">
-                    <rect width="80" height="80" fill="white"/>
-                    <rect x="4" y="4" width="20" height="20" fill="#0a1a12"/>
-                    <rect x="7" y="7" width="14" height="14" fill="white"/>
-                    <rect x="10" y="10" width="8" height="8" fill="#0a1a12"/>
-                    <rect x="56" y="4" width="20" height="20" fill="#0a1a12"/>
-                    <rect x="59" y="7" width="14" height="14" fill="white"/>
-                    <rect x="62" y="10" width="8" height="8" fill="#0a1a12"/>
-                    <rect x="4" y="56" width="20" height="20" fill="#0a1a12"/>
-                    <rect x="7" y="59" width="14" height="14" fill="white"/>
-                    <rect x="10" y="62" width="8" height="8" fill="#0a1a12"/>
-                    <rect x="28" y="4" width="4" height="4" fill="#0a1a12"/><rect x="36" y="4" width="4" height="4" fill="#0a1a12"/><rect x="44" y="4" width="4" height="4" fill="#0a1a12"/>
-                    <rect x="28" y="12" width="4" height="4" fill="#0a1a12"/><rect x="44" y="12" width="4" height="4" fill="#0a1a12"/>
-                    <rect x="36" y="20" width="4" height="4" fill="#0a1a12"/>
-                    <rect x="4" y="28" width="4" height="4" fill="#0a1a12"/><rect x="12" y="28" width="4" height="4" fill="#0a1a12"/><rect x="20" y="28" width="4" height="4" fill="#0a1a12"/>
-                    <rect x="28" y="28" width="4" height="4" fill="#0a1a12"/><rect x="36" y="28" width="4" height="4" fill="#0a1a12"/>
-                    <rect x="52" y="28" width="4" height="4" fill="#0a1a12"/><rect x="60" y="28" width="4" height="4" fill="#0a1a12"/><rect x="68" y="28" width="4" height="4" fill="#0a1a12"/>
-                    <rect x="4" y="36" width="4" height="4" fill="#0a1a12"/><rect x="20" y="36" width="4" height="4" fill="#0a1a12"/>
-                    <rect x="28" y="36" width="4" height="4" fill="#0a1a12"/><rect x="44" y="36" width="4" height="4" fill="#0a1a12"/><rect x="52" y="36" width="4" height="4" fill="#0a1a12"/><rect x="68" y="36" width="4" height="4" fill="#0a1a12"/>
-                    <rect x="4" y="44" width="4" height="4" fill="#0a1a12"/><rect x="12" y="44" width="4" height="4" fill="#0a1a12"/>
-                    <rect x="36" y="44" width="4" height="4" fill="#0a1a12"/><rect x="52" y="44" width="4" height="4" fill="#0a1a12"/><rect x="60" y="44" width="4" height="4" fill="#0a1a12"/>
-                    <rect x="28" y="52" width="4" height="4" fill="#0a1a12"/><rect x="36" y="52" width="4" height="4" fill="#0a1a12"/><rect x="44" y="52" width="4" height="4" fill="#0a1a12"/><rect x="68" y="52" width="4" height="4" fill="#0a1a12"/>
-                    <rect x="28" y="60" width="4" height="4" fill="#0a1a12"/><rect x="52" y="60" width="4" height="4" fill="#0a1a12"/><rect x="60" y="60" width="4" height="4" fill="#0a1a12"/>
-                    <rect x="28" y="68" width="4" height="4" fill="#0a1a12"/><rect x="36" y="68" width="4" height="4" fill="#0a1a12"/><rect x="44" y="68" width="4" height="4" fill="#0a1a12"/><rect x="52" y="68" width="4" height="4" fill="#0a1a12"/><rect x="68" y="68" width="4" height="4" fill="#0a1a12"/>
-                  </svg>
-                </div>
+              <div className="flex flex-col items-center gap-1.5 -mt-7">
+                {/* QR code вЂ” separate tap target */}
+                <button
+                  onClick={e => { e.stopPropagation(); setShowMemberQR(true); }}
+                  className="bg-white rounded-xl p-1.5 shadow-lg active:scale-95 transition-transform"
+                >
+                  <MemberQR className="w-12 h-12" />
+                </button>
 
                 {/* Barcode beneath QR */}
-                <div className="bg-white rounded-lg p-1 shadow-lg w-14">
-                  <svg viewBox="0 0 60 28" className="w-full h-7">
+                <div className="bg-white rounded-lg p-1 shadow-lg w-12">
+                  <svg viewBox="0 0 60 28" className="w-full h-6">
                     {Array.from({ length: 28 }, (_, i) => (
-                      <rect key={i} x={i * 2 + 2} y="1" width={i % 3 === 0 ? 1.5 : 0.8} height="26" fill="#0a1a12" opacity={0.6 + (i % 5) * 0.08} />
+                      <rect key={i} x={i * 2 + 2} y="1" width={i % 3 === 0 ? 1.5 : 0.8} height="26" fill="#1a1a2e" opacity={0.6 + (i % 5) * 0.08} />
                     ))}
                   </svg>
                 </div>
               </div>
             </div>
+
+            {/* Tap hint */}
+            <div className="flex items-center justify-center gap-1 mt-2 pb-0.5 opacity-35">
+              <ChevronDown className="w-3 h-3 text-[#1a1e2a]" />
+              <span className="text-[9px] tracking-widest uppercase text-[#1a1e2a]">Show QR</span>
+              <ChevronDown className="w-3 h-3 text-[#1a1e2a]" />
+            </div>
           </div>
         </div>
 
-        {/* Connections */}
-        <button
-          onClick={() => setShowConnections(true)}
-          className="w-full flex items-center gap-3 bg-card border border-border rounded-2xl p-4 mb-3 hover:border-[#10b981]/50 transition-colors"
-        >
-          <div className="w-9 h-9 rounded-xl bg-[#10b981]/10 flex items-center justify-center shrink-0">
-            <Network className="w-5 h-5 text-[#10b981]" />
-          </div>
-          <span className="flex-1 font-medium text-left">
-            {language === 'kk' ? 'Байланыстар' : language === 'ru' ? 'Контакты' : 'Connections'}
-          </span>
-          <span className="text-sm font-semibold text-[#10b981] mr-1">42</span>
-          <ChevronRight className="w-5 h-5 text-muted-foreground" />
-        </button>
-
-        {/* Contacts */}
-        <button
-          onClick={() => setShowContacts(true)}
-          className="w-full flex items-center gap-3 bg-card border border-border rounded-2xl p-4 mb-3 hover:border-[#10b981]/50 transition-colors"
-        >
-          <div className="w-9 h-9 rounded-xl bg-[#10b981]/10 flex items-center justify-center shrink-0">
-            <Users className="w-5 h-5 text-[#10b981]" />
-          </div>
-          <span className="flex-1 font-medium text-left">Contacts</span>
-          <span className="text-sm font-semibold text-[#10b981] mr-1">14</span>
-          <ChevronRight className="w-5 h-5 text-muted-foreground" />
-        </button>
-
-        {/* Join Community */}
-        <div className="mb-6">
-          <Link
-            to="/user/join-community"
-            className="flex items-center gap-3 bg-card border border-border rounded-2xl p-4 hover:border-[#10b981]/50 transition-colors"
+        {/* Connections / Contacts / Communities вЂ” 2 per row */}
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          <button
+            onClick={() => setShowConnections(true)}
+            className="flex flex-col gap-2 bg-card border border-border rounded-2xl p-4 hover:border-[#10b981]/50 transition-colors text-left"
           >
-            <div className="w-9 h-9 rounded-xl bg-[#10b981]/10 flex items-center justify-center shrink-0">
-              <UserPlus className="w-5 h-5 text-[#10b981]" />
+            <div className="flex items-center justify-between w-full">
+              <div className="w-8 h-8 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
+                <Network className="w-4 h-4 text-[#10b981]" />
+              </div>
+              <span className="text-base font-bold text-[#10b981]">42</span>
             </div>
-            <span className="flex-1 font-medium">{t('communities')}</span>
-            <span className="text-sm font-semibold text-[#10b981] mr-1">1</span>
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
-          </Link>
-        </div>
-
-        {/* Settings menu */}
-        <div className="bg-card border border-border rounded-2xl overflow-hidden mb-4">
-          <Link to="/user/profile/edit" className="flex items-center gap-3 p-4 hover:bg-input-background transition-colors border-b border-border">
-            <div className="w-9 h-9 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
-              <UserIcon className="w-5 h-5 text-[#10b981]" />
-            </div>
-            <span className="flex-1">{t('editProfile')}</span>
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
-          </Link>
-
-          <Link to="/user/profile/appearance" className="flex items-center gap-3 p-4 hover:bg-input-background transition-colors border-b border-border">
-            <div className="w-9 h-9 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
-              {theme === 'dark' ? <Moon className="w-5 h-5 text-[#10b981]" /> : <Sun className="w-5 h-5 text-[#10b981]" />}
-            </div>
-            <span className="flex-1">{t('appearance')}</span>
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
-          </Link>
-
-          <Link to="/user/profile/language" className="flex items-center gap-3 p-4 hover:bg-input-background transition-colors border-b border-border">
-            <div className="w-9 h-9 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
-              <Languages className="w-5 h-5 text-[#10b981]" />
-            </div>
-            <div className="flex-1">
-              <span>{t('language')}</span>
-            </div>
-            <span className="text-sm text-muted-foreground mr-2">{getLanguageName(language)}</span>
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
-          </Link>
-
-          <Link to="/user/profile/notifications" className="flex items-center gap-3 p-4 hover:bg-input-background transition-colors border-b border-border">
-            <div className="w-9 h-9 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
-              <Bell className="w-5 h-5 text-[#10b981]" />
-            </div>
-            <span className="flex-1">{t('notifications')}</span>
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
-          </Link>
-
-          <Link to="/user/profile/support" className="flex items-center gap-3 p-4 hover:bg-input-background transition-colors border-b border-border">
-            <div className="w-9 h-9 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
-              <HelpCircle className="w-5 h-5 text-[#10b981]" />
-            </div>
-            <span className="flex-1">{t('support')}</span>
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
-          </Link>
+            <span className="text-sm font-medium text-foreground">
+              {language === 'kk' ? 'Р‘Р°Р№Р»Р°РЅС‹СЃС‚Р°СЂ' : language === 'ru' ? 'РљРѕРЅС‚Р°РєС‚С‹' : 'Connections'}
+            </span>
+          </button>
 
           <button
-            onClick={() => setShowSwitcher(true)}
-            className="w-full flex items-center gap-3 p-4 hover:bg-input-background transition-colors"
+            onClick={() => setShowContacts(true)}
+            className="flex flex-col gap-2 bg-card border border-border rounded-2xl p-4 hover:border-[#10b981]/50 transition-colors text-left"
           >
-            <div className="w-9 h-9 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
-              <ArrowLeftRight className="w-5 h-5 text-[#10b981]" />
+            <div className="flex items-center justify-between w-full">
+              <div className="w-8 h-8 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
+                <Users className="w-4 h-4 text-[#10b981]" />
+              </div>
+              <span className="text-base font-bold text-[#10b981]">14</span>
             </div>
-            <span className="flex-1 text-left">{t('switchRole')}</span>
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
+            <span className="text-sm font-medium text-foreground">Contacts</span>
           </button>
+
+          <Link
+            to="/user/join-community"
+            className="flex flex-col gap-2 bg-card border border-border rounded-2xl p-4 hover:border-[#10b981]/50 transition-colors"
+          >
+            <div className="flex items-center justify-between w-full">
+              <div className="w-8 h-8 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
+                <UserPlus className="w-4 h-4 text-[#10b981]" />
+              </div>
+              <span className="text-base font-bold text-[#10b981]">1</span>
+            </div>
+            <span className="text-sm font-medium text-foreground">{t('communities')}</span>
+          </Link>
         </div>
 
-        {/* Theme toggle shortcut */}
+        {/* Calendar */}
+        <div className="mb-6">
+          <MyCalendar />
+        </div>
+
+        {/* Settings button */}
         <button
-          onClick={toggleTheme}
-          className="w-full py-3 bg-input-background rounded-2xl text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+          onClick={() => setShowSettings(true)}
+          className="w-full flex items-center gap-3 bg-card border border-border rounded-2xl p-4 mb-4 hover:border-[#10b981]/50 transition-colors"
         >
-          {theme === 'dark' ? '☀️ Switch to Light Mode' : '🌙 Switch to Dark Mode'}
+          <div className="w-9 h-9 rounded-xl bg-[#10b981]/10 flex items-center justify-center shrink-0">
+            <Settings className="w-5 h-5 text-[#10b981]" />
+          </div>
+          <span className="flex-1 font-medium text-left">
+            {language === 'kk' ? 'Р‘Р°РїС‚Р°СѓР»Р°СЂ' : language === 'ru' ? 'РќР°СЃС‚СЂРѕР№РєРё' : 'Settings'}
+          </span>
+          <ChevronRight className="w-5 h-5 text-muted-foreground" />
         </button>
 
         <p className="text-center text-xs text-muted-foreground mb-4">{t('version')}</p>
@@ -315,6 +273,109 @@ export function Profile() {
       {showSwitcher && <RoleSwitcherModal onClose={() => setShowSwitcher(false)} />}
       {showContacts && <ContactsModal onClose={() => setShowContacts(false)} />}
       {showConnections && <ConnectionsModal onClose={() => setShowConnections(false)} />}
+
+      {/* Settings bottom sheet */}
+      {showSettings && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end items-center">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowSettings(false)} />
+          <div className="relative bg-card rounded-t-3xl pb-8 z-10 w-full max-w-md" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 pt-5 pb-3">
+              <h2 className="text-lg font-bold">
+                {language === 'kk' ? 'Р‘Р°РїС‚Р°СѓР»Р°СЂ' : language === 'ru' ? 'РќР°СЃС‚СЂРѕР№РєРё' : 'Settings'}
+              </h2>
+              <button onClick={() => setShowSettings(false)} className="w-8 h-8 rounded-full bg-input-background flex items-center justify-center">
+                <X className="w-4 h-4 text-muted-foreground" />
+              </button>
+            </div>
+            <div className="bg-input-background mx-4 rounded-2xl overflow-hidden">
+              <Link to="/user/profile/edit" onClick={() => setShowSettings(false)} className="flex items-center gap-3 p-4 hover:bg-card transition-colors border-b border-border">
+                <div className="w-8 h-8 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
+                  <UserIcon className="w-4 h-4 text-[#10b981]" />
+                </div>
+                <span className="flex-1 text-sm">{t('editProfile')}</span>
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              </Link>
+              <Link to="/user/profile/appearance" onClick={() => setShowSettings(false)} className="flex items-center gap-3 p-4 hover:bg-card transition-colors border-b border-border">
+                <div className="w-8 h-8 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
+                  {theme === 'dark' ? <Moon className="w-4 h-4 text-[#10b981]" /> : <Sun className="w-4 h-4 text-[#10b981]" />}
+                </div>
+                <span className="flex-1 text-sm">{t('appearance')}</span>
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              </Link>
+              <Link to="/user/profile/language" onClick={() => setShowSettings(false)} className="flex items-center gap-3 p-4 hover:bg-card transition-colors border-b border-border">
+                <div className="w-8 h-8 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
+                  <Languages className="w-4 h-4 text-[#10b981]" />
+                </div>
+                <span className="flex-1 text-sm">{t('language')}</span>
+                <span className="text-xs text-muted-foreground mr-2">{getLanguageName(language)}</span>
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              </Link>
+              <Link to="/user/profile/notifications" onClick={() => setShowSettings(false)} className="flex items-center gap-3 p-4 hover:bg-card transition-colors border-b border-border">
+                <div className="w-8 h-8 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
+                  <Bell className="w-4 h-4 text-[#10b981]" />
+                </div>
+                <span className="flex-1 text-sm">{t('notifications')}</span>
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              </Link>
+              <Link to="/user/profile/support" onClick={() => setShowSettings(false)} className="flex items-center gap-3 p-4 hover:bg-card transition-colors border-b border-border">
+                <div className="w-8 h-8 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
+                  <HelpCircle className="w-4 h-4 text-[#10b981]" />
+                </div>
+                <span className="flex-1 text-sm">{t('support')}</span>
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              </Link>
+              <button
+                onClick={() => { setShowSettings(false); setShowSwitcher(true); }}
+                className="w-full flex items-center gap-3 p-4 hover:bg-card transition-colors border-b border-border"
+              >
+                <div className="w-8 h-8 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
+                  <ArrowLeftRight className="w-4 h-4 text-[#10b981]" />
+                </div>
+                <span className="flex-1 text-sm text-left">{t('switchRole')}</span>
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              </button>
+              <button
+                onClick={() => { toggleTheme(); setShowSettings(false); }}
+                className="w-full flex items-center gap-3 p-4 hover:bg-card transition-colors"
+              >
+                <div className="w-8 h-8 rounded-xl bg-[#10b981]/10 flex items-center justify-center">
+                  {theme === 'dark' ? <Sun className="w-4 h-4 text-[#10b981]" /> : <Moon className="w-4 h-4 text-[#10b981]" />}
+                </div>
+                <span className="flex-1 text-sm text-left">
+                  {theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Member QR modal */}
+      {showMemberQR && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center px-6" onClick={() => setShowMemberQR(false)}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="relative bg-card rounded-3xl w-full max-w-sm p-6 shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="font-bold text-lg">Show to cashier</h3>
+              <button onClick={() => setShowMemberQR(false)} className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <p className="text-xs text-[#10b981] mb-2">Show the QR code to staff to get your discount</p>
+            <div className="w-10 h-0.5 rounded-full bg-[#10b981] mb-5" />
+            <div className="flex justify-center mb-5">
+              <div className="bg-white rounded-2xl p-3 shadow-sm">
+                <MemberQR className="w-44 h-44" />
+              </div>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <p className="font-mono text-sm tracking-widest text-muted-foreground">SAGI &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; 0042</p>
+              <p className="text-xs font-medium text-[#10b981]">Valid for 15 minutes</p>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

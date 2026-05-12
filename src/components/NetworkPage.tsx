@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router';
 import * as topojson from 'topojson-client';
 import type { Topology, GeometryCollection } from 'topojson-specification';
 import * as d3 from 'd3';
-import { Search, Users, ChevronRight, X, LayoutList, Share2, Sparkles, MapPin } from 'lucide-react';
+import { Search, Users, ChevronRight, ChevronDown, ChevronUp, X, LayoutList, Share2, Sparkles, MapPin, Calendar, Clock } from 'lucide-react';
 
 
 interface Socials {
@@ -810,6 +810,71 @@ function GraphView({ onSelectPerson, activeCommunity, onCommunityChange, activeC
   );
 }
 
+// ─── Per-person upcoming schedule (keyed by initials) ────────────────────────
+export const PERSON_SCHEDULE: Record<string, { title: string; date: string; dateISO: string; location: string }[]> = {
+  AB: [
+    { title: 'Startup Pitch Night',       date: 'Thu, May 8 · 19:00',  dateISO: '2026-05-08', location: 'Le Bistro Rooftop' },
+    { title: 'Summer Networking Gala',    date: 'Thu, May 28 · 19:00', dateISO: '2026-05-28', location: 'Grand Ballroom, Sheraton' },
+    { title: 'Annual General Meeting',    date: 'Fri, Jun 19 · 10:00', dateISO: '2026-06-19', location: 'Vertex Academy, Main Hall' },
+    { title: 'Summer Rooftop Party',      date: 'Fri, Jun 26 · 19:00', dateISO: '2026-06-26', location: 'Le Bistro Rooftop' },
+  ],
+  KD: [
+    { title: 'Startup Pitch Night',       date: 'Thu, May 8 · 19:00',  dateISO: '2026-05-08', location: 'Le Bistro Rooftop' },
+    { title: 'Wine & Cheese Evening',     date: 'Sat, May 17 · 19:30', dateISO: '2026-05-17', location: 'Chez Georges, Vertex Tower' },
+    { title: 'Summer Networking Gala',    date: 'Thu, May 28 · 19:00', dateISO: '2026-05-28', location: 'Grand Ballroom, Sheraton' },
+    { title: "Members' Cocktail Evening", date: 'Fri, Jun 12 · 18:30', dateISO: '2026-06-12', location: 'Vertex Lounge, 24th Floor' },
+    { title: 'Summer Rooftop Party',      date: 'Fri, Jun 26 · 19:00', dateISO: '2026-06-26', location: 'Le Bistro Rooftop' },
+  ],
+  AK: [
+    { title: 'Startup Pitch Night',       date: 'Thu, May 8 · 19:00',  dateISO: '2026-05-08', location: 'Le Bistro Rooftop' },
+    { title: 'VIP Breakfast: CEO Series', date: 'Tue, May 13 · 08:00', dateISO: '2026-05-13', location: 'Vertex Lounge, 24th Floor' },
+    { title: 'AI & Future of Finance',    date: 'Wed, May 20 · 15:00', dateISO: '2026-05-20', location: 'Vertex Academy, Main Hall' },
+    { title: 'Vertex Golf Cup 2026',      date: 'Sat, May 24 · 10:00', dateISO: '2026-05-24', location: 'Nomad Golf Studio' },
+    { title: 'Summer Networking Gala',    date: 'Thu, May 28 · 19:00', dateISO: '2026-05-28', location: 'Grand Ballroom, Sheraton' },
+    { title: 'Annual General Meeting',    date: 'Fri, Jun 19 · 10:00', dateISO: '2026-06-19', location: 'Vertex Academy, Main Hall' },
+  ],
+  DS: [
+    { title: 'Startup Pitch Night',        date: 'Thu, May 8 · 19:00',  dateISO: '2026-05-08', location: 'Le Bistro Rooftop' },
+    { title: 'Wine & Cheese Evening',      date: 'Sat, May 17 · 19:30', dateISO: '2026-05-17', location: 'Chez Georges, Vertex Tower' },
+    { title: 'Vertex Golf Cup 2026',       date: 'Sat, May 24 · 10:00', dateISO: '2026-05-24', location: 'Nomad Golf Studio' },
+    { title: 'Private Equity Deal Sourcing', date: 'Fri, Jun 5 · 14:00', dateISO: '2026-06-05', location: 'Vertex Tower, Board Room' },
+    { title: 'Annual General Meeting',     date: 'Fri, Jun 19 · 10:00', dateISO: '2026-06-19', location: 'Vertex Academy, Main Hall' },
+  ],
+  FB: [
+    { title: 'Legal Tech Workshop',        date: 'Tue, May 6 · 10:00',  dateISO: '2026-05-06', location: 'Vertex Academy, Room 5' },
+    { title: 'VIP Breakfast: CEO Series',  date: 'Tue, May 13 · 08:00', dateISO: '2026-05-13', location: 'Vertex Lounge, 24th Floor' },
+    { title: 'Wine & Cheese Evening',      date: 'Sat, May 17 · 19:30', dateISO: '2026-05-17', location: 'Chez Georges, Vertex Tower' },
+    { title: 'Summer Networking Gala',     date: 'Thu, May 28 · 19:00', dateISO: '2026-05-28', location: 'Grand Ballroom, Sheraton' },
+    { title: "Members' Cocktail Evening",  date: 'Fri, Jun 12 · 18:30', dateISO: '2026-06-12', location: 'Vertex Lounge, 24th Floor' },
+  ],
+  MI: [
+    { title: 'Real Estate Investment Forum', date: 'Fri, May 15 · 13:00', dateISO: '2026-05-15', location: 'Vertex Tower, Conference Hall' },
+    { title: 'FinTech Happy Hour',           date: 'Fri, May 22 · 17:30', dateISO: '2026-05-22', location: 'Brew Society, Vertex Tower' },
+    { title: "Members' Cocktail Evening",    date: 'Fri, Jun 12 · 18:30', dateISO: '2026-06-12', location: 'Vertex Lounge, 24th Floor' },
+  ],
+  RA: [
+    { title: 'VIP Breakfast: CEO Series',  date: 'Tue, May 13 · 08:00', dateISO: '2026-05-13', location: 'Vertex Lounge, 24th Floor' },
+    { title: 'FinTech Happy Hour',         date: 'Fri, May 22 · 17:30', dateISO: '2026-05-22', location: 'Brew Society, Vertex Tower' },
+    { title: 'Vertex Golf Cup 2026',       date: 'Sat, May 24 · 10:00', dateISO: '2026-05-24', location: 'Nomad Golf Studio' },
+    { title: 'Private Equity Deal Sourcing', date: 'Fri, Jun 5 · 14:00', dateISO: '2026-06-05', location: 'Vertex Tower, Board Room' },
+  ],
+  ZS: [
+    { title: 'Yoga & Mindfulness Session',   date: 'Sat, May 10 · 08:30', dateISO: '2026-05-10', location: 'Aura Beauty & Wellness' },
+    { title: 'Real Estate Investment Forum', date: 'Fri, May 15 · 13:00', dateISO: '2026-05-15', location: 'Vertex Tower, Conference Hall' },
+    { title: 'Summer Rooftop Party',         date: 'Fri, Jun 26 · 19:00', dateISO: '2026-06-26', location: 'Le Bistro Rooftop' },
+  ],
+  TZ: [
+    { title: 'Digital Nomad Meetup',         date: 'Sun, May 4 · 18:00',  dateISO: '2026-05-04', location: 'Brew Society, Vertex Tower' },
+    { title: 'AI & Future of Finance',       date: 'Wed, May 20 · 15:00', dateISO: '2026-05-20', location: 'Vertex Academy, Main Hall' },
+    { title: 'Private Equity Deal Sourcing', date: 'Fri, Jun 5 · 14:00',  dateISO: '2026-06-05', location: 'Vertex Tower, Board Room' },
+  ],
+  AD: [
+    { title: 'Startup Pitch Night',          date: 'Thu, May 8 · 19:00',  dateISO: '2026-05-08', location: 'Le Bistro Rooftop' },
+    { title: 'Expat & Investor Dinner',      date: 'Wed, May 27 · 19:00', dateISO: '2026-05-27', location: 'Sheraton Astana, Grand Dining' },
+    { title: 'Summer Networking Gala',       date: 'Thu, May 28 · 19:00', dateISO: '2026-05-28', location: 'Grand Ballroom, Sheraton' },
+  ],
+};
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export function NetworkPage() {
   const [searchParams] = useSearchParams();
@@ -820,8 +885,11 @@ export function NetworkPage() {
   const [activeCommunity, setActiveCommunity] = useState<string | null>(searchParams.get('community'));
   const [activeCity, setActiveCity] = useState<string | null>(null);
   const [memberFilter, setMemberFilter] = useState<'all' | 'friends'>('all');
+  const [scheduleOpen, setScheduleOpen] = useState(true);
+  const [onlyConnections, setOnlyConnections] = useState(false);
 
   const filtered = people.filter(p => {
+    if (onlyConnections && !connected.has(p.id)) return false;
     if (activeCommunity && p.community !== activeCommunity) return false;
     if (activeCommunity && memberFilter === 'friends' && !connected.has(p.id)) return false;
     if (activeCity && !(p.location ?? '').toLowerCase().includes(activeCity.toLowerCase())) return false;
@@ -957,6 +1025,17 @@ export function NetworkPage() {
 
               {/* City filter pills */}
               <div className="flex gap-2 overflow-x-auto pb-0.5 scrollbar-hide">
+                <button
+                  onClick={() => setOnlyConnections(v => !v)}
+                  className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all flex items-center gap-1 ${
+                    onlyConnections
+                      ? 'bg-[#10b981]/15 text-[#10b981] border-[#10b981]'
+                      : 'bg-transparent text-muted-foreground border-border hover:border-[#10b981]/50'
+                  }`}
+                >
+                  <Users className="w-3 h-3" />
+                  Connections
+                </button>
                 {[null, 'Almaty', 'Astana'].map(city => (
                   <button
                     key={city ?? 'all'}
@@ -993,7 +1072,7 @@ export function NetworkPage() {
           {filtered.map(person => (
             <button
               key={person.id}
-              onClick={() => setSelected(person)}
+              onClick={() => { setSelected(person); setScheduleOpen(true); }}
               className="w-full text-left bg-card border border-border rounded-2xl p-4 flex items-start gap-3 active:scale-[0.98] transition-transform"
             >
               <div
@@ -1123,6 +1202,53 @@ export function NetworkPage() {
               Reach via:{' '}
               <span className="text-foreground font-medium">{selected.mutualNames.join(', ')}</span>
             </p>
+
+            {/* Schedule */}
+            {(() => {
+              const schedule = PERSON_SCHEDULE[selected.initials] ?? [];
+              return (
+                <div className="mb-5">
+                  <button
+                    onClick={() => setScheduleOpen(v => !v)}
+                    className="flex items-center gap-1.5 mb-3 w-full"
+                  >
+                    <Calendar className="w-3.5 h-3.5 text-[#10b981]" />
+                    <span className="text-xs font-semibold text-[#10b981] flex-1 text-left">Upcoming Schedule</span>
+                    {scheduleOpen
+                      ? <ChevronUp className="w-3.5 h-3.5 text-[#10b981]" />
+                      : <ChevronDown className="w-3.5 h-3.5 text-[#10b981]" />}
+                  </button>
+                  {scheduleOpen && (
+                    schedule.length === 0 ? (
+                      <p className="text-xs text-muted-foreground">No upcoming shared events</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {schedule.map((ev, i) => {
+                          const d = new Date(ev.dateISO);
+                          const dayNum = d.getDate();
+                          const dayName = d.toLocaleDateString('en', { weekday: 'short' });
+                          return (
+                            <div key={i} className="flex gap-3 items-start bg-muted/30 rounded-2xl px-3 py-2.5">
+                              <div className="w-9 shrink-0 flex flex-col items-center rounded-xl py-1" style={{ background: selected.color + '15' }}>
+                                <span className="text-[9px] font-semibold uppercase" style={{ color: selected.color }}>{dayName}</span>
+                                <span className="text-sm font-bold leading-tight" style={{ color: selected.color }}>{dayNum}</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-semibold leading-tight mb-0.5">{ev.title}</p>
+                                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                                  <MapPin className="w-2.5 h-2.5 shrink-0" />
+                                  <span className="truncate">{ev.location}</span>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )
+                  )}
+                </div>
+              );
+            })()}
 
             <button
               onClick={() => { toggleConnect(selected.id); setSelected(null); }}
