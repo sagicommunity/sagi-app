@@ -42,16 +42,36 @@ const EVENTS = [
   },
 ];
 
-const NEWS = [
+const ANNOUNCEMENTS = [
   {
-    id: 1, author: 'Europe City', time: '1ч назад',
-    text: 'Добро пожаловать в сообщество жителей Europe City! Здесь вы найдёте эксклюзивные офферы от европейских партнёров прямо в вашем жилом квартале.',
-    photo: '/brew-society.jpeg',
+    id: 1, name: 'Айгерим К.', initials: 'АК', color: '#f06ac8', time: '20 мин назад',
+    tag: 'Продаю', tagColor: '#10b981',
+    text: 'Продаю детскую коляску Stokke, б/у 6 месяцев, отличное состояние. 45 000 ₸. Самовывоз из блока B.',
   },
   {
-    id: 2, author: 'Europe City', time: '3д назад',
-    text: 'Café Europa, Bistro Wien, Delish и Drinkit стали официальными партнёрами сообщества. Показывай карту участника при оплате и получай скидки.',
-    photo: '/drinkit.jpeg',
+    id: 2, name: 'Данияр С.', initials: 'ДС', color: '#7c6af0', time: '1ч назад',
+    tag: 'Ищу', tagColor: '#f59e0b',
+    text: 'Ищу соседей для совместной аренды паркингового места на подземной парковке. Пишите в личку.',
+  },
+  {
+    id: 3, name: 'Мадина Р.', initials: 'МР', color: '#f06a6a', time: '3ч назад',
+    tag: 'Отдаю', tagColor: '#6366f1',
+    text: 'Отдаю бесплатно горшки с комнатными растениями. Фикус, потос, алоэ. Забирайте, буду рада!',
+  },
+  {
+    id: 4, name: 'Нуржан Б.', initials: 'НБ', color: '#0ea5e9', time: '5ч назад',
+    tag: 'Услуги', tagColor: '#8b5cf6',
+    text: 'Делаю ремонт в квартирах. Опыт 10 лет, качество гарантирую. Живу в блоке A, договоримся по цене.',
+  },
+  {
+    id: 5, name: 'Алина Ж.', initials: 'АЖ', color: '#f97316', time: 'Вчера',
+    tag: 'Продаю', tagColor: '#10b981',
+    text: 'Продаю беговую дорожку Xiaomi, пользовалась 2 раза. 60 000 ₸, торг уместен. Этаж 12, блок C.',
+  },
+  {
+    id: 6, name: 'Серик А.', initials: 'СА', color: '#14b8a6', time: 'Вчера',
+    tag: 'Вопрос', tagColor: '#64748b',
+    text: 'Кто знает, когда починят лифт в подъезде №3? Уже неделю один лифт из двух не работает.',
   },
 ];
 
@@ -196,23 +216,32 @@ export function EuropeCityCommunity() {
           </div>
         )}
 
-        {/* ══ НОВОСТИ ══ */}
+        {/* ══ ОБЪЯВЛЕНИЯ ══ */}
         {tab === 'news' && (
-          <div className="space-y-3">
-            {NEWS.map(post => (
-              <div key={post.id} className="bg-card border border-border rounded-2xl overflow-hidden">
-                <img src={post.photo} alt="" className="w-full h-40 object-cover" />
-                <div className="p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: `${EC_COLOR}20` }}>
-                        <span className="text-[10px] font-bold" style={{ color: EC_COLOR }}>EC</span>
-                      </div>
-                      <p className="text-xs font-semibold">{post.author}</p>
-                    </div>
-                    <p className="text-[10px] text-muted-foreground">{post.time}</p>
+          <div className="space-y-2">
+            <p className="text-xs text-muted-foreground mb-3">Объявления от жителей Europe City</p>
+            {ANNOUNCEMENTS.map(post => (
+              <div key={post.id} className="bg-card border border-border rounded-2xl p-3.5">
+                <div className="flex items-start gap-3">
+                  <div
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                    style={{ background: post.color }}
+                  >
+                    {post.initials}
                   </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{post.text}</p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <p className="text-xs font-semibold truncate">{post.name}</p>
+                      <p className="text-[10px] text-muted-foreground whitespace-nowrap">{post.time}</p>
+                    </div>
+                    <p className="text-sm text-foreground leading-snug mb-2">{post.text}</p>
+                    <span
+                      className="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full text-white"
+                      style={{ background: post.tagColor }}
+                    >
+                      {post.tag}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}

@@ -41,14 +41,6 @@ const CROSS_BONUSES = [
 const STAMP_CARDS = [
   {
     id: 1,
-    business: 'hani · Кофе',
-    photo: '/hani.jpeg',
-    reward: 'Кофе в подарок',
-    total: 10,
-    collected: 7,
-  },
-  {
-    id: 2,
     business: 'hani · Десерты',
     photo: '/hani.jpeg',
     reward: 'Десерт в подарок',
@@ -352,7 +344,6 @@ export function HaniCommunity() {
               const done = card.collected >= card.total;
               return (
                 <div key={card.id} className="bg-card border border-border rounded-2xl overflow-hidden">
-                  {/* Header */}
                   <div className="flex items-center gap-3 p-4 pb-3">
                     <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0">
                       <img src={card.photo} alt={card.business} className="w-full h-full object-cover" />
@@ -367,8 +358,6 @@ export function HaniCommunity() {
                       </span>
                     )}
                   </div>
-
-                  {/* Stamp grid */}
                   <div className="px-4 pb-4">
                     <div className="grid grid-cols-5 gap-2 mb-3">
                       {Array.from({ length: card.total }).map((_, i) => {
@@ -397,7 +386,6 @@ export function HaniCommunity() {
                         : <span className="text-xs text-muted-foreground">Ещё {card.total - card.collected}</span>
                       }
                     </div>
-                    {/* Progress bar */}
                     <div className="w-full bg-muted rounded-full h-1.5 mt-2 overflow-hidden">
                       <div
                         className="h-1.5 rounded-full transition-all"
