@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Search, Check, Send, Copy, Link } from 'lucide-react';
+import { X, Search, Check, Send, Copy } from 'lucide-react';
 
 interface Person {
   name: string;

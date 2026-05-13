@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react';
-import { ChevronRight, ChevronDown, Moon, Sun, Bell, HelpCircle, Languages, UserPlus, ArrowLeftRight, LogOut, User as UserIcon, Users, MapPin, Network, Search, X, Settings } from 'lucide-react';
+import { ChevronRight, ChevronDown, Moon, Sun, Bell, HelpCircle, Languages, UserPlus, ArrowLeftRight, LogOut, User as UserIcon, Users, MapPin, Network, X, Settings } from 'lucide-react';
 
 const MemberQR = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 80 80" className={className}>

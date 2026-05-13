@@ -179,7 +179,6 @@ export function MyCalendar() {
     const d = new Date(e.dateISO);
     return d.getFullYear() === year && d.getMonth() === month && (selectedDay === null || d.getDate() === selectedDay);
   });
-  const upcomingOtherMonths = events.filter(e => { const d = new Date(e.dateISO); return !(d.getFullYear() === year && d.getMonth() === month); });
   const totalMyThisMonth = myEvents.filter(e => { const d = new Date(e.dateISO); return d.getFullYear() === year && d.getMonth() === month; }).length;
 
   return (

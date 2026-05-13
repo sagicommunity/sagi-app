@@ -1072,7 +1072,7 @@ export function NetworkPage() {
           {filtered.map(person => (
             <button
               key={person.id}
-              onClick={() => { setSelected(person); setScheduleOpen(true); }}
+              onClick={() => { setSelected(person); }}
               className="w-full text-left bg-card border border-border rounded-2xl p-4 flex items-start gap-3 active:scale-[0.98] transition-transform"
             >
               <div
