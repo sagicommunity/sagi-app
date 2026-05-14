@@ -273,7 +273,7 @@ export function ContactsModal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Controls */}
-        <div className="px-4 py-3 shrink-0 space-y-2.5">
+        <div className="px-4 py-3 shrink-0 space-y-2">
           {/* Phone + Manual */}
           <div className="flex gap-2">
             <button
@@ -292,6 +292,34 @@ export function ContactsModal({ onClose }: { onClose: () => void }) {
             >
               <UserPlus className="w-4 h-4" />
               Add Manually
+            </button>
+          </div>
+
+          {/* Instagram + Facebook */}
+          <div className="flex gap-2">
+            <button
+              onClick={connectingPlatform ? undefined : connectInstagram}
+              disabled={!!connectingPlatform}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-medium transition-all"
+              style={instagramConnected
+                ? { background: openSection === 'instagram' ? 'rgba(225,48,108,0.2)' : 'rgba(225,48,108,0.12)', color: '#E1306C', border: '1px solid rgba(225,48,108,0.4)', opacity: connectingPlatform === 'instagram' ? 0.6 : 1 }
+                : { background: 'rgba(225,48,108,0.07)', color: '#E1306C', border: '1px solid rgba(225,48,108,0.2)' }
+              }
+            >
+              <InstagramIcon />
+              {connectingPlatform === 'instagram' ? 'Connecting…' : instagramConnected ? 'Instagram ✓' : 'Instagram'}
+            </button>
+            <button
+              onClick={connectingPlatform ? undefined : connectFacebook}
+              disabled={!!connectingPlatform}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-medium transition-all"
+              style={facebookConnected
+                ? { background: openSection === 'facebook' ? 'rgba(24,119,242,0.2)' : 'rgba(24,119,242,0.12)', color: '#1877F2', border: '1px solid rgba(24,119,242,0.4)', opacity: connectingPlatform === 'facebook' ? 0.6 : 1 }
+                : { background: 'rgba(24,119,242,0.07)', color: '#1877F2', border: '1px solid rgba(24,119,242,0.2)' }
+              }
+            >
+              <FacebookIcon />
+              {connectingPlatform === 'facebook' ? 'Connecting…' : facebookConnected ? 'Facebook ✓' : 'Facebook'}
             </button>
           </div>
 
@@ -371,55 +399,25 @@ export function ContactsModal({ onClose }: { onClose: () => void }) {
             </div>
           )}
 
-          {/* Social platforms */}
-          <div className="mt-4">
-            <div className="flex gap-2 mb-2">
-              <button
-                onClick={connectingPlatform ? undefined : connectInstagram}
-                disabled={!!connectingPlatform}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-medium transition-all"
-                style={instagramConnected
-                  ? { background: openSection === 'instagram' ? 'rgba(225,48,108,0.2)' : 'rgba(225,48,108,0.12)', color: '#E1306C', border: '1px solid rgba(225,48,108,0.4)', opacity: connectingPlatform === 'instagram' ? 0.6 : 1 }
-                  : { background: 'rgba(225,48,108,0.07)', color: '#E1306C', border: '1px solid rgba(225,48,108,0.2)', opacity: connectingPlatform === 'instagram' ? 0.6 : 1 }
-                }
-              >
-                <InstagramIcon />
-                {connectingPlatform === 'instagram' ? 'Connecting…' : instagramConnected ? `Instagram ✓` : 'Instagram'}
-              </button>
-              <button
-                onClick={connectingPlatform ? undefined : connectFacebook}
-                disabled={!!connectingPlatform}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-medium transition-all"
-                style={facebookConnected
-                  ? { background: openSection === 'facebook' ? 'rgba(24,119,242,0.2)' : 'rgba(24,119,242,0.12)', color: '#1877F2', border: '1px solid rgba(24,119,242,0.4)', opacity: connectingPlatform === 'facebook' ? 0.6 : 1 }
-                  : { background: 'rgba(24,119,242,0.07)', color: '#1877F2', border: '1px solid rgba(24,119,242,0.2)', opacity: connectingPlatform === 'facebook' ? 0.6 : 1 }
-                }
-              >
-                <FacebookIcon />
-                {connectingPlatform === 'facebook' ? 'Connecting…' : facebookConnected ? `Facebook ✓` : 'Facebook'}
-              </button>
+          {/* Instagram contacts (accordion) */}
+          {openSection === 'instagram' && filteredIG.length > 0 && (
+            <div className="mt-3 space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#E1306C' }}>Instagram · {filteredIG.length} найдено</p>
+              {filteredIG.map(c => (
+                <SocialContactRow key={c.id} contact={c} onToggle={toggleSocialPending} onSelect={setSelectedContact} platformColor="#E1306C" />
+              ))}
             </div>
+          )}
 
-            {/* Instagram contacts (accordion) */}
-            {openSection === 'instagram' && filteredIG.length > 0 && (
-              <div className="space-y-2 mb-2">
-                <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: '#E1306C' }}>Instagram · {filteredIG.length} найдено</p>
-                {filteredIG.map(c => (
-                  <SocialContactRow key={c.id} contact={c} onToggle={toggleSocialPending} onSelect={setSelectedContact} platformColor="#E1306C" />
-                ))}
-              </div>
-            )}
-
-            {/* Facebook contacts (accordion) */}
-            {openSection === 'facebook' && filteredFB.length > 0 && (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: '#1877F2' }}>Facebook · {filteredFB.length} найдено</p>
-                {filteredFB.map(c => (
-                  <SocialContactRow key={c.id} contact={c} onToggle={toggleSocialPending} onSelect={setSelectedContact} platformColor="#1877F2" />
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Facebook contacts (accordion) */}
+          {openSection === 'facebook' && filteredFB.length > 0 && (
+            <div className="mt-3 space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#1877F2' }}>Facebook · {filteredFB.length} найдено</p>
+              {filteredFB.map(c => (
+                <SocialContactRow key={c.id} contact={c} onToggle={toggleSocialPending} onSelect={setSelectedContact} platformColor="#1877F2" />
+              ))}
+            </div>
+          )}
 
           {search && filteredPhone.length === 0 && filteredIG.length === 0 && filteredFB.length === 0 && (
             <p className="text-center text-sm text-muted-foreground py-10">No results for "{search}"</p>
