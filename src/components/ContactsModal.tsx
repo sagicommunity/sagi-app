@@ -294,11 +294,11 @@ export function ContactsModal({ onClose }: { onClose: () => void }) {
           {/* Social platforms */}
           <div className="flex gap-2">
             <button
-              onClick={instagramConnected ? undefined : connectInstagram}
-              disabled={connectingPlatform === 'instagram'}
+              onClick={connectingPlatform ? undefined : connectInstagram}
+              disabled={!!connectingPlatform}
               className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-medium transition-all"
               style={instagramConnected
-                ? { background: 'rgba(225,48,108,0.12)', color: '#E1306C', border: '1px solid rgba(225,48,108,0.4)' }
+                ? { background: 'rgba(225,48,108,0.12)', color: '#E1306C', border: '1px solid rgba(225,48,108,0.4)', opacity: connectingPlatform === 'instagram' ? 0.6 : 1 }
                 : { background: 'rgba(225,48,108,0.07)', color: '#E1306C', border: '1px solid rgba(225,48,108,0.2)', opacity: connectingPlatform === 'instagram' ? 0.6 : 1 }
               }
             >
@@ -306,11 +306,11 @@ export function ContactsModal({ onClose }: { onClose: () => void }) {
               {connectingPlatform === 'instagram' ? 'Connecting…' : instagramConnected ? 'Instagram ✓' : 'Instagram'}
             </button>
             <button
-              onClick={facebookConnected ? undefined : connectFacebook}
-              disabled={connectingPlatform === 'facebook'}
+              onClick={connectingPlatform ? undefined : connectFacebook}
+              disabled={!!connectingPlatform}
               className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-medium transition-all"
               style={facebookConnected
-                ? { background: 'rgba(24,119,242,0.12)', color: '#1877F2', border: '1px solid rgba(24,119,242,0.4)' }
+                ? { background: 'rgba(24,119,242,0.12)', color: '#1877F2', border: '1px solid rgba(24,119,242,0.4)', opacity: connectingPlatform === 'facebook' ? 0.6 : 1 }
                 : { background: 'rgba(24,119,242,0.07)', color: '#1877F2', border: '1px solid rgba(24,119,242,0.2)', opacity: connectingPlatform === 'facebook' ? 0.6 : 1 }
               }
             >
