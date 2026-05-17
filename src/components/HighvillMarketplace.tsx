@@ -23,6 +23,7 @@ interface Listing {
   telegram: string;
   tag: string;         // short label shown on card
   description: string;
+  photo?: string;
   isUrgent?: boolean;
 }
 
@@ -37,6 +38,7 @@ const LISTINGS: Listing[] = [
     mutualCount: 3, mutualNames: ['Арман Б.', 'Тимур О.', 'Сауле Н.'],
     expiresInDays: 2, whatsapp: '77001234561', telegram: 'kamila_d',
     tag: 'Билеты', description: 'VIP-ряд 3. Брала на двоих, подруга не смогла. Оригиналы, QR-код.',
+    photo: 'https://picsum.photos/seed/concert-dimash/600/280',
     isUrgent: true,
   },
   {
@@ -47,6 +49,7 @@ const LISTINGS: Listing[] = [
     mutualCount: 2, mutualNames: ['Камила Д.', 'Ержан К.'],
     expiresInDays: 7, whatsapp: '77001234562', telegram: 'arman_b',
     tag: 'Электроника', description: 'Полный комплект, Apple Care до 12.2024. Без царапин.',
+    photo: 'https://picsum.photos/seed/iphone13pro/600/280',
   },
   {
     id: 3, category: 'home',
@@ -56,6 +59,7 @@ const LISTINGS: Listing[] = [
     mutualCount: 3, mutualNames: ['Арман Б.', 'Тимур О.', 'Сауле Н.'],
     expiresInDays: 5, whatsapp: '77001234561', telegram: 'kamila_d',
     tag: 'Интерьер', description: 'Купили год назад. Самовывоз с 4-го этажа, помогу разобрать.',
+    photo: 'https://picsum.photos/seed/sofa-ikea/600/280',
   },
   {
     id: 4, category: 'services',
@@ -74,6 +78,7 @@ const LISTINGS: Listing[] = [
     mutualCount: 2, mutualNames: ['Жанара М.', 'Камила Д.'],
     expiresInDays: 10, whatsapp: '77001234565', telegram: 'saule_n',
     tag: 'Транспорт', description: 'ТО сделано. Новые тормозные колодки. Рост 160–180 см.',
+    photo: 'https://picsum.photos/seed/mountain-bike/600/280',
   },
   {
     id: 6, category: 'rentals',
@@ -92,6 +97,7 @@ const LISTINGS: Listing[] = [
     mutualCount: 1, mutualNames: ['Сауле Н.'],
     expiresInDays: 4, whatsapp: '77001234563', telegram: 'zhanara_m',
     tag: 'Электроника', description: 'Идеальное состояние. Чехол в подарок. Переходник на USB-C в комплекте.',
+    photo: 'https://picsum.photos/seed/macbook-air/600/280',
   },
   {
     id: 8, category: 'tickets',
@@ -101,6 +107,7 @@ const LISTINGS: Listing[] = [
     mutualCount: 2, mutualNames: ['Камила Д.', 'Ержан К.'],
     expiresInDays: 3, whatsapp: '77001234562', telegram: 'arman_b',
     tag: 'Билеты', description: 'Не смогу прийти. Официальный билет, перенос имени при наличии паспорта.',
+    photo: 'https://picsum.photos/seed/tesla-meetup/600/280',
     isUrgent: true,
   },
   {
@@ -194,8 +201,27 @@ function ListingCard({ listing, onChat, onTrust }: {
   const catMeta  = CATEGORIES.find(c => c.key === listing.category)!;
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-4">
-      {/* Top row: emoji + title + price */}
+    <div className="bg-card border border-border rounded-2xl overflow-hidden">
+      {/* Photo */}
+      {listing.photo && (
+        <div className="relative">
+          <img src={listing.photo} alt={listing.title} className="w-full h-44 object-cover" />
+          {listing.isUrgent && (
+            <span className="absolute top-2 right-2 text-[10px] font-bold px-2 py-1 rounded-lg bg-red-500 text-white shadow">
+              СРОЧНО
+            </span>
+          )}
+          <div className="absolute bottom-2 left-2 flex items-baseline gap-1">
+            <span className="text-base font-bold text-white drop-shadow-md">{listing.price}</span>
+            {listing.priceNote && (
+              <span className="text-xs text-white/80 drop-shadow-sm">{listing.priceNote}</span>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="p-4">
+      {/* Top row: emoji + title + price (only when no photo) */}
       <div className="flex items-start gap-3 mb-1">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0"
           style={{ background: catColor + '18' }}>
@@ -204,18 +230,20 @@ function ListingCard({ listing, onChat, onTrust }: {
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <p className="text-sm font-semibold leading-snug line-clamp-2 flex-1">{listing.title}</p>
-            {listing.isUrgent && (
+            {!listing.photo && listing.isUrgent && (
               <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-red-500/10 text-red-500 shrink-0 mt-0.5">
                 СРОЧНО
               </span>
             )}
           </div>
-          <div className="flex items-baseline gap-1 mt-0.5">
-            <span className="text-base font-bold" style={{ color: catColor }}>{listing.price}</span>
-            {listing.priceNote && (
-              <span className="text-xs text-muted-foreground">{listing.priceNote}</span>
-            )}
-          </div>
+          {!listing.photo && (
+            <div className="flex items-baseline gap-1 mt-0.5">
+              <span className="text-base font-bold" style={{ color: catColor }}>{listing.price}</span>
+              {listing.priceNote && (
+                <span className="text-xs text-muted-foreground">{listing.priceNote}</span>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -257,6 +285,7 @@ function ListingCard({ listing, onChat, onTrust }: {
           <ShieldCheck className="w-3.5 h-3.5" />
           Купить с гарантией
         </button>
+      </div>
       </div>
     </div>
   );
