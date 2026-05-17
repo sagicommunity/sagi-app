@@ -453,10 +453,14 @@ export function HighvillMarketplace() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* ─── CONTENT ─── */}
+      <div className="max-w-md mx-auto px-4 py-4 space-y-3">
 
         {/* Category pills */}
-        <div className="overflow-x-auto scrollbar-none">
-          <div className="flex gap-2 px-4 pb-3 w-max">
+        <div className="-mx-4 overflow-x-auto scrollbar-none">
+          <div className="flex gap-2 px-4 pb-1 w-max">
             {CATEGORIES.map(cat => (
               <button
                 key={cat.key}
@@ -473,10 +477,6 @@ export function HighvillMarketplace() {
             ))}
           </div>
         </div>
-      </div>
-
-      {/* ─── CONTENT ─── */}
-      <div className="max-w-md mx-auto px-4 py-4 space-y-3">
 
         {/* Trust banner */}
         {category === 'all' && !search && (
