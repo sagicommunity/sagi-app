@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, Search, X, ShieldCheck, Users, Clock, MessageCircle, Plus } from 'lucide-react';
+import { ChevronLeft, Search, X, ShieldCheck, Users, Clock, MessageCircle, Plus, ImagePlus, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router';
 
 const HV_COLOR    = '#3B82F6';
@@ -420,6 +420,268 @@ function TrustSheet({ listing, onClose }: { listing: Listing; onClose: () => voi
   );
 }
 
+// ─── Post Listing Sheet ────────────────────────────────────────────────────────
+
+const PRICE_UNITS = ['₸', '₸/ч', '₸/день', '₸/мес', '₸/раз', '₸/шт'];
+const EXPIRY_OPTIONS = [
+  { days: 3,  label: '3 дня',   note: 'Срочная продажа' },
+  { days: 7,  label: '7 дней',  note: 'Стандартно' },
+  { days: 14, label: '14 дней', note: 'Нет спешки' },
+  { days: 30, label: '30 дней', note: 'Долгосрочно' },
+];
+
+function PostSheet({ onClose }: { onClose: () => void }) {
+  const [step, setStep]             = useState<1 | 2>(1);
+  const [category, setCategory]     = useState<Category | null>(null);
+  const [title, setTitle]           = useState('');
+  const [price, setPrice]           = useState('');
+  const [unit, setUnit]             = useState('₸');
+  const [description, setDescription] = useState('');
+  const [expiry, setExpiry]         = useState(7);
+  const [submitted, setSubmitted]   = useState(false);
+  const [showUnitPicker, setShowUnitPicker] = useState(false);
+
+  const selCat = CATEGORIES.find(c => c.key === category);
+  const canNext = category !== null && title.trim().length > 3;
+  const canSubmit = canNext && description.trim().length > 5;
+
+  if (submitted) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col justify-end items-center" onClick={onClose}>
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+        <div className="relative bg-card rounded-t-3xl p-8 pb-12 w-full max-w-md text-center" onClick={e => e.stopPropagation()}>
+          <div className="w-10 h-1 bg-border rounded-full mx-auto mb-6" />
+          <div className="text-5xl mb-4">✅</div>
+          <h2 className="font-bold text-lg mb-2">Объявление размещено!</h2>
+          <p className="text-sm text-muted-foreground mb-1">
+            Соседи увидят его в разделе <span className="font-medium" style={{ color: selCat?.color }}>{selCat?.label}</span>
+          </p>
+          <p className="text-xs text-muted-foreground mb-6">
+            Объявление активно <span className="font-medium text-foreground">{expiry} дней</span> — после истечения скроется автоматически.
+          </p>
+          <button
+            onClick={onClose}
+            className="w-full py-3.5 rounded-2xl text-sm font-semibold text-white"
+            style={{ background: HV_GRADIENT }}
+          >
+            Отлично!
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col justify-end items-center" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      <div className="relative bg-card rounded-t-3xl w-full max-w-md max-h-[92vh] flex flex-col" onClick={e => e.stopPropagation()}>
+
+        {/* Handle + header */}
+        <div className="shrink-0 px-5 pt-4 pb-3 border-b border-border">
+          <div className="w-10 h-1 bg-border rounded-full mx-auto mb-4" />
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-bold text-base">Разместить объявление</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">Шаг {step} из 2</p>
+            </div>
+            <button onClick={onClose} className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          {/* Progress bar */}
+          <div className="mt-3 h-1 rounded-full bg-muted overflow-hidden">
+            <div className="h-full rounded-full transition-all duration-300" style={{ width: step === 1 ? '50%' : '100%', background: HV_GRADIENT }} />
+          </div>
+        </div>
+
+        <div className="overflow-y-auto flex-1 px-5 py-4 space-y-4">
+
+          {/* ── STEP 1 ── */}
+          {step === 1 && (
+            <>
+              {/* Category */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Категория *</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {CATEGORIES.filter(c => c.key !== 'all').map(cat => (
+                    <button
+                      key={cat.key}
+                      onClick={() => setCategory(cat.key)}
+                      className="flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition-all text-center"
+                      style={category === cat.key
+                        ? { background: cat.color + '15', borderColor: cat.color }
+                        : { background: 'transparent', borderColor: 'var(--border)' }
+                      }
+                    >
+                      <span className="text-xl">{cat.emoji}</span>
+                      <span className="text-[11px] font-medium leading-tight"
+                        style={{ color: category === cat.key ? cat.color : undefined }}>
+                        {cat.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Title */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Заголовок *</p>
+                <input
+                  type="text"
+                  placeholder={selCat ? `Напр. «${selCat.label === 'Электроника' ? 'iPhone 14, 128 GB, синий' : selCat.label === 'Билеты' ? '2 билета на концерт, 5 мая' : selCat.label === 'Интерьер' ? 'Диван IKEA, серый, б/у' : selCat.label === 'Транспорт' ? 'Велосипед Trek, 21 скорость' : selCat.label === 'Услуги' ? 'Репетитор английского, онлайн' : 'Парковочное место, блок A'}»` : 'Опишите товар кратко...'}
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  maxLength={80}
+                  className="w-full bg-input-background rounded-xl px-3 py-3 text-sm outline-none placeholder:text-muted-foreground border border-border"
+                />
+                <p className="text-[10px] text-muted-foreground mt-1 text-right">{title.length}/80</p>
+              </div>
+
+              {/* Price */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Цена</p>
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    placeholder="0"
+                    value={price}
+                    onChange={e => setPrice(e.target.value)}
+                    className="flex-1 bg-input-background rounded-xl px-3 py-3 text-sm outline-none placeholder:text-muted-foreground border border-border"
+                  />
+                  <button
+                    onClick={() => setShowUnitPicker(v => !v)}
+                    className="flex items-center gap-1 px-3 py-3 rounded-xl border border-border bg-input-background text-sm font-medium min-w-[72px] justify-between"
+                  >
+                    {unit}
+                    <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+                  </button>
+                </div>
+                {showUnitPicker && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {PRICE_UNITS.map(u => (
+                      <button key={u} onClick={() => { setUnit(u); setShowUnitPicker(false); }}
+                        className="px-3 py-1.5 rounded-full text-xs font-semibold border transition-all"
+                        style={unit === u
+                          ? { background: HV_COLOR, color: '#fff', borderColor: HV_COLOR }
+                          : { background: 'transparent', borderColor: 'var(--border)' }
+                        }>
+                        {u}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* ── STEP 2 ── */}
+          {step === 2 && (
+            <>
+              {/* Summary chip */}
+              {selCat && (
+                <div className="flex items-center gap-2 py-2.5 px-3 rounded-xl"
+                  style={{ background: selCat.color + '12' }}>
+                  <span className="text-lg">{selCat.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold truncate">{title}</p>
+                    <p className="text-xs font-bold" style={{ color: selCat.color }}>{price ? `${Number(price).toLocaleString('ru')} ${unit}` : 'Цена не указана'}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Description */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Описание *</p>
+                <textarea
+                  placeholder="Состояние, особенности, условия передачи, торг..."
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                  maxLength={300}
+                  rows={4}
+                  className="w-full bg-input-background rounded-xl px-3 py-3 text-sm outline-none placeholder:text-muted-foreground border border-border resize-none"
+                />
+                <p className="text-[10px] text-muted-foreground mt-1 text-right">{description.length}/300</p>
+              </div>
+
+              {/* Photo upload hint */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Фото</p>
+                <button className="w-full flex items-center gap-3 py-3.5 px-4 rounded-xl border border-dashed border-border bg-input-background/50 text-muted-foreground text-sm">
+                  <ImagePlus className="w-5 h-5 shrink-0" />
+                  <span>Добавить фото (до 5 шт.)</span>
+                </button>
+              </div>
+
+              {/* Expiry */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Срок объявления</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {EXPIRY_OPTIONS.map(opt => (
+                    <button
+                      key={opt.days}
+                      onClick={() => setExpiry(opt.days)}
+                      className="flex flex-col items-start px-3 py-2.5 rounded-xl border transition-all"
+                      style={expiry === opt.days
+                        ? { background: HV_COLOR + '12', borderColor: HV_COLOR }
+                        : { background: 'transparent', borderColor: 'var(--border)' }
+                      }
+                    >
+                      <span className="text-sm font-bold" style={{ color: expiry === opt.days ? HV_COLOR : undefined }}>{opt.label}</span>
+                      <span className="text-[10px] text-muted-foreground mt-0.5">{opt.note}</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-2">
+                  Объявление автоматически скроется через {expiry} дней — не нужно удалять вручную.
+                </p>
+              </div>
+
+              {/* Trust note */}
+              <div className="flex items-start gap-2 rounded-xl p-3" style={{ background: '#10b98112' }}>
+                <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5 text-[#10b981]" />
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Объявление будет подписано твоим именем и статусом <span className="font-semibold text-foreground">«Житель Highvill»</span>. Это повышает доверие покупателей.
+                </p>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Footer buttons */}
+        <div className="shrink-0 px-5 py-4 border-t border-border">
+          {step === 1 ? (
+            <button
+              onClick={() => setStep(2)}
+              disabled={!canNext}
+              className="w-full py-3.5 rounded-2xl text-sm font-semibold text-white transition-opacity"
+              style={{ background: HV_GRADIENT, opacity: canNext ? 1 : 0.4 }}
+            >
+              Далее →
+            </button>
+          ) : (
+            <div className="flex gap-2">
+              <button
+                onClick={() => setStep(1)}
+                className="px-5 py-3.5 rounded-2xl text-sm font-semibold border border-border text-foreground"
+              >
+                ← Назад
+              </button>
+              <button
+                onClick={() => setSubmitted(true)}
+                disabled={!canSubmit}
+                className="flex-1 py-3.5 rounded-2xl text-sm font-semibold text-white transition-opacity"
+                style={{ background: HV_GRADIENT, opacity: canSubmit ? 1 : 0.4 }}
+              >
+                Разместить объявление
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main page ─────────────────────────────────────────────────────────────────
 
 export function HighvillMarketplace() {
@@ -427,6 +689,7 @@ export function HighvillMarketplace() {
   const [search, setSearch]     = useState('');
   const [chatListing, setChatListing]   = useState<Listing | null>(null);
   const [trustListing, setTrustListing] = useState<Listing | null>(null);
+  const [showPost, setShowPost]         = useState(false);
 
   const filtered = LISTINGS.filter(l => {
     const matchCat = category === 'all' || l.category === category;
@@ -437,7 +700,7 @@ export function HighvillMarketplace() {
 
   return (
     <>
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen bg-background pb-6">
 
       {/* ─── HEADER ─── */}
       <div className="sticky top-0 z-40 bg-card border-b border-border">
@@ -453,11 +716,14 @@ export function HighvillMarketplace() {
                 {LISTINGS.length} объявлений · только от жителей
               </p>
             </div>
-            <div className="flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full"
-              style={{ background: `${HV_COLOR}15`, color: HV_COLOR }}>
-              <ShieldCheck className="w-3 h-3" />
-              P2P
-            </div>
+            <button
+              onClick={() => setShowPost(true)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-white shrink-0 active:scale-95 transition-transform"
+              style={{ background: HV_GRADIENT }}
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Разместить
+            </button>
           </div>
 
           {/* Search */}
@@ -534,18 +800,10 @@ export function HighvillMarketplace() {
       </div>
     </div>
 
-    {/* ─── FAB: Post listing ─── */}
-    <button
-      className="fixed bottom-24 right-4 z-40 flex items-center gap-2 px-4 py-3 rounded-2xl text-white text-sm font-semibold shadow-lg active:scale-95 transition-transform"
-      style={{ background: HV_GRADIENT }}
-    >
-      <Plus className="w-4 h-4" />
-      Разместить
-    </button>
-
     {/* ─── Sheets ─── */}
     {chatListing  && <ChatSheet  listing={chatListing}  onClose={() => setChatListing(null)} />}
     {trustListing && <TrustSheet listing={trustListing} onClose={() => setTrustListing(null)} />}
+    {showPost     && <PostSheet  onClose={() => setShowPost(false)} />}
     </>
   );
 }
