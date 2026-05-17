@@ -38,7 +38,6 @@ const LISTINGS: Listing[] = [
     mutualCount: 3, mutualNames: ['Арман Б.', 'Тимур О.', 'Сауле Н.'],
     expiresInDays: 2, whatsapp: '77001234561', telegram: 'kamila_d',
     tag: 'Билеты', description: 'VIP-ряд 3. Брала на двоих, подруга не смогла. Оригиналы, QR-код.',
-    photo: 'https://picsum.photos/seed/concert-dimash/600/280',
     isUrgent: true,
   },
   {
@@ -49,7 +48,7 @@ const LISTINGS: Listing[] = [
     mutualCount: 2, mutualNames: ['Камила Д.', 'Ержан К.'],
     expiresInDays: 7, whatsapp: '77001234562', telegram: 'arman_b',
     tag: 'Электроника', description: 'Полный комплект, Apple Care до 12.2024. Без царапин.',
-    photo: 'https://picsum.photos/seed/iphone13pro/600/280',
+    photo: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=600&h=280&fit=crop&q=80',
   },
   {
     id: 3, category: 'home',
@@ -59,7 +58,6 @@ const LISTINGS: Listing[] = [
     mutualCount: 3, mutualNames: ['Арман Б.', 'Тимур О.', 'Сауле Н.'],
     expiresInDays: 5, whatsapp: '77001234561', telegram: 'kamila_d',
     tag: 'Интерьер', description: 'Купили год назад. Самовывоз с 4-го этажа, помогу разобрать.',
-    photo: 'https://picsum.photos/seed/sofa-ikea/600/280',
   },
   {
     id: 4, category: 'services',
@@ -78,7 +76,6 @@ const LISTINGS: Listing[] = [
     mutualCount: 2, mutualNames: ['Жанара М.', 'Камила Д.'],
     expiresInDays: 10, whatsapp: '77001234565', telegram: 'saule_n',
     tag: 'Транспорт', description: 'ТО сделано. Новые тормозные колодки. Рост 160–180 см.',
-    photo: 'https://picsum.photos/seed/mountain-bike/600/280',
   },
   {
     id: 6, category: 'rentals',
@@ -97,7 +94,6 @@ const LISTINGS: Listing[] = [
     mutualCount: 1, mutualNames: ['Сауле Н.'],
     expiresInDays: 4, whatsapp: '77001234563', telegram: 'zhanara_m',
     tag: 'Электроника', description: 'Идеальное состояние. Чехол в подарок. Переходник на USB-C в комплекте.',
-    photo: 'https://picsum.photos/seed/macbook-air/600/280',
   },
   {
     id: 8, category: 'tickets',
@@ -107,7 +103,6 @@ const LISTINGS: Listing[] = [
     mutualCount: 2, mutualNames: ['Камила Д.', 'Ержан К.'],
     expiresInDays: 3, whatsapp: '77001234562', telegram: 'arman_b',
     tag: 'Билеты', description: 'Не смогу прийти. Официальный билет, перенос имени при наличии паспорта.',
-    photo: 'https://picsum.photos/seed/tesla-meetup/600/280',
     isUrgent: true,
   },
   {
