@@ -528,7 +528,7 @@ function PostSheet({ onClose }: { onClose: () => void }) {
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Заголовок *</p>
                 <input
                   type="text"
-                  placeholder={selCat ? `Напр. «${selCat.label === 'Электроника' ? 'iPhone 14, 128 GB, синий' : selCat.label === 'Билеты' ? '2 билета на концерт, 5 мая' : selCat.label === 'Интерьер' ? 'Диван IKEA, серый, б/у' : selCat.label === 'Транспорт' ? 'Велосипед Trek, 21 скорость' : selCat.label === 'Услуги' ? 'Репетитор английского, онлайн' : 'Парковочное место, блок A'}»` : 'Опишите товар кратко...'}
+                  placeholder="Опишите предложение кратко..."
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                   maxLength={80}
