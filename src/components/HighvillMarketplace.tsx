@@ -648,7 +648,7 @@ function PostSheet({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Footer buttons */}
-        <div className="shrink-0 px-5 py-4 border-t border-border">
+        <div className="shrink-0 px-5 pt-4 pb-20 border-t border-border">
           {step === 1 ? (
             <button
               onClick={() => setStep(2)}
