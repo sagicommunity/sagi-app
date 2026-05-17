@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, Search, X, ShieldCheck, Users, Clock, MessageCircle, Plus, ImagePlus, ChevronDown } from 'lucide-react';
+import { ChevronLeft, Search, X, ShieldCheck, Users, Clock, MessageCircle, Plus, ImagePlus, ChevronDown, MapPin, Sparkles } from 'lucide-react';
 import { Link } from 'react-router';
 
 const HV_COLOR    = '#3B82F6';
@@ -9,19 +9,30 @@ const HV_GRADIENT = 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 50%, #1E40AF 10
 
 type Category = 'all' | 'tickets' | 'electronics' | 'home' | 'transport' | 'services' | 'rentals';
 
+interface Seller {
+  name: string;
+  initials: string;
+  color: string;
+  tower: string;
+  joinYear: number;
+  role: string;
+  tags: string[];
+  aiSummary: [string, string, string];
+  whatsapp: string;
+  telegram: string;
+}
+
 interface Listing {
   id: number;
   category: Category;
   title: string;
-  price: string;       // '' for services/rentals with custom pricing
-  priceNote?: string;  // e.g. '/мес', '/раз'
-  seller: { name: string; initials: string; color: string; tower: string; joinYear: number };
+  price: string;
+  priceNote?: string;
+  seller: Seller;
   mutualCount: number;
   mutualNames: string[];
   expiresInDays: number;
-  whatsapp: string;
-  telegram: string;
-  tag: string;         // short label shown on card
+  tag: string;
   description: string;
   photo?: string;
   isUrgent?: boolean;
@@ -29,100 +40,44 @@ interface Listing {
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
+const S = {
+  KD: { name: 'Камила Д.', initials: 'КД', color: '#f06ac8', tower: 'Башня A', joinYear: 2022,
+    role: 'Дизайнер интерьеров', tags: ['Дизайн', 'Интерьер', 'Highvill'],
+    aiSummary: ['Специализируется на жилых интерьерах премиум-класса.', 'Активный участник соседского сообщества.', 'Открыта к сотрудничеству по вопросам ремонта и дизайна.'] as [string,string,string],
+    whatsapp: '77001234561', telegram: 'kamila_d' },
+  AB: { name: 'Арман Б.', initials: 'АБ', color: '#7c6af0', tower: 'Башня B', joinYear: 2023,
+    role: 'IT-разработчик', tags: ['IT', 'Технологии', 'Highvill'],
+    aiSummary: ['Технический специалист с опытом в финтех-сфере.', 'Активный житель, участвует в локальных чатах.', 'Полезный контакт для IT-вопросов среди соседей.'] as [string,string,string],
+    whatsapp: '77001234562', telegram: 'arman_b' },
+  ZM: { name: 'Жанара М.', initials: 'ЖМ', color: '#f06a6a', tower: 'Башня B', joinYear: 2023,
+    role: 'Педиатр', tags: ['Медицина', 'Дети', 'Здоровье'],
+    aiSummary: ['Педиатр с 8-летним опытом в детской медицине.', 'Инициативный житель — часто поднимает важные вопросы по ЖК.', 'Полезный контакт для семей с детьми.'] as [string,string,string],
+    whatsapp: '77001234563', telegram: 'zhanara_m' },
+  TO: { name: 'Тимур О.', initials: 'ТО', color: '#0ea5e9', tower: 'Башня C', joinYear: 2021,
+    role: 'Преподаватель математики', tags: ['Образование', 'Математика', 'Репетитор'],
+    aiSummary: ['Опытный репетитор — высокий процент поступления в топ-вузы.', 'Проводит занятия очно в ЖК — удобно для соседей.', 'Первое пробное занятие бесплатно.'] as [string,string,string],
+    whatsapp: '77001234564', telegram: 'timur_o' },
+  SN: { name: 'Сауле Н.', initials: 'СН', color: '#f97316', tower: 'Башня A', joinYear: 2022,
+    role: 'Маркетолог', tags: ['Маркетинг', 'SMM', 'Бренды'],
+    aiSummary: ['Специалист по продвижению брендов с 6-летним опытом.', 'Активный участник соседского сообщества.', 'Открыта к неформальному общению и обмену вещами.'] as [string,string,string],
+    whatsapp: '77001234565', telegram: 'saule_n' },
+  EK: { name: 'Ержан К.', initials: 'ЕК', color: '#14b8a6', tower: 'Башня C', joinYear: 2021,
+    role: 'Финансовый аналитик', tags: ['Финансы', 'Инвестиции', 'Недвижимость'],
+    aiSummary: ['Глубокая экспертиза в оценке жилой недвижимости.', 'Полезен для соседей, интересующихся доходной недвижимостью.', 'Один из наиболее информированных жителей по вопросам рынка.'] as [string,string,string],
+    whatsapp: '77001234566', telegram: 'erzhan_k' },
+};
+
 const LISTINGS: Listing[] = [
-  {
-    id: 1, category: 'tickets',
-    title: '2 билета на Dimash — «Arnau» Tour, 26 апр',
-    price: '45 000 ₸', priceNote: '/шт',
-    seller: { name: 'Камила Д.', initials: 'КД', color: '#f06ac8', tower: 'Башня A', joinYear: 2022 },
-    mutualCount: 3, mutualNames: ['Арман Б.', 'Тимур О.', 'Сауле Н.'],
-    expiresInDays: 2, whatsapp: '77001234561', telegram: 'kamila_d',
-    tag: 'Билеты', description: 'VIP-ряд 3. Брала на двоих, подруга не смогла. Оригиналы, QR-код.',
-    isUrgent: true,
-  },
-  {
-    id: 2, category: 'electronics',
-    title: 'iPhone 13 Pro 256 GB, Sierra Blue',
-    price: '280 000 ₸',
-    seller: { name: 'Арман Б.', initials: 'АБ', color: '#7c6af0', tower: 'Башня B', joinYear: 2023 },
-    mutualCount: 2, mutualNames: ['Камила Д.', 'Ержан К.'],
-    expiresInDays: 7, whatsapp: '77001234562', telegram: 'arman_b',
-    tag: 'Электроника', description: 'Полный комплект, Apple Care до 12.2024. Без царапин.',
-    photo: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=600&h=280&fit=crop&q=80',
-  },
-  {
-    id: 3, category: 'home',
-    title: 'Диван-кровать IKEA Friheten, серый',
-    price: '55 000 ₸',
-    seller: { name: 'Камила Д.', initials: 'КД', color: '#f06ac8', tower: 'Башня A', joinYear: 2022 },
-    mutualCount: 3, mutualNames: ['Арман Б.', 'Тимур О.', 'Сауле Н.'],
-    expiresInDays: 5, whatsapp: '77001234561', telegram: 'kamila_d',
-    tag: 'Интерьер', description: 'Купили год назад. Самовывоз с 4-го этажа, помогу разобрать.',
-  },
-  {
-    id: 4, category: 'services',
-    title: 'Репетитор математики — 5–11 класс',
-    price: '5 000 ₸', priceNote: '/ч',
-    seller: { name: 'Тимур О.', initials: 'ТО', color: '#0ea5e9', tower: 'Башня C', joinYear: 2021 },
-    mutualCount: 2, mutualNames: ['Камила Д.', 'Арман Б.'],
-    expiresInDays: 30, whatsapp: '77001234564', telegram: 'timur_o',
-    tag: 'Услуги', description: 'Первое занятие бесплатно. Очно в ЖК. 12 лет опыта, ЕНТ / олимпиады.',
-  },
-  {
-    id: 5, category: 'transport',
-    title: 'Горный велосипед Merida 21-скорость',
-    price: '85 000 ₸',
-    seller: { name: 'Сауле Н.', initials: 'СН', color: '#f97316', tower: 'Башня A', joinYear: 2022 },
-    mutualCount: 2, mutualNames: ['Жанара М.', 'Камила Д.'],
-    expiresInDays: 10, whatsapp: '77001234565', telegram: 'saule_n',
-    tag: 'Транспорт', description: 'ТО сделано. Новые тормозные колодки. Рост 160–180 см.',
-  },
-  {
-    id: 6, category: 'rentals',
-    title: 'Паркинговое место — подземный паркинг, блок C',
-    price: '35 000 ₸', priceNote: '/мес',
-    seller: { name: 'Ержан К.', initials: 'ЕК', color: '#14b8a6', tower: 'Башня C', joinYear: 2021 },
-    mutualCount: 3, mutualNames: ['Арман Б.', 'Тимур О.', 'Сауле Н.'],
-    expiresInDays: 14, whatsapp: '77001234566', telegram: 'erzhan_k',
-    tag: 'Аренда', description: 'Стандартное место, видеонаблюдение. Договор на руки. Свободно с 1 мая.',
-  },
-  {
-    id: 7, category: 'electronics',
-    title: 'MacBook Air M1 13", 8/256 GB, Space Gray',
-    price: '450 000 ₸',
-    seller: { name: 'Жанара М.', initials: 'ЖМ', color: '#f06a6a', tower: 'Башня B', joinYear: 2023 },
-    mutualCount: 1, mutualNames: ['Сауле Н.'],
-    expiresInDays: 4, whatsapp: '77001234563', telegram: 'zhanara_m',
-    tag: 'Электроника', description: 'Идеальное состояние. Чехол в подарок. Переходник на USB-C в комплекте.',
-  },
-  {
-    id: 8, category: 'tickets',
-    title: 'VIP-билет Tesla Owners Meetup, 1 мая',
-    price: '15 000 ₸',
-    seller: { name: 'Арман Б.', initials: 'АБ', color: '#7c6af0', tower: 'Башня B', joinYear: 2023 },
-    mutualCount: 2, mutualNames: ['Камила Д.', 'Ержан К.'],
-    expiresInDays: 3, whatsapp: '77001234562', telegram: 'arman_b',
-    tag: 'Билеты', description: 'Не смогу прийти. Официальный билет, перенос имени при наличии паспорта.',
-    isUrgent: true,
-  },
-  {
-    id: 9, category: 'services',
-    title: 'Выгул собак по утрам — в ЖК и парке рядом',
-    price: '3 000 ₸', priceNote: '/раз',
-    seller: { name: 'Сауле Н.', initials: 'СН', color: '#f97316', tower: 'Башня A', joinYear: 2022 },
-    mutualCount: 2, mutualNames: ['Жанара М.', 'Камила Д.'],
-    expiresInDays: 30, whatsapp: '77001234565', telegram: 'saule_n',
-    tag: 'Услуги', description: 'Люблю собак. Опыт с лабрадорами и хаски. 7:00–8:30 пн-пт.',
-  },
-  {
-    id: 10, category: 'rentals',
-    title: 'Перфоратор Bosch + набор свёрл (18 шт.)',
-    price: '2 000 ₸', priceNote: '/день',
-    seller: { name: 'Ержан К.', initials: 'ЕК', color: '#14b8a6', tower: 'Башня C', joinYear: 2021 },
-    mutualCount: 3, mutualNames: ['Арман Б.', 'Тимур О.', 'Сауле Н.'],
-    expiresInDays: 30, whatsapp: '77001234566', telegram: 'erzhan_k',
-    tag: 'Инструменты', description: 'Профессиональный инструмент. Залог не нужен — соседи свои.',
-  },
+  { id: 1,  category: 'tickets',     seller: S.KD, mutualCount: 3, mutualNames: ['Арман Б.', 'Тимур О.', 'Сауле Н.'], expiresInDays: 2,  tag: 'Билеты',      title: '2 билета на Dimash — «Arnau» Tour, 26 апр', price: '45 000 ₸', priceNote: '/шт', description: 'VIP-ряд 3. Брала на двоих, подруга не смогла. Оригиналы, QR-код.', isUrgent: true },
+  { id: 2,  category: 'electronics', seller: S.AB, mutualCount: 2, mutualNames: ['Камила Д.', 'Ержан К.'],            expiresInDays: 7,  tag: 'Электроника', title: 'iPhone 13 Pro 256 GB, Sierra Blue',           price: '280 000 ₸',              description: 'Полный комплект, Apple Care до 12.2024. Без царапин.',                    photo: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=600&h=280&fit=crop&q=80' },
+  { id: 3,  category: 'home',        seller: S.KD, mutualCount: 3, mutualNames: ['Арман Б.', 'Тимур О.', 'Сауле Н.'], expiresInDays: 5,  tag: 'Интерьер',    title: 'Диван-кровать IKEA Friheten, серый',          price: '55 000 ₸',              description: 'Купили год назад. Самовывоз с 4-го этажа, помогу разобрать.' },
+  { id: 4,  category: 'services',    seller: S.TO, mutualCount: 2, mutualNames: ['Камила Д.', 'Арман Б.'],            expiresInDays: 30, tag: 'Услуги',      title: 'Репетитор математики — 5–11 класс',           price: '5 000 ₸',  priceNote: '/ч',   description: 'Первое занятие бесплатно. Очно в ЖК. 12 лет опыта, ЕНТ / олимпиады.' },
+  { id: 5,  category: 'transport',   seller: S.SN, mutualCount: 2, mutualNames: ['Жанара М.', 'Камила Д.'],           expiresInDays: 10, tag: 'Транспорт',   title: 'Горный велосипед Merida 21-скорость',         price: '85 000 ₸',              description: 'ТО сделано. Новые тормозные колодки. Рост 160–180 см.' },
+  { id: 6,  category: 'rentals',     seller: S.EK, mutualCount: 3, mutualNames: ['Арман Б.', 'Тимур О.', 'Сауле Н.'], expiresInDays: 14, tag: 'Аренда',      title: 'Паркинговое место — подземный паркинг, блок C', price: '35 000 ₸', priceNote: '/мес', description: 'Стандартное место, видеонаблюдение. Договор на руки. Свободно с 1 мая.' },
+  { id: 7,  category: 'electronics', seller: S.ZM, mutualCount: 1, mutualNames: ['Сауле Н.'],                        expiresInDays: 4,  tag: 'Электроника', title: 'MacBook Air M1 13", 8/256 GB, Space Gray',   price: '450 000 ₸',              description: 'Идеальное состояние. Чехол в подарок. Переходник на USB-C в комплекте.' },
+  { id: 8,  category: 'tickets',     seller: S.AB, mutualCount: 2, mutualNames: ['Камила Д.', 'Ержан К.'],            expiresInDays: 3,  tag: 'Билеты',      title: 'VIP-билет Tesla Owners Meetup, 1 мая',        price: '15 000 ₸',              description: 'Не смогу прийти. Официальный билет, перенос имени при наличии паспорта.', isUrgent: true },
+  { id: 9,  category: 'services',    seller: S.SN, mutualCount: 2, mutualNames: ['Жанара М.', 'Камила Д.'],           expiresInDays: 30, tag: 'Услуги',      title: 'Выгул собак по утрам — в ЖК и парке рядом',  price: '3 000 ₸',  priceNote: '/раз', description: 'Люблю собак. Опыт с лабрадорами и хаски. 7:00–8:30 пн-пт.' },
+  { id: 10, category: 'rentals',     seller: S.EK, mutualCount: 3, mutualNames: ['Арман Б.', 'Тимур О.', 'Сауле Н.'], expiresInDays: 30, tag: 'Инструменты', title: 'Перфоратор Bosch + набор свёрл (18 шт.)',     price: '2 000 ₸',  priceNote: '/день', description: 'Профессиональный инструмент. Залог не нужен — соседи свои.' },
 ];
 
 const CATEGORIES: { key: Category; label: string; emoji: string; color: string }[] = [
@@ -187,10 +142,11 @@ function ExpiryBar({ days }: { days: number }) {
   );
 }
 
-function ListingCard({ listing, onChat, onTrust }: {
+function ListingCard({ listing, onChat, onTrust, onSellerClick }: {
   listing: Listing;
   onChat: (l: Listing) => void;
   onTrust: (l: Listing) => void;
+  onSellerClick: (l: Listing) => void;
 }) {
   const catColor = categoryColor(listing.category);
   const catMeta  = CATEGORIES.find(c => c.key === listing.category)!;
@@ -247,11 +203,16 @@ function ListingCard({ listing, onChat, onTrust }: {
 
       {/* Seller row */}
       <div className="flex items-center gap-2 mt-2.5">
-        <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
-          style={{ background: listing.seller.color }}>
+        <button
+          onClick={() => onSellerClick(listing)}
+          className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0 active:opacity-75"
+          style={{ background: listing.seller.color }}
+        >
           {listing.seller.initials}
-        </div>
-        <span className="text-xs text-muted-foreground">{listing.seller.name}</span>
+        </button>
+        <button onClick={() => onSellerClick(listing)} className="text-xs text-muted-foreground hover:underline">
+          {listing.seller.name}
+        </button>
         <span className="text-muted-foreground/40 text-xs">·</span>
         <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
           style={{ background: catColor + '12', color: catColor }}>{listing.tag}</span>
@@ -329,13 +290,13 @@ function ChatSheet({ listing, onClose }: { listing: Listing; onClose: () => void
         </p>
 
         <div className="flex gap-2">
-          <a href={`https://wa.me/${listing.whatsapp}`} target="_blank" rel="noopener noreferrer"
+          <a href={`https://wa.me/${listing.seller.whatsapp}`} target="_blank" rel="noopener noreferrer"
             className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-white text-sm font-semibold"
             style={{ background: '#25D366' }}>
             <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
             WhatsApp
           </a>
-          <a href={`https://t.me/${listing.telegram}`} target="_blank" rel="noopener noreferrer"
+          <a href={`https://t.me/${listing.seller.telegram}`} target="_blank" rel="noopener noreferrer"
             className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-white text-sm font-semibold"
             style={{ background: '#2AABEE' }}>
             <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
@@ -408,11 +369,108 @@ function TrustSheet({ listing, onClose }: { listing: Listing; onClose: () => voi
         </div>
 
         <div className="flex gap-2">
-          <a href={`https://wa.me/${listing.whatsapp}`} target="_blank" rel="noopener noreferrer"
+          <a href={`https://wa.me/${listing.seller.whatsapp}`} target="_blank" rel="noopener noreferrer"
             className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-white text-sm font-semibold"
             style={{ background: HV_GRADIENT }}>
             <MessageCircle className="w-4 h-4" />
             Написать продавцу
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Seller Card (Network style + WA/TG open) ──────────────────────────────────
+
+function SellerCard({ listing, mutualCount, mutualNames, onClose }: {
+  listing: Listing; mutualCount: number; mutualNames: string[]; onClose: () => void;
+}) {
+  const { seller } = listing;
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col justify-end items-center" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      <div className="relative bg-card rounded-t-3xl p-6 pb-10 max-h-[85vh] overflow-y-auto w-full max-w-md" onClick={e => e.stopPropagation()}>
+        <div className="w-10 h-1 bg-border rounded-full mx-auto mb-5" />
+        <button onClick={onClose} className="absolute top-5 right-5 w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+          <X className="w-4 h-4" />
+        </button>
+
+        {/* Avatar + name */}
+        <div className="flex items-center gap-4 mb-5">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center text-lg font-bold shrink-0"
+            style={{ background: seller.color + '20', border: `2px solid ${seller.color}`, color: seller.color }}>
+            {seller.initials}
+          </div>
+          <div>
+            <div className="font-bold text-base">{seller.name}</div>
+            <div className="text-sm text-muted-foreground mt-0.5">{seller.role}</div>
+            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
+              <MapPin className="w-3 h-3 shrink-0" />
+              <span>Астана · {seller.tower}, Highvill Isim</span>
+            </div>
+            <div className="text-xs text-muted-foreground mt-1">
+              <span className="font-medium text-foreground">{mutualCount}</span> общих соседа
+            </div>
+          </div>
+        </div>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mb-5">
+          {seller.tags.map(t => (
+            <span key={t} className="text-xs px-3 py-1 rounded-full border border-border text-muted-foreground">{t}</span>
+          ))}
+        </div>
+
+        {/* AI Summary */}
+        <div className="bg-muted/40 rounded-2xl p-4 mb-5">
+          <div className="flex items-center gap-1.5 mb-3">
+            <Sparkles className="w-3.5 h-3.5 text-[#10b981]" />
+            <span className="text-xs font-semibold text-[#10b981]">AI Analysis</span>
+          </div>
+          <ul className="space-y-2">
+            {seller.aiSummary.map((line, i) => (
+              <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground leading-relaxed">
+                <span className="mt-1 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: seller.color }} />
+                {line}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Mutual */}
+        {mutualCount > 0 && (
+          <p className="text-xs text-muted-foreground mb-5">
+            Общие соседи: <span className="text-foreground font-medium">{mutualNames.join(', ')}</span>
+          </p>
+        )}
+
+        {/* Listing chip */}
+        <div className="bg-muted/30 rounded-2xl px-4 py-3 mb-5 flex items-center gap-3">
+          <span className="text-lg">{CATEGORIES.find(c => c.key === listing.category)?.emoji}</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-muted-foreground">Объявление</p>
+            <p className="text-sm font-semibold truncate">{listing.title}</p>
+          </div>
+          <span className="text-sm font-bold" style={{ color: categoryColor(listing.category) }}>
+            {listing.price}{listing.priceNote}
+          </span>
+        </div>
+
+        {/* Contact buttons — always open */}
+        <p className="text-xs text-muted-foreground mb-3">Связаться с продавцом:</p>
+        <div className="flex gap-2">
+          <a href={`https://wa.me/${seller.whatsapp}`} target="_blank" rel="noopener noreferrer"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-white text-sm font-semibold"
+            style={{ background: '#25D366' }}>
+            <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            WhatsApp
+          </a>
+          <a href={`https://t.me/${seller.telegram}`} target="_blank" rel="noopener noreferrer"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-white text-sm font-semibold"
+            style={{ background: '#2AABEE' }}>
+            <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            Telegram
           </a>
         </div>
       </div>
@@ -687,9 +745,10 @@ function PostSheet({ onClose }: { onClose: () => void }) {
 export function HighvillMarketplace() {
   const [category, setCategory] = useState<Category>('all');
   const [search, setSearch]     = useState('');
-  const [chatListing, setChatListing]   = useState<Listing | null>(null);
-  const [trustListing, setTrustListing] = useState<Listing | null>(null);
-  const [showPost, setShowPost]         = useState(false);
+  const [chatListing, setChatListing]     = useState<Listing | null>(null);
+  const [trustListing, setTrustListing]   = useState<Listing | null>(null);
+  const [sellerListing, setSellerListing] = useState<Listing | null>(null);
+  const [showPost, setShowPost]           = useState(false);
 
   const filtered = LISTINGS.filter(l => {
     const matchCat = category === 'all' || l.category === category;
@@ -794,6 +853,7 @@ export function HighvillMarketplace() {
               listing={listing}
               onChat={setChatListing}
               onTrust={setTrustListing}
+              onSellerClick={setSellerListing}
             />
           ))
         )}
@@ -801,9 +861,10 @@ export function HighvillMarketplace() {
     </div>
 
     {/* ─── Sheets ─── */}
-    {chatListing  && <ChatSheet  listing={chatListing}  onClose={() => setChatListing(null)} />}
-    {trustListing && <TrustSheet listing={trustListing} onClose={() => setTrustListing(null)} />}
-    {showPost     && <PostSheet  onClose={() => setShowPost(false)} />}
+    {sellerListing && <SellerCard listing={sellerListing} mutualCount={sellerListing.mutualCount} mutualNames={sellerListing.mutualNames} onClose={() => setSellerListing(null)} />}
+    {chatListing   && <ChatSheet  listing={chatListing}  onClose={() => setChatListing(null)} />}
+    {trustListing  && <TrustSheet listing={trustListing} onClose={() => setTrustListing(null)} />}
+    {showPost      && <PostSheet  onClose={() => setShowPost(false)} />}
     </>
   );
 }
