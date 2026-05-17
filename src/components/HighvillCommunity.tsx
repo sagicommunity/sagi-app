@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, Search, ShoppingBag, Calendar, Newspaper, MapPin, Users, X, Sparkles } from 'lucide-react';
+import { ChevronLeft, Search, ShoppingBag, Calendar, Newspaper, MapPin, Users, X, Sparkles, Store } from 'lucide-react';
 import { Link } from 'react-router';
 
 const HV_GRADIENT = 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 50%, #1E40AF 100%)';
@@ -117,6 +117,8 @@ const TABS: { key: Tab; label: string; icon: typeof ShoppingBag }[] = [
   { key: 'news',   label: 'Новости',  icon: Newspaper   },
 ];
 
+const MARKET_TAB = { label: 'Маркет', icon: Store };
+
 export function HighvillCommunity() {
   const [tab, setTab]             = useState<Tab>('offers');
   const [search, setSearch]       = useState('');
@@ -172,20 +174,30 @@ export function HighvillCommunity() {
       <div className="sticky top-0 z-40 bg-card border-b border-border">
         <div className="max-w-md mx-auto px-4 pt-3 pb-2">
           <div className="grid grid-cols-2 gap-2">
-            {TABS.map((tb, idx) => {
-              const isLastOdd = TABS.length % 2 !== 0 && idx === TABS.length - 1;
-              return (
-                <button
-                  key={tb.key}
-                  onClick={() => { setTab(tb.key); setSearch(''); }}
-                  className={tabClass(tb.key, isLastOdd ? 'col-span-2' : '')}
-                  style={tabStyle(tb.key)}
-                >
-                  <tb.icon className="w-3.5 h-3.5" />
-                  {tb.label}
-                </button>
-              );
-            })}
+            {TABS.map(tb => (
+              <button
+                key={tb.key}
+                onClick={() => { setTab(tb.key); setSearch(''); }}
+                className={tabClass(tb.key)}
+                style={tabStyle(tb.key)}
+              >
+                <tb.icon className="w-3.5 h-3.5" />
+                {tb.label}
+              </button>
+            ))}
+            {/* Marketplace tab — navigates to dedicated page */}
+            <Link
+              to="/user/community/highvill/marketplace"
+              className="col-span-2 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors bg-input-background text-muted-foreground hover:text-foreground"
+              style={{ border: `1px dashed ${HV_COLOR}50` }}
+            >
+              <MARKET_TAB.icon className="w-3.5 h-3.5" style={{ color: HV_COLOR }} />
+              <span style={{ color: HV_COLOR }}>{MARKET_TAB.label}</span>
+              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full ml-1"
+                style={{ background: `${HV_COLOR}15`, color: HV_COLOR }}>
+                10 объявл.
+              </span>
+            </Link>
           </div>
         </div>
       </div>
