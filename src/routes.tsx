@@ -37,6 +37,7 @@ import { HaniCommunity } from './components/HaniCommunity';
 import { HighvillCommunity } from './components/HighvillCommunity';
 import { HighvillMarketplace } from './components/HighvillMarketplace';
 import { EuropeCityCommunity } from './components/EuropeCityCommunity';
+import { VistaSchoolCommunity } from './components/VistaSchoolCommunity';
 import { SagiLanding } from './components/SagiLanding';
 import { AppStoreLanding } from './components/AppStoreLanding';
 
@@ -56,6 +57,7 @@ export const router = createBrowserRouter([
       { path: 'community/highvill', Component: HighvillCommunity },
       { path: 'community/highvill/marketplace', Component: HighvillMarketplace },
       { path: 'community/europecity', Component: EuropeCityCommunity },
+      { path: 'community/vistaschool', Component: VistaSchoolCommunity },
       { path: 'community/:id', Component: CategoryOffers },
       { path: 'offer/:id', Component: OfferDetail },
       { path: 'profile', Component: Profile },
