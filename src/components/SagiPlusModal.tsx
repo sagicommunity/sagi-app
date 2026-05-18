@@ -275,10 +275,6 @@ export function SagiPlusModal({ onClose }: Props) {
           {(Object.entries(PLANS) as [PlanKey, typeof PLANS.plus][]).map(([key, p]) => {
             const isSelected = selected === key;
             const offerCount = key === 'plus' ? plusCount : premiumCount;
-            const cats = key === 'plus'
-              ? (['cafe', 'dining', 'beauty', 'fitness'] as Category[])
-              : (['cafe', 'dining', 'beauty', 'fitness', 'hotel', 'leisure', 'travel'] as Category[]);
-
             return (
               <button
                 key={key}
@@ -309,7 +305,18 @@ export function SagiPlusModal({ onClose }: Props) {
 
                 {/* Category pills */}
                 <div className="flex flex-wrap gap-1.5 mb-3">
-                  {cats.map(c => {
+                  {key === 'premium' && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg"
+                      style={isSelected
+                        ? { background: 'rgba(255,255,255,0.15)', color: '#fff' }
+                        : { background: 'rgba(156,163,175,0.15)', color: '#6b7280' }}>
+                      Sagi+
+                    </span>
+                  )}
+                  {(key === 'plus'
+                    ? (['cafe', 'dining', 'beauty', 'fitness'] as Category[])
+                    : (['hotel', 'leisure', 'travel'] as Category[])
+                  ).map(c => {
                     const meta = CAT_META[c];
                     return (
                       <span key={c} className="text-[10px] font-semibold px-2 py-0.5 rounded-lg"

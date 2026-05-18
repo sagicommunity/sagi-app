@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ChevronLeft, Search, X, ShieldCheck, Users, Clock, MessageCircle, Plus, ImagePlus, ChevronDown, MapPin, Sparkles } from 'lucide-react';
 import { Link } from 'react-router';
 
@@ -239,7 +239,7 @@ function ListingCard({ listing, onChat, onTrust, onSellerClick }: {
           style={{ background: HV_GRADIENT }}
         >
           <ShieldCheck className="w-3.5 h-3.5" />
-          Купить с гарантией
+          Купить
         </button>
       </div>
       </div>
@@ -249,7 +249,7 @@ function ListingCard({ listing, onChat, onTrust, onSellerClick }: {
 
 // ─── Chat bottom sheet ─────────────────────────────────────────────────────────
 
-function ChatSheet({ listing, onClose }: { listing: Listing; onClose: () => void }) {
+function ChatSheet({ listing, onClose, onSellerClick }: { listing: Listing; onClose: () => void; onSellerClick: (l: Listing) => void }) {
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end items-center" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
@@ -259,20 +259,9 @@ function ChatSheet({ listing, onClose }: { listing: Listing; onClose: () => void
           <X className="w-4 h-4" />
         </button>
 
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0"
-            style={{ background: listing.seller.color }}>
-            {listing.seller.initials}
-          </div>
-          <div>
-            <p className="font-semibold text-sm">{listing.seller.name}</p>
-            <p className="text-xs text-muted-foreground">{listing.seller.tower} · Highvill Isim</p>
-            <div className="flex items-center gap-1 mt-0.5">
-              <ShieldCheck className="w-3 h-3 text-[#3B82F6]" />
-              <span className="text-[10px] text-[#3B82F6] font-medium">Верифицированный житель</span>
-            </div>
-          </div>
-        </div>
+        {/* Listing title */}
+        <p className="font-bold text-sm mb-1 pr-10">{listing.title}</p>
+        <p className="text-xs text-muted-foreground mb-5">{listing.price}{listing.priceNote}</p>
 
         {listing.mutualCount > 0 && (
           <div className="bg-muted/40 rounded-2xl px-4 py-3 mb-5">
@@ -285,24 +274,24 @@ function ChatSheet({ listing, onClose }: { listing: Listing; onClose: () => void
           </div>
         )}
 
-        <p className="text-xs text-muted-foreground mb-4">
-          Выберите мессенджер — продавец получит уведомление и ответит в течение нескольких минут.
-        </p>
-
-        <div className="flex gap-2">
-          <a href={`https://wa.me/${listing.seller.whatsapp}`} target="_blank" rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-white text-sm font-semibold"
-            style={{ background: '#25D366' }}>
-            <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-            WhatsApp
-          </a>
-          <a href={`https://t.me/${listing.seller.telegram}`} target="_blank" rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-white text-sm font-semibold"
-            style={{ background: '#2AABEE' }}>
-            <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-            Telegram
-          </a>
-        </div>
+        {/* Seller row — tappable, opens profile */}
+        <button
+          onClick={() => { onClose(); onSellerClick(listing); }}
+          className="w-full flex items-center gap-3 p-3.5 rounded-2xl border border-border active:opacity-70 transition-opacity"
+        >
+          <div className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0"
+            style={{ background: listing.seller.color }}>
+            {listing.seller.initials}
+          </div>
+          <div className="flex-1 text-left">
+            <p className="font-semibold text-sm">{listing.seller.name}</p>
+            <div className="flex items-center gap-1 mt-0.5">
+              <ShieldCheck className="w-3 h-3 text-[#3B82F6]" />
+              <span className="text-[10px] text-[#3B82F6] font-medium">{listing.seller.tower} · Верифицирован</span>
+            </div>
+          </div>
+          <span className="text-muted-foreground text-lg">›</span>
+        </button>
       </div>
     </div>
   );
@@ -310,12 +299,10 @@ function ChatSheet({ listing, onClose }: { listing: Listing; onClose: () => void
 
 // ─── Trust Guide bottom sheet ──────────────────────────────────────────────────
 
-function TrustSheet({ listing, onClose }: { listing: Listing; onClose: () => void }) {
+function TrustSheet({ listing, onClose, onSellerClick }: { listing: Listing; onClose: () => void; onSellerClick: (l: Listing) => void }) {
   const steps = [
     { icon: '💬', title: 'Свяжитесь с продавцом', body: 'Напишите в WhatsApp или Telegram. Проверьте товар фото/видео.' },
     { icon: '🤝', title: 'Договоритесь о встрече', body: 'Встреча в лобби или у подъезда — оба живут в ЖК, всё рядом.' },
-    { icon: '🔍', title: 'Осмотрите товар лично', body: 'Проверьте состояние до передачи денег. Никаких предоплат чужим.' },
-    { icon: '✅', title: 'Подтвердите сделку', body: 'Оставьте отзыв о продавце — это повышает доверие в сообществе.' },
   ];
 
   return (
@@ -329,7 +316,7 @@ function TrustSheet({ listing, onClose }: { listing: Listing; onClose: () => voi
 
         <div className="flex items-center gap-2 mb-1">
           <ShieldCheck className="w-5 h-5" style={{ color: HV_COLOR }} />
-          <h2 className="font-bold text-base">Купить с гарантией</h2>
+          <h2 className="font-bold text-base">Как купить безопасно</h2>
         </div>
         <p className="text-xs text-muted-foreground mb-5 leading-relaxed">
           Highvill Маркет работает на доверии между соседями. Следуй этим шагам — и сделка пройдёт безопасно.
@@ -346,10 +333,12 @@ function TrustSheet({ listing, onClose }: { listing: Listing; onClose: () => voi
             <p className="text-xs font-bold mt-0.5" style={{ color: HV_COLOR }}>{listing.price}{listing.priceNote}</p>
           </div>
           <div className="text-right">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white"
+            <button
+              onClick={() => { onClose(); onSellerClick(listing); }}
+              className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white active:opacity-75"
               style={{ background: listing.seller.color }}>
               {listing.seller.initials}
-            </div>
+            </button>
           </div>
         </div>
 
@@ -368,14 +357,17 @@ function TrustSheet({ listing, onClose }: { listing: Listing; onClose: () => voi
           ))}
         </div>
 
-        <div className="flex gap-2">
-          <a href={`https://wa.me/${listing.seller.whatsapp}`} target="_blank" rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-white text-sm font-semibold"
-            style={{ background: HV_GRADIENT }}>
-            <MessageCircle className="w-4 h-4" />
-            Написать продавцу
-          </a>
-        </div>
+        <button
+          onClick={() => { onClose(); onSellerClick(listing); }}
+          className="w-full flex items-center gap-3 py-3 px-4 rounded-2xl text-white text-sm font-semibold active:opacity-80"
+          style={{ background: HV_GRADIENT }}>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+            style={{ background: 'rgba(255,255,255,0.25)' }}>
+            {listing.seller.initials}
+          </div>
+          <span className="flex-1 text-left">Открыть профиль продавца</span>
+          <span className="text-white/70 text-base">›</span>
+        </button>
       </div>
     </div>
   );
@@ -387,6 +379,7 @@ function SellerCard({ listing, mutualCount, mutualNames, onClose }: {
   listing: Listing; mutualCount: number; mutualNames: string[]; onClose: () => void;
 }) {
   const { seller } = listing;
+  const [connected, setConnected] = React.useState(false);
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end items-center" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
@@ -457,6 +450,17 @@ function SellerCard({ listing, mutualCount, mutualNames, onClose }: {
           </span>
         </div>
 
+        {/* Connect button */}
+        <button
+          onClick={() => setConnected(true)}
+          disabled={connected}
+          className="w-full py-3 rounded-2xl text-sm font-bold mb-3 transition-colors"
+          style={connected
+            ? { background: 'var(--muted)', color: 'var(--muted-foreground)' }
+            : { background: seller.color + '18', color: seller.color, border: `1.5px solid ${seller.color}40` }}>
+          {connected ? '⏳ Запрос отправлен' : '+ Добавить в контакты'}
+        </button>
+
         {/* Contact buttons — always open */}
         <p className="text-xs text-muted-foreground mb-3">Связаться с продавцом:</p>
         <div className="flex gap-2">
@@ -490,6 +494,7 @@ const EXPIRY_OPTIONS = [
 
 function PostSheet({ onClose }: { onClose: () => void }) {
   const [step, setStep]             = useState<1 | 2>(1);
+  const [listingType, setListingType] = useState<'goods' | 'services' | null>(null);
   const [category, setCategory]     = useState<Category | null>(null);
   const [title, setTitle]           = useState('');
   const [price, setPrice]           = useState('');
@@ -500,7 +505,7 @@ function PostSheet({ onClose }: { onClose: () => void }) {
   const [showUnitPicker, setShowUnitPicker] = useState(false);
 
   const selCat = CATEGORIES.find(c => c.key === category);
-  const canNext = category !== null && title.trim().length > 3;
+  const canNext = listingType !== null && category !== null && title.trim().length > 3;
   const canSubmit = canNext && description.trim().length > 5;
 
   if (submitted) {
@@ -557,11 +562,34 @@ function PostSheet({ onClose }: { onClose: () => void }) {
           {/* ── STEP 1 ── */}
           {step === 1 && (
             <>
-              {/* Category */}
+              {/* Тип: Товар / Услуга */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Тип *</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {([
+                    { key: 'goods',    label: 'Товар',  emoji: '📦', hint: 'Вещи, техника, билеты' },
+                    { key: 'services', label: 'Услуга', emoji: '🤝', hint: 'Помощь, аренда, сервис' },
+                  ] as const).map(t => (
+                    <button key={t.key}
+                      onClick={() => { setListingType(t.key); setCategory(null); }}
+                      className="flex flex-col items-center gap-1.5 py-4 rounded-2xl border transition-all"
+                      style={listingType === t.key
+                        ? { background: HV_COLOR + '15', borderColor: HV_COLOR }
+                        : { background: 'transparent', borderColor: 'var(--border)' }}>
+                      <span className="text-2xl">{t.emoji}</span>
+                      <span className="text-sm font-bold" style={{ color: listingType === t.key ? HV_COLOR : undefined }}>{t.label}</span>
+                      <span className="text-[10px] text-muted-foreground">{t.hint}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Category — показывается только после выбора типа */}
+              {listingType && (
               <div>
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Категория *</p>
                 <div className="grid grid-cols-3 gap-2">
-                  {CATEGORIES.filter(c => c.key !== 'all').map(cat => (
+                  {CATEGORIES.filter(c => c.key !== 'all' && (listingType === 'goods' ? GOODS_CATS : SERVICES_CATS).includes(c.key)).map(cat => (
                     <button
                       key={cat.key}
                       onClick={() => setCategory(cat.key)}
@@ -580,6 +608,7 @@ function PostSheet({ onClose }: { onClose: () => void }) {
                   ))}
                 </div>
               </div>
+              )}
 
               {/* Title */}
               <div>
@@ -742,7 +771,11 @@ function PostSheet({ onClose }: { onClose: () => void }) {
 
 // ─── Main page ─────────────────────────────────────────────────────────────────
 
+const GOODS_CATS: Category[]    = ['tickets', 'electronics', 'home', 'transport'];
+const SERVICES_CATS: Category[] = ['services', 'rentals'];
+
 export function HighvillMarketplace() {
+  const [segment, setSegment]   = useState<'goods' | 'services' | null>(null);
   const [category, setCategory] = useState<Category>('all');
   const [search, setSearch]     = useState('');
   const [chatListing, setChatListing]     = useState<Listing | null>(null);
@@ -750,11 +783,20 @@ export function HighvillMarketplace() {
   const [sellerListing, setSellerListing] = useState<Listing | null>(null);
   const [showPost, setShowPost]           = useState(false);
 
+  const handleSegment = (s: 'goods' | 'services') => {
+    setSegment(prev => prev === s ? null : s);
+    setCategory('all');
+  };
+
+  const segmentCats = segment === 'goods' ? GOODS_CATS : segment === 'services' ? SERVICES_CATS : null;
+  const visibleCats = CATEGORIES.filter(c => !segmentCats || c.key === 'all' || segmentCats.includes(c.key));
+
   const filtered = LISTINGS.filter(l => {
+    const matchSeg = !segmentCats || segmentCats.includes(l.category);
     const matchCat = category === 'all' || l.category === category;
     const q = search.toLowerCase();
     const matchSearch = !q || l.title.toLowerCase().includes(q) || l.description.toLowerCase().includes(q) || l.tag.toLowerCase().includes(q);
-    return matchCat && matchSearch;
+    return matchSeg && matchCat && matchSearch;
   });
 
   return (
@@ -807,10 +849,27 @@ export function HighvillMarketplace() {
       {/* ─── CONTENT ─── */}
       <div className="max-w-md mx-auto px-4 py-4 space-y-3">
 
+        {/* Segment control: Товары / Услуги */}
+        <div className="flex gap-2">
+          {(['goods', 'services'] as const).map(s => {
+            const isActive = segment === s;
+            const label = s === 'goods' ? '📦 Товары' : '🤝 Услуги';
+            return (
+              <button key={s} onClick={() => handleSegment(s)}
+                className="flex-1 py-2.5 rounded-2xl text-sm font-semibold transition-colors"
+                style={isActive
+                  ? { background: HV_COLOR, color: '#fff' }
+                  : { background: 'var(--input-background)', color: 'var(--muted-foreground)' }}>
+                {label}
+              </button>
+            );
+          })}
+        </div>
+
         {/* Category pills */}
-        <div className="-mx-4 overflow-x-auto scrollbar-none">
+        <div className="-mx-4 overflow-x-auto scrollbar-hide">
           <div className="flex gap-2 px-4 pb-1 w-max">
-            {CATEGORIES.map(cat => (
+            {visibleCats.map(cat => (
               <button
                 key={cat.key}
                 onClick={() => setCategory(cat.key)}
@@ -862,8 +921,8 @@ export function HighvillMarketplace() {
 
     {/* ─── Sheets ─── */}
     {sellerListing && <SellerCard listing={sellerListing} mutualCount={sellerListing.mutualCount} mutualNames={sellerListing.mutualNames} onClose={() => setSellerListing(null)} />}
-    {chatListing   && <ChatSheet  listing={chatListing}  onClose={() => setChatListing(null)} />}
-    {trustListing  && <TrustSheet listing={trustListing} onClose={() => setTrustListing(null)} />}
+    {chatListing   && <ChatSheet  listing={chatListing}  onClose={() => setChatListing(null)} onSellerClick={l => { setChatListing(null); setSellerListing(l); }} />}
+    {trustListing  && <TrustSheet listing={trustListing} onClose={() => setTrustListing(null)} onSellerClick={l => { setTrustListing(null); setSellerListing(l); }} />}
     {showPost      && <PostSheet  onClose={() => setShowPost(false)} />}
     </>
   );

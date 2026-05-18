@@ -147,7 +147,16 @@ export function ContactsModal({ onClose }: { onClose: () => void }) {
     socialContacts.some(c => c.source === 'facebook')
   );
   const [connectingPlatform, setConnectingPlatform] = useState<'instagram' | 'facebook' | null>(null);
-  const [openSection, setOpenSection] = useState<'instagram' | 'facebook' | null>(null);
+  const [openSections, setOpenSections] = useState<Set<'instagram' | 'facebook'>>(() => {
+    const s = new Set<'instagram' | 'facebook'>();
+    try {
+      const saved = localStorage.getItem(SOCIAL_STORAGE_KEY);
+      const list: SocialContact[] = saved ? JSON.parse(saved) : [];
+      if (list.some(c => c.source === 'instagram')) s.add('instagram');
+      if (list.some(c => c.source === 'facebook')) s.add('facebook');
+    } catch { }
+    return s;
+  });
   const [selectedContact, setSelectedContact] = useState<SocialContact | null>(null);
   const [networkConnected, setNetworkConnected] = useState<Set<number>>(new Set());
 
@@ -163,8 +172,11 @@ export function ContactsModal({ onClose }: { onClose: () => void }) {
     localStorage.setItem(SOCIAL_STORAGE_KEY, JSON.stringify(list));
   };
 
+  const toggleSection = (p: 'instagram' | 'facebook') =>
+    setOpenSections(prev => { const s = new Set(prev); s.has(p) ? s.delete(p) : s.add(p); return s; });
+
   const connectInstagram = () => {
-    if (instagramConnected) { setOpenSection(s => s === 'instagram' ? null : 'instagram'); return; }
+    if (instagramConnected) { toggleSection('instagram'); return; }
     setConnectingPlatform('instagram');
     setTimeout(() => {
       const newContacts = INSTAGRAM_SUGGESTIONS.map(s => ({ ...s, pending: false }));
@@ -172,12 +184,12 @@ export function ContactsModal({ onClose }: { onClose: () => void }) {
       persistSocial(merged);
       setInstagramConnected(true);
       setConnectingPlatform(null);
-      setOpenSection('instagram');
+      setOpenSections(prev => new Set(prev).add('instagram'));
     }, 1200);
   };
 
   const connectFacebook = () => {
-    if (facebookConnected) { setOpenSection(s => s === 'facebook' ? null : 'facebook'); return; }
+    if (facebookConnected) { toggleSection('facebook'); return; }
     setConnectingPlatform('facebook');
     setTimeout(() => {
       const newContacts = FACEBOOK_SUGGESTIONS.map(s => ({ ...s, pending: false }));
@@ -185,7 +197,7 @@ export function ContactsModal({ onClose }: { onClose: () => void }) {
       persistSocial(merged);
       setFacebookConnected(true);
       setConnectingPlatform(null);
-      setOpenSection('facebook');
+      setOpenSections(prev => new Set(prev).add('facebook'));
     }, 1200);
   };
 
@@ -302,7 +314,7 @@ export function ContactsModal({ onClose }: { onClose: () => void }) {
               disabled={!!connectingPlatform}
               className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-medium transition-all"
               style={instagramConnected
-                ? { background: openSection === 'instagram' ? 'rgba(225,48,108,0.2)' : 'rgba(225,48,108,0.12)', color: '#E1306C', border: '1px solid rgba(225,48,108,0.4)', opacity: connectingPlatform === 'instagram' ? 0.6 : 1 }
+                ? { background: openSections.has('instagram') ? 'rgba(225,48,108,0.2)' : 'rgba(225,48,108,0.12)', color: '#E1306C', border: '1px solid rgba(225,48,108,0.4)', opacity: connectingPlatform === 'instagram' ? 0.6 : 1 }
                 : { background: 'rgba(225,48,108,0.07)', color: '#E1306C', border: '1px solid rgba(225,48,108,0.2)' }
               }
             >
@@ -314,7 +326,7 @@ export function ContactsModal({ onClose }: { onClose: () => void }) {
               disabled={!!connectingPlatform}
               className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-medium transition-all"
               style={facebookConnected
-                ? { background: openSection === 'facebook' ? 'rgba(24,119,242,0.2)' : 'rgba(24,119,242,0.12)', color: '#1877F2', border: '1px solid rgba(24,119,242,0.4)', opacity: connectingPlatform === 'facebook' ? 0.6 : 1 }
+                ? { background: openSections.has('facebook') ? 'rgba(24,119,242,0.2)' : 'rgba(24,119,242,0.12)', color: '#1877F2', border: '1px solid rgba(24,119,242,0.4)', opacity: connectingPlatform === 'facebook' ? 0.6 : 1 }
                 : { background: 'rgba(24,119,242,0.07)', color: '#1877F2', border: '1px solid rgba(24,119,242,0.2)' }
               }
             >
@@ -399,8 +411,8 @@ export function ContactsModal({ onClose }: { onClose: () => void }) {
             </div>
           )}
 
-          {/* Instagram contacts (accordion) */}
-          {openSection === 'instagram' && filteredIG.length > 0 && (
+          {/* Instagram contacts */}
+          {openSections.has('instagram') && filteredIG.length > 0 && (
             <div className="mt-3 space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#E1306C' }}>Instagram · {filteredIG.length} найдено</p>
               {filteredIG.map(c => (
@@ -409,8 +421,8 @@ export function ContactsModal({ onClose }: { onClose: () => void }) {
             </div>
           )}
 
-          {/* Facebook contacts (accordion) */}
-          {openSection === 'facebook' && filteredFB.length > 0 && (
+          {/* Facebook contacts */}
+          {openSections.has('facebook') && filteredFB.length > 0 && (
             <div className="mt-3 space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#1877F2' }}>Facebook · {filteredFB.length} найдено</p>
               {filteredFB.map(c => (

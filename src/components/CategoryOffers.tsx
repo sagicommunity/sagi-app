@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { ChevronLeft, Search, UtensilsCrossed, GraduationCap, Sparkles, ShoppingBag, Building2, Dumbbell, HeartPulse, Plane, Calendar, CheckSquare, Briefcase, Newspaper, Camera, X, MapPin, Bell, BellOff, Share2, ChevronDown, ChevronUp, Users } from 'lucide-react';
+import { ChevronLeft, Search, UtensilsCrossed, GraduationCap, Sparkles, ShoppingBag, Building2, Dumbbell, HeartPulse, Plane, Calendar, Trophy, Zap, Briefcase, Newspaper, Camera, X, MapPin, Bell, BellOff, Share2, MessageCircle, ChevronDown, ChevronUp, Users, Activity, ChevronRight } from 'lucide-react';
 import { Link, useLocation, useParams } from 'react-router';
 import { useLanguage } from '../context/LanguageContext';
 import { BusinessLogo } from './BusinessLogo';
@@ -16,7 +16,8 @@ interface NewsPost {
 }
 
 type BizType = 'restaurant' | 'cafe' | 'education' | 'spa' | 'retail' | 'hotel' | 'fitness' | 'healthcare' | 'travel';
-type Tab = 'offers' | 'events' | 'tasks' | 'vacancies' | 'news';
+type Tab = 'offers' | 'events' | 'tasks' | 'vacancies' | 'news' | 'steps';
+type StepsPeriod = 'today' | 'yesterday' | 'week' | 'month';
 
 type JoinStatus = 'none' | 'pending' | 'accepted' | 'member';
 
@@ -188,6 +189,132 @@ export const ATTENDEE_PROFILES: Record<string, {
   TZ: { role: 'AI Product Lead', location: 'Astana', tags: ['AI', 'Product', 'Fintech'], aiSummary: ['Building AI-powered financial tools at a fintech scale-up', 'Deep expertise in LLMs and data product strategy', 'Mentor at Astana Hub programs'], connections: 62, mutualCount: 2, mutualNames: ['Aizat B.', 'Arman K.'] },
 };
 
+interface CommunityEvent {
+  id: number; title: string; date: string; dateISO: string;
+  location: string; type: BizType;
+  description?: string;
+  friendsGoing: { name: string; initials: string; color: string }[];
+  slots?: { filled: number; total: number };
+  price?: number;
+  waitlistCount?: number;
+}
+
+type ChallengeType = 'sport' | 'networking' | 'charity' | 'daily' | 'streak' | 'goal';
+
+const CHALLENGE_TYPE: Record<ChallengeType, { label: string; color: string; bg: string }> = {
+  sport:      { label: 'Sport',          color: '#f97316', bg: '#f9731618' },
+  networking: { label: 'Networking',     color: '#3b82f6', bg: '#3b82f618' },
+  charity:    { label: 'Charity',        color: '#ec4899', bg: '#ec489918' },
+  daily:      { label: 'Daily',          color: '#10b981', bg: '#10b98118' },
+  streak:     { label: 'Streak',         color: '#8b5cf6', bg: '#8b5cf618' },
+  goal:       { label: 'Community Goal', color: '#eab308', bg: '#eab30818' },
+};
+
+interface Challenge {
+  id: number; type: ChallengeType; icon: string; title: string; description: string;
+  points: number; slots?: { filled: number; total: number };
+  verify: 'auto';
+  isRecurring?: boolean; deadline?: string;
+  startISO?: string;
+}
+
+const CHALLENGES: Challenge[] = [
+  { id: 1, type: 'sport', icon: '⚽', title: 'Saturday Football', description: 'Weekly 5v5 match on Vertex pitch. Open to all levels. RSVP to reserve your spot.', points: 50, slots: { filled: 12, total: 18 }, verify: 'auto', deadline: 'Сб, 24 мая · 10:00', startISO: '2026-05-24T10:00:00' },
+  { id: 2, type: 'networking', icon: '🤝', title: 'Q2 Networking Breakfast', description: 'Meet 3 new members over breakfast. Structured speed-networking format. RSVP to join.', points: 80, slots: { filled: 34, total: 50 }, verify: 'auto', deadline: 'Чт, 22 мая · 9:00', startISO: '2026-05-22T09:00:00' },
+  { id: 3, type: 'charity', icon: '📖', title: 'Books for Schools Drive', description: 'Drop off books at the Vertex lobby. Any donation counts — join to participate.', points: 100, slots: { filled: 67, total: 100 }, verify: 'auto', deadline: '31 мая' },
+  { id: 5, type: 'streak', icon: '🎫', title: 'Attend 2 Vertex Events', description: 'RSVP and attend any 2 official Vertex Club events this quarter to earn the streak badge.', points: 60, verify: 'auto' },
+  { id: 6, type: 'goal', icon: '🏨', title: 'Skyline Hotel Collective', description: 'Community goal: 100 members visit Skyline this month — unlocks a 15% collective discount for all.', points: 40, slots: { filled: 43, total: 100 }, verify: 'auto' },
+];
+
+type WeekStatus = 'done' | 'missed' | 'empty';
+
+interface GroupChallenge {
+  id: number;
+  icon: string;
+  title: string;
+  tasks: string[];
+  color: string;
+  type: ChallengeType;
+  description?: string;
+  pointsPerDay: number;
+  participants: { name: string; color: string; week: WeekStatus[] }[];
+}
+
+const DAYS_RU = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
+
+const GROUP_CHALLENGES: GroupChallenge[] = [
+  {
+    id: 201, icon: '💪', title: 'Утренняя тренировка', color: '#f97316', type: 'sport' as ChallengeType, pointsPerDay: 10,
+    tasks: ['50 отжиманий', '50 приседаний', '50 трицепс'],
+    participants: [
+      { name: 'Арм.',  color: '#6aaff0', week: ['done','done','done','done','done','done','done'] },
+      { name: 'Кам.',  color: '#f06ac8', week: ['done','done','done','done','done','done','done'] },
+      { name: 'Дан.',  color: '#f06a6a', week: ['done','done','missed','done','done','done','done'] },
+      { name: 'Фар.',  color: '#f06a80', week: ['done','done','done','done','missed','done','done'] },
+      { name: 'Аиз.',  color: '#7c6af0', week: ['done','done','done','missed','done','done','done'] },
+      { name: 'Мад.',  color: '#c86af0', week: ['done','done','done','done','done','done','done'] },
+      { name: 'Зар.',  color: '#f0c86a', week: ['empty','empty','empty','done','empty','empty','empty'] },
+      { name: 'Рус.',  color: '#6af0e0', week: ['done','done','done','done','done','done','empty'] },
+      { name: 'Нар.',  color: '#a0b0c0', week: ['empty','empty','empty','empty','done','empty','empty'] },
+    ],
+  },
+  {
+    id: 203, icon: '📚', title: 'Книжный клуб', color: '#8b5cf6', type: 'daily' as ChallengeType, pointsPerDay: 5,
+    description: 'Читай минимум 20 страниц в день и отмечай прогресс. Строй стрик вместе с командой — пропуск одного дня сбрасывает серию.',
+    tasks: ['20 страниц в день'],
+    participants: [
+      { name: 'Кам.',  color: '#f06ac8', week: ['done','done','done','done','done','empty','empty'] },
+      { name: 'Тим.',  color: '#f0c46a', week: ['done','done','done','done','done','empty','empty'] },
+      { name: 'Мад.',  color: '#c86af0', week: ['done','missed','done','done','done','empty','empty'] },
+      { name: 'Алм.',  color: '#f07a6a', week: ['done','done','done','done','done','empty','empty'] },
+    ],
+  },
+  {
+    id: 202, icon: '🏃', title: 'Vertex Run Club', color: '#3b82f6', type: 'sport' as ChallengeType, pointsPerDay: 15,
+    tasks: ['5 км бег'],
+    participants: [
+      { name: 'Тим.',  color: '#f0c46a', week: ['done','empty','done','empty','done','done','empty'] },
+      { name: 'Олж.',  color: '#80f0c8', week: ['done','done','done','missed','done','done','done'] },
+      { name: 'Алм.',  color: '#f07a6a', week: ['done','done','done','done','done','done','done'] },
+      { name: 'Кен.',  color: '#6a80f0', week: ['done','empty','done','done','done','empty','done'] },
+      { name: 'Ера.',  color: '#f0c8a0', week: ['done','done','missed','done','done','done','done'] },
+      { name: 'Арст.', color: '#6af080', week: ['done','done','empty','done','empty','done','done'] },
+    ],
+  },
+];
+
+interface LeaderboardEntry { name: string; initials: string; color: string; points: number; isYou?: boolean; }
+
+const LEADERBOARD_MEMBERS: LeaderboardEntry[] = [
+  { name: 'Kamila D.', initials: 'KD', color: '#f06ac8', points: 280 },
+  { name: 'Arman K.',  initials: 'AK', color: '#6aaff0', points: 240 },
+  { name: 'Daniyar S.',initials: 'DS', color: '#f06a6a', points: 210 },
+  { name: 'Farida B.', initials: 'FB', color: '#f06a80', points: 160 },
+  { name: 'Aizat B.',  initials: 'AB', color: '#7c6af0', points: 140 },
+  { name: 'Zarina S.', initials: 'ZS', color: '#f0c86a', points:  80 },
+  { name: 'Madina I.', initials: 'MI', color: '#c86af0', points:  30 },
+  { name: 'Ruslan A.', initials: 'RA', color: '#6af0e0', points:   0 },
+];
+
+interface StepEntry {
+  name: string; initials: string; color: string;
+  steps: Partial<Record<StepsPeriod, number | null>>;
+}
+
+const COMMUNITY_STEPS: StepEntry[] = [
+  { name: 'Arman K.',  initials: 'AK', color: '#6aaff0', steps: { today: 8432, yesterday: 11203, week: 52840, month: 198430 } },
+  { name: 'Kamila D.', initials: 'KD', color: '#f06ac8', steps: { today: 6120, yesterday: 7890,  week: 41200, month: 156000 } },
+  { name: 'Daniyar S.',initials: 'DS', color: '#f06a6a', steps: { today: 5670, yesterday: null,   week: 38900, month: 145200 } },
+  { name: 'Farida B.', initials: 'FB', color: '#f06a80', steps: { today: null, yesterday: 6540,  week: 33200, month: 128400 } },
+  { name: 'Aizat B.',  initials: 'AB', color: '#7c6af0', steps: { today: 4230, yesterday: 8120,  week: 29800, month: 112000 } },
+  { name: 'Madina I.', initials: 'MI', color: '#c86af0', steps: { today: null, yesterday: null,   week: 22100, month:  89300 } },
+  { name: 'Ruslan A.', initials: 'RA', color: '#6af0e0', steps: { today: 2890, yesterday: 5430,  week: 19600, month:  74200 } },
+  { name: 'Timur Z.',  initials: 'TZ', color: '#f0c46a', steps: { today: null, yesterday: null,   week: null,  month:  41200 } },
+  { name: 'Zarina S.', initials: 'ZS', color: '#f0c86a', steps: { today: null, yesterday: 3240,  week: 14500, month:  58900 } },
+];
+
+const MY_STEPS: Record<StepsPeriod, number> = { today: 3927, yesterday: 9145, week: 38210, month: 142800 };
+
 export function CategoryOffers() {
   const { t } = useLanguage();
   const { id } = useParams<{ id: string }>();
@@ -199,17 +326,27 @@ export function CategoryOffers() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterValue, setFilterValue] = useState('all');
   const [rsvped, setRsvped] = useState<Set<number>>(new Set());
-  const [taskDone, setTaskDone] = useState<Set<number>>(new Set());
+  const [joined, setJoined] = useState<Set<number>>(new Set());
+  const [verified, setVerified] = useState<Set<number>>(new Set());
   const [eventSearch, setEventSearch] = useState('');
   const [dateFilter, setDateFilter] = useState('all');
   const [reminders, setReminders] = useState<Set<number>>(new Set());
+  const [expandedDescs, setExpandedDescs] = useState<Set<number>>(new Set());
+  const [toast, setToast] = useState<string | null>(null);
+  const [shareEvent, setShareEvent] = useState<typeof events[0] | null>(null);
   const [showPast, setShowPast] = useState(false);
   const [attendeeCard, setAttendeeCard] = useState<{ name: string; initials: string; color: string } | null>(null);
   const [inviteEvent, setInviteEvent] = useState<{ title: string; going: { name: string; initials: string; color: string }[] } | null>(null);
   const [attendeeScheduleOpen, setAttendeeScheduleOpen] = useState(true);
   const [eventConnected, setEventConnected] = useState<Set<string>>(new Set());
+  const [waitlisted, setWaitlisted] = useState<Set<number>>(new Set());
+  const [eventChat, setEventChat] = useState<number | null>(null);
   const [showLeaderboard, setShowLeaderboard] = useState(true);
   const [showMoreLeaderboard, setShowMoreLeaderboard] = useState(false);
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<number>>(new Set());
+  const [markedGroupDays, setMarkedGroupDays] = useState<Record<number, Set<number>>>({});
+  const [joinedGroups, setJoinedGroups] = useState<Set<number>>(new Set());
+  const [stepsPeriod, setStepsPeriod] = useState<StepsPeriod>('today');
   const [showBusinesses, setShowBusinesses] = useState(false);
   const [bizSearch, setBizSearch] = useState('');
   const [bizCategory, setBizCategory] = useState('all');
@@ -278,10 +415,11 @@ export function CategoryOffers() {
     { id: 48, business: 'Tary', offer: t('offerTary'), category: 'food', type: 'restaurant', exclusive: false, photo: '/tary.jpeg', communityIds: ['4','5','6'], joinStatus: 'pending' },
   ];
 
-  const events = [
+  const events: CommunityEvent[] = [
     // ── Past: March 2026 ──────────────────────────────────────────────────
     {
       id: 101, title: 'Vertex Club Launch Party', date: 'Thu, Mar 12 · 19:00', dateISO: '2026-03-12', location: 'Grand Hall, Vertex Tower', type: 'restaurant' as BizType,
+      description: 'Официальное открытие Vertex Club. Коктейли, нетворкинг и знакомство с первыми участниками клуба в формате cocktail party.',
       friendsGoing: [
         { name: 'Aizat B.', initials: 'AB', color: '#7c6af0' },
         { name: 'Kamila D.', initials: 'KD', color: '#f06ac8' },
@@ -291,6 +429,7 @@ export function CategoryOffers() {
     },
     {
       id: 102, title: 'Investment Strategy Breakfast', date: 'Thu, Mar 19 · 08:30', dateISO: '2026-03-19', location: 'Brew Society, Vertex Tower', type: 'cafe' as BizType,
+      description: 'Закрытый завтрак для инвесторов: обсуждение рыночных стратегий Q2, трендов и возможностей для co-investment в регионе.',
       friendsGoing: [
         { name: 'Farida B.', initials: 'FB', color: '#f06a80' },
         { name: 'Ruslan A.', initials: 'RA', color: '#6af0e0' },
@@ -298,6 +437,7 @@ export function CategoryOffers() {
     },
     {
       id: 103, title: 'Women in Business Panel', date: 'Wed, Mar 25 · 17:00', dateISO: '2026-03-25', location: 'Vertex Academy, Main Hall', type: 'education' as BizType,
+      description: 'Дискуссия с лидерами бизнеса о карьере, балансе и лидерстве. Спикеры — 4 женщины-руководителя из разных отраслей AIFC.',
       friendsGoing: [
         { name: 'Madina I.', initials: 'MI', color: '#c86af0' },
         { name: 'Zarina S.', initials: 'ZS', color: '#f0c86a' },
@@ -307,12 +447,14 @@ export function CategoryOffers() {
     // ── Past: April 2026 ──────────────────────────────────────────────────
     {
       id: 104, title: 'Spring Wellness Retreat', date: 'Fri, Apr 3 · 09:00', dateISO: '2026-04-03', location: 'Aura Beauty & Wellness', type: 'spa' as BizType,
+      description: 'Однодневный велнес-ретрит: йога, медитация, питательный бранч и индивидуальные спа-процедуры для участников клуба.',
       friendsGoing: [
         { name: 'Aizat B.', initials: 'AB', color: '#7c6af0' },
       ],
     },
     {
       id: 105, title: 'Tech Investors Roundtable', date: 'Fri, Apr 10 · 14:00', dateISO: '2026-04-10', location: 'Vertex Tower, Board Room', type: 'education' as BizType,
+      description: 'Закрытый круглый стол для инвесторов в tech: разбор сделок, оценка стартапов, взгляд на казахстанский венчурный рынок.',
       friendsGoing: [
         { name: 'Daniyar S.', initials: 'DS', color: '#f06a6a' },
         { name: 'Arman K.', initials: 'AK', color: '#6aaff0' },
@@ -320,7 +462,8 @@ export function CategoryOffers() {
       ],
     },
     {
-      id: 1, title: 'Vertex Morning Coffee', date: 'Thu, Apr 17 · 09:00', dateISO: '2026-04-17', location: 'Brew Society, Vertex Tower', type: 'cafe' as BizType,
+      id: 1, title: 'Vertex Morning Coffee', date: 'Thu, Apr 17 · 09:00', dateISO: '2026-04-17', location: 'Brew Society, Vertex Tower', type: 'cafe' as BizType, slots: { filled: 8, total: 15 },
+      description: 'Камерный утренний кофе для участников клуба. Неформальное общение, обмен идеями и знакомство с новыми членами.',
       friendsGoing: [
         { name: 'Kamila D.', initials: 'KD', color: '#f06ac8' },
         { name: 'Arman K.', initials: 'AK', color: '#6aaff0' },
@@ -329,13 +472,15 @@ export function CategoryOffers() {
     },
     {
       id: 2, title: 'FinTech Seminar 2026', date: 'Fri, Apr 18 · 14:00', dateISO: '2026-04-18', location: 'Vertex Academy, Room 3', type: 'education' as BizType,
+      description: 'Семинар по ключевым трендам финтех-индустрии: open banking, CBDC, регуляторика AIFC. Практические кейсы от действующих игроков рынка.',
       friendsGoing: [
         { name: 'Daniyar S.', initials: 'DS', color: '#f06a6a' },
         { name: 'Farida B.', initials: 'FB', color: '#f06a80' },
       ],
     },
     {
-      id: 3, title: 'Networking Business Lunch', date: 'Sat, Apr 19 · 12:30', dateISO: '2026-04-19', location: 'Le Bistro, Vertex Tower', type: 'restaurant' as BizType,
+      id: 3, title: 'Networking Business Lunch', date: 'Sat, Apr 19 · 12:30', dateISO: '2026-04-19', location: 'Le Bistro, Vertex Tower', type: 'restaurant' as BizType, slots: { filled: 18, total: 20 }, price: 15000,
+      description: 'Бизнес-ланч в формате speed networking: 5 минут на каждого участника. Обед включён. Идеально для быстрых и качественных знакомств.',
       friendsGoing: [
         { name: 'Madina I.', initials: 'MI', color: '#c86af0' },
         { name: 'Ruslan A.', initials: 'RA', color: '#6af0e0' },
@@ -345,10 +490,12 @@ export function CategoryOffers() {
     },
     {
       id: 4, title: 'Wellness Morning', date: 'Sun, Apr 20 · 08:00', dateISO: '2026-04-20', location: 'Aura Beauty & Wellness', type: 'spa' as BizType,
+      description: 'Воскресное велнес-утро: растяжка, дыхательные практики и здоровый завтрак. Начни неделю в ресурсном состоянии.',
       friendsGoing: [],
     },
     {
       id: 106, title: 'Private Members\' Wine Evening', date: 'Fri, Apr 25 · 19:30', dateISO: '2026-04-25', location: 'Chez Georges, Vertex Tower', type: 'restaurant' as BizType,
+      description: 'Закрытая дегустация вин для членов клуба. Сомелье проведёт через 6 позиций из коллекции Chez Georges. Количество мест строго ограничено.',
       friendsGoing: [
         { name: 'Farida B.', initials: 'FB', color: '#f06a80' },
         { name: 'Aizat B.', initials: 'AB', color: '#7c6af0' },
@@ -357,48 +504,8 @@ export function CategoryOffers() {
     },
     // ── Upcoming: May 2026 ────────────────────────────────────────────────
     {
-      id: 5, title: 'Digital Nomad Meetup', date: 'Sun, May 4 · 18:00', dateISO: '2026-05-04', location: 'Brew Society, Vertex Tower', type: 'cafe' as BizType,
-      friendsGoing: [
-        { name: 'Aizat B.', initials: 'AB', color: '#7c6af0' },
-        { name: 'Timur Z.', initials: 'TZ', color: '#f0c46a' },
-      ],
-    },
-    {
-      id: 6, title: 'Legal Tech Workshop', date: 'Tue, May 6 · 10:00', dateISO: '2026-05-06', location: 'Vertex Academy, Room 5', type: 'education' as BizType,
-      friendsGoing: [
-        { name: 'Farida B.', initials: 'FB', color: '#f06a80' },
-      ],
-    },
-    {
-      id: 7, title: 'Startup Pitch Night', date: 'Thu, May 8 · 19:00', dateISO: '2026-05-08', location: 'Le Bistro Rooftop', type: 'restaurant' as BizType,
-      friendsGoing: [
-        { name: 'Daniyar S.', initials: 'DS', color: '#f06a6a' },
-        { name: 'Kamila D.', initials: 'KD', color: '#f06ac8' },
-        { name: 'Arman K.', initials: 'AK', color: '#6aaff0' },
-      ],
-    },
-    {
-      id: 8, title: 'Yoga & Mindfulness Session', date: 'Sat, May 10 · 08:30', dateISO: '2026-05-10', location: 'Aura Beauty & Wellness', type: 'spa' as BizType,
-      friendsGoing: [
-        { name: 'Zarina S.', initials: 'ZS', color: '#f0c86a' },
-      ],
-    },
-    {
-      id: 12, title: 'VIP Breakfast: CEO Speakers Series', date: 'Tue, May 13 · 08:00', dateISO: '2026-05-13', location: 'Vertex Lounge, 24th Floor', type: 'cafe' as BizType,
-      friendsGoing: [
-        { name: 'Arman K.', initials: 'AK', color: '#6aaff0' },
-        { name: 'Ruslan A.', initials: 'RA', color: '#6af0e0' },
-      ],
-    },
-    {
-      id: 9, title: 'Real Estate Investment Forum', date: 'Fri, May 15 · 13:00', dateISO: '2026-05-15', location: 'Vertex Tower, Conference Hall', type: 'education' as BizType,
-      friendsGoing: [
-        { name: 'Zarina S.', initials: 'ZS', color: '#f0c86a' },
-        { name: 'Madina I.', initials: 'MI', color: '#c86af0' },
-      ],
-    },
-    {
-      id: 13, title: 'Wine & Cheese Members\' Evening', date: 'Sat, May 17 · 19:30', dateISO: '2026-05-17', location: 'Chez Georges, Vertex Tower', type: 'restaurant' as BizType,
+      id: 13, title: 'Wine & Cheese Members\' Evening', date: 'Sat, May 17 · 19:30', dateISO: '2026-05-17', location: 'Chez Georges, Vertex Tower', type: 'restaurant' as BizType, slots: { filled: 28, total: 30 }, price: 20000,
+      description: 'Вечер дегустации вин и сырных закусок для членов клуба. Живая музыка, камерная атмосфера, небольшой состав участников.',
       friendsGoing: [
         { name: 'Aizat B.', initials: 'AB', color: '#7c6af0' },
         { name: 'Farida B.', initials: 'FB', color: '#f06a80' },
@@ -407,21 +514,24 @@ export function CategoryOffers() {
       ],
     },
     {
-      id: 14, title: 'AI & Future of Finance Masterclass', date: 'Wed, May 20 · 15:00', dateISO: '2026-05-20', location: 'Vertex Academy, Main Hall', type: 'education' as BizType,
+      id: 14, title: 'AI & Future of Finance Masterclass', date: 'Wed, May 20 · 15:00', dateISO: '2026-05-20', location: 'Vertex Academy, Main Hall', type: 'education' as BizType, slots: { filled: 51, total: 60 }, price: 8000,
+      description: 'Разбираем, как ИИ трансформирует финансовый сектор. Спикеры — практики из ведущих fintech-компаний. Q&A сессия после.',
       friendsGoing: [
         { name: 'Arman K.', initials: 'AK', color: '#6aaff0' },
         { name: 'Timur Z.', initials: 'TZ', color: '#f0c46a' },
       ],
     },
     {
-      id: 10, title: 'FinTech Happy Hour', date: 'Fri, May 22 · 17:30', dateISO: '2026-05-22', location: 'Brew Society, Vertex Tower', type: 'cafe' as BizType,
+      id: 10, title: 'FinTech Happy Hour', date: 'Fri, May 22 · 17:30', dateISO: '2026-05-22', location: 'Brew Society, Vertex Tower', type: 'cafe' as BizType, slots: { filled: 29, total: 40 },
+      description: 'Неформальные встречи после работы для тех, кто в финансах и технологиях. Напитки за свой счёт, знакомства — бесплатно.',
       friendsGoing: [
         { name: 'Ruslan A.', initials: 'RA', color: '#6af0e0' },
         { name: 'Madina I.', initials: 'MI', color: '#c86af0' },
       ],
     },
     {
-      id: 15, title: 'Vertex Golf Cup 2026', date: 'Sat, May 24 · 10:00', dateISO: '2026-05-24', location: 'Nomad Golf Studio', type: 'fitness' as BizType,
+      id: 15, title: 'Vertex Golf Cup 2026', date: 'Sat, May 24 · 10:00', dateISO: '2026-05-24', location: 'Nomad Golf Studio', type: 'fitness' as BizType, slots: { filled: 20, total: 24 }, price: 50000,
+      description: 'Ежегодный турнир по гольфу для членов клуба. Все уровни игры приветствуются. Включает завтрак, кэдди и нетворкинг-ужин.',
       friendsGoing: [
         { name: 'Daniyar S.', initials: 'DS', color: '#f06a6a' },
         { name: 'Arman K.', initials: 'AK', color: '#6aaff0' },
@@ -429,14 +539,16 @@ export function CategoryOffers() {
       ],
     },
     {
-      id: 16, title: 'Expat & Investor Community Dinner', date: 'Wed, May 27 · 19:00', dateISO: '2026-05-27', location: 'Sheraton Astana, Grand Dining', type: 'restaurant' as BizType,
+      id: 16, title: 'Expat & Investor Community Dinner', date: 'Wed, May 27 · 19:00', dateISO: '2026-05-27', location: 'Sheraton Astana, Grand Dining', type: 'restaurant' as BizType, slots: { filled: 38, total: 60 }, price: 25000,
+      description: 'Ужин для экспатов и инвесторов из разных стран: обмен опытом, знакомство с новыми участниками и бизнес-диалог за общим столом.',
       friendsGoing: [
         { name: 'Farida B.', initials: 'FB', color: '#f06a80' },
         { name: 'Zarina S.', initials: 'ZS', color: '#f0c86a' },
       ],
     },
     {
-      id: 11, title: 'Summer Networking Gala', date: 'Thu, May 28 · 19:00', dateISO: '2026-05-28', location: 'Grand Ballroom, Sheraton', type: 'restaurant' as BizType,
+      id: 11, title: 'Summer Networking Gala', date: 'Thu, May 28 · 19:00', dateISO: '2026-05-28', location: 'Grand Ballroom, Sheraton', type: 'restaurant' as BizType, slots: { filled: 87, total: 120 }, price: 35000,
+      description: 'Главное светское мероприятие лета Vertex Club. Дресс-код: smart casual. Живая музыка, фуршет и церемония награждения лучших участников.',
       friendsGoing: [
         { name: 'Aizat B.', initials: 'AB', color: '#7c6af0' },
         { name: 'Farida B.', initials: 'FB', color: '#f06a80' },
@@ -446,13 +558,15 @@ export function CategoryOffers() {
     },
     // ── Upcoming: June 2026 ───────────────────────────────────────────────
     {
-      id: 17, title: 'Mindfulness & Productivity Workshop', date: 'Wed, Jun 3 · 09:00', dateISO: '2026-06-03', location: 'Aura Beauty & Wellness', type: 'spa' as BizType,
+      id: 17, title: 'Mindfulness & Productivity Workshop', date: 'Wed, Jun 3 · 09:00', dateISO: '2026-06-03', location: 'Aura Beauty & Wellness', type: 'spa' as BizType, slots: { filled: 10, total: 15 },
+      description: 'Практический воркшоп по mindfulness и управлению вниманием. Медитация, дыхательные техники и инструменты для роста продуктивности.',
       friendsGoing: [
         { name: 'Aizat B.', initials: 'AB', color: '#7c6af0' },
       ],
     },
     {
-      id: 18, title: 'Private Equity Deal Sourcing', date: 'Fri, Jun 5 · 14:00', dateISO: '2026-06-05', location: 'Vertex Tower, Board Room', type: 'education' as BizType,
+      id: 18, title: 'Private Equity Deal Sourcing', date: 'Fri, Jun 5 · 14:00', dateISO: '2026-06-05', location: 'Vertex Tower, Board Room', type: 'education' as BizType, slots: { filled: 14, total: 20 }, price: 15000,
+      description: 'Закрытая сессия по поиску и оценке PE-сделок в Центральной Азии. Разбор реальных кейсов и методология due diligence.',
       friendsGoing: [
         { name: 'Daniyar S.', initials: 'DS', color: '#f06a6a' },
         { name: 'Ruslan A.', initials: 'RA', color: '#6af0e0' },
@@ -460,7 +574,8 @@ export function CategoryOffers() {
       ],
     },
     {
-      id: 19, title: 'Members\' Cocktail Evening', date: 'Fri, Jun 12 · 18:30', dateISO: '2026-06-12', location: 'Vertex Lounge, 24th Floor', type: 'cafe' as BizType,
+      id: 19, title: 'Members\' Cocktail Evening', date: 'Fri, Jun 12 · 18:30', dateISO: '2026-06-12', location: 'Vertex Lounge, 24th Floor', type: 'cafe' as BizType, slots: { filled: 33, total: 50 },
+      description: 'Коктейльный вечер на 24-м этаже с панорамным видом на Астану. Авторские напитки, лёгкие закуски и непринуждённое общение.',
       friendsGoing: [
         { name: 'Kamila D.', initials: 'KD', color: '#f06ac8' },
         { name: 'Madina I.', initials: 'MI', color: '#c86af0' },
@@ -468,7 +583,8 @@ export function CategoryOffers() {
       ],
     },
     {
-      id: 20, title: 'Annual General Meeting 2026', date: 'Fri, Jun 19 · 10:00', dateISO: '2026-06-19', location: 'Vertex Academy, Main Hall', type: 'education' as BizType,
+      id: 20, title: 'Annual General Meeting 2026', date: 'Fri, Jun 19 · 10:00', dateISO: '2026-06-19', location: 'Vertex Academy, Main Hall', type: 'education' as BizType, slots: { filled: 95, total: 150 },
+      description: 'Ежегодное общее собрание участников Vertex Club: итоги года, выборы в совет, планы на 2027. Обязательно для активных членов.',
       friendsGoing: [
         { name: 'Aizat B.', initials: 'AB', color: '#7c6af0' },
         { name: 'Arman K.', initials: 'AK', color: '#6aaff0' },
@@ -477,7 +593,8 @@ export function CategoryOffers() {
       ],
     },
     {
-      id: 21, title: 'Summer Rooftop Party', date: 'Fri, Jun 26 · 19:00', dateISO: '2026-06-26', location: 'Le Bistro Rooftop, Vertex Tower', type: 'restaurant' as BizType,
+      id: 21, title: 'Summer Rooftop Party', date: 'Fri, Jun 26 · 19:00', dateISO: '2026-06-26', location: 'Le Bistro Rooftop, Vertex Tower', type: 'restaurant' as BizType, slots: { filled: 42, total: 80 }, price: 45000,
+      description: 'Грандиозная вечеринка на крыше Vertex Tower под открытым небом. DJ, фуршет, дресс-код white. Главное летнее событие клуба.',
       friendsGoing: [
         { name: 'Aizat B.', initials: 'AB', color: '#7c6af0' },
         { name: 'Kamila D.', initials: 'KD', color: '#f06ac8' },
@@ -487,9 +604,9 @@ export function CategoryOffers() {
     },
   ];
 
-  const TODAY = '2026-05-04';
-  const WEEK_END = '2026-05-10';
-  const MONTH = '2026-05';
+  const TODAY = new Date().toISOString().split('T')[0];
+  const WEEK_END = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+  const MONTH = TODAY.slice(0, 7);
   const upcomingEvents = events.filter(ev => ev.dateISO >= TODAY);
   const pastEvents = events.filter(ev => ev.dateISO < TODAY);
 
@@ -505,21 +622,39 @@ export function CategoryOffers() {
     return matchType && matchSearch && matchDate;
   });
 
-  const handleShareEvent = (ev: typeof events[0]) => {
-    const text = `${ev.title} — ${ev.date} at ${ev.location}`;
-    if (navigator.share) {
-      navigator.share({ title: ev.title, text });
-    } else {
-      navigator.clipboard?.writeText(text);
-    }
+  const EV_META: Record<string, { label: string; color: string; emoji: string }> = {
+    restaurant: { label: 'Dining',   color: '#f97316', emoji: '🍽️' },
+    cafe:       { label: 'Café',     color: '#6366f1', emoji: '☕' },
+    education:  { label: 'Learning', color: '#3b82f6', emoji: '📚' },
+    spa:        { label: 'Wellness', color: '#ec4899', emoji: '🧘' },
+    fitness:    { label: 'Sport',    color: '#10b981', emoji: '⚽' },
+    hotel:      { label: 'VIP',      color: '#eab308', emoji: '🏆' },
+    retail:     { label: 'Shopping', color: '#8b5cf6', emoji: '🛍️' },
+    healthcare: { label: 'Health',   color: '#06b6d4', emoji: '💊' },
+    travel:     { label: 'Travel',   color: '#06b6d4', emoji: '✈️' },
   };
 
-  const tasks = [
-    { id: 1, title: 'Attend 2 Vertex Club Events', done: false },
-    { id: 2, title: 'Visit 3 Exclusive Partners', done: false },
-    { id: 3, title: 'Complete your profile', done: true },
-    { id: 4, title: 'Use an offer at Skyline Hotel', done: false },
-  ];
+  const buildCalendarUrl = (ev: CommunityEvent) => {
+    const title = encodeURIComponent(ev.title);
+    const loc = encodeURIComponent(ev.location + ', Astana');
+    return `https://calendar.google.com/calendar/r/eventedit?text=${title}&location=${loc}&dates=${ev.dateISO.replace(/-/g,'')}/${ev.dateISO.replace(/-/g,'')}`;
+  };
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2200);
+  };
+
+  const handleShareEvent = (ev: typeof events[0]) => setShareEvent(ev);
+
+  const handleToggleReminder = (ev: typeof events[0]) => {
+    setReminders(prev => {
+      const s = new Set(prev);
+      if (s.has(ev.id)) { s.delete(ev.id); showToast('Напоминание убрано'); }
+      else { s.add(ev.id); showToast('🔔 Напоминание добавлено'); }
+      return s;
+    });
+  };
 
   const vacancies = [
     { id: 1, title: 'Financial Analyst', company: 'Vertex Authority', type: 'Full-time' },
@@ -571,10 +706,29 @@ export function CategoryOffers() {
     return matchCat && matchSearch && matchBiz;
   });
 
+  const myPoints = CHALLENGES.filter(c => verified.has(c.id)).reduce((sum, c) => sum + c.points, 0);
+  const handleChallengeJoin = (id: number) => {
+    const ch = CHALLENGES.find(c => c.id === id);
+    if (!ch) return;
+    setJoined(prev => new Set(prev).add(id));
+    if (ch.verify === 'auto') setVerified(prev => new Set(prev).add(id));
+  };
+  const handleChallengeUnjoin = (id: number) => {
+    setJoined(prev => { const s = new Set(prev); s.delete(id); return s; });
+    setVerified(prev => { const s = new Set(prev); s.delete(id); return s; });
+  };
+  const leaderboardEntries: LeaderboardEntry[] = [
+    ...LEADERBOARD_MEMBERS,
+    { name: 'You', initials: 'Zh', color: '#10b981', points: myPoints, isYou: true },
+  ].sort((a, b) => b.points - a.points);
+  const filteredChallenges = CHALLENGES.filter(c => filterValue === 'all' || c.type === filterValue);
+  const todayDayIdx = (new Date().getDay() + 6) % 7; // Mon=0 … Sun=6
+
   const tabs: { key: Tab; label: string; icon: typeof Calendar }[] = [
     { key: 'offers', label: t('offers'), icon: ShoppingBag },
     { key: 'events', label: 'Events', icon: Calendar },
-    { key: 'tasks', label: 'Tasks', icon: CheckSquare },
+    { key: 'tasks', label: 'Challenges', icon: Trophy },
+    { key: 'steps', label: 'Steps', icon: Activity },
     { key: 'vacancies', label: 'Vacancies', icon: Briefcase },
     { key: 'news', label: 'News', icon: Newspaper },
   ];
@@ -686,10 +840,18 @@ export function CategoryOffers() {
           </div>
         )}
 
-        {/* TASKS filter */}
+        {/* CHALLENGES filter */}
         {tab === 'tasks' && (
           <div className="flex gap-2 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
-            {[{id:'all',label:'All'},{id:'pending',label:'Pending'},{id:'completed',label:'Completed'}].map(chip => (
+            {[
+              { id: 'all',        label: 'All' },
+              { id: 'sport',      label: '⚽ Sport' },
+              { id: 'networking', label: '🤝 Networking' },
+              { id: 'charity',    label: '🤲 Charity' },
+              { id: 'daily',      label: '☀️ Daily' },
+              { id: 'streak',     label: '🔥 Streak' },
+              { id: 'goal',       label: '🎯 Goal' },
+            ].map(chip => (
               <button key={chip.id} onClick={() => setFilterValue(chip.id)}
                 className={`px-3 py-1.5 rounded-xl text-sm whitespace-nowrap flex-shrink-0 transition-colors ${filterValue === chip.id ? 'bg-[#10b981] text-white' : 'bg-input-background text-muted-foreground'}`}>
                 {chip.label}
@@ -798,84 +960,175 @@ export function CategoryOffers() {
             {filteredEvents.map((ev) => {
               const gone = rsvped.has(ev.id);
               const reminded = reminders.has(ev.id);
+              const onWaitlist = waitlisted.has(ev.id);
+              const slotsFilled = (ev.slots?.filled ?? 0) + (gone && ev.slots ? 1 : 0);
+              const slotsTotal = ev.slots?.total ?? 1;
+              const isFull = ev.slots ? slotsFilled >= slotsTotal : false;
+              const slotPct = ev.slots ? (slotsFilled / slotsTotal) * 100 : 0;
+              const spotsLeft = ev.slots ? slotsTotal - slotsFilled : null;
+              const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(ev.location + ', Astana')}`;
+              const meta = EV_META[ev.type] ?? { label: 'Event', color: '#10b981', emoji: '📅' };
+              const barColor = slotPct >= 90 ? '#ef4444' : slotPct >= 70 ? '#f97316' : '#10b981';
+              const today0 = new Date(); today0.setHours(0, 0, 0, 0);
+              const evDay = new Date(ev.dateISO + 'T00:00:00');
+              const diffDays = Math.round((evDay.getTime() - today0.getTime()) / 86400000);
+              const countdown = diffDays === 0 ? 'Сегодня 🔥' : diffDays === 1 ? 'Завтра' : diffDays > 1 ? `через ${diffDays} дн.` : null;
+              const descExpanded = expandedDescs.has(ev.id);
               return (
-                <div key={ev.id} className="bg-card border border-border rounded-2xl p-4">
-                  <div className="flex gap-3">
-                    <div className="w-11 h-11 rounded-xl bg-[#10b981]/10 flex items-center justify-center flex-shrink-0">
-                      <Calendar className="w-5 h-5 text-[#10b981]" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm mb-0.5">{ev.title}</p>
-                      <p className="text-xs text-muted-foreground mb-0.5">{ev.date}</p>
-                      <p className="text-xs text-muted-foreground">{ev.location}</p>
-                    </div>
-                    {/* Reminder + Share */}
-                    <div className="flex items-start gap-1.5 shrink-0">
-                      <button
-                        onClick={() => setReminders(prev => { const s = new Set(prev); reminded ? s.delete(ev.id) : s.add(ev.id); return s; })}
-                        title={reminded ? 'Remove reminder' : 'Set reminder'}
-                        className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors"
-                        style={reminded ? { background: 'rgba(16,185,129,0.15)', color: '#10b981' } : { background: 'var(--input-background)', color: 'var(--muted-foreground)' }}
-                      >
-                        {reminded ? <Bell className="w-4 h-4" /> : <BellOff className="w-4 h-4" />}
-                      </button>
-                      <button
-                        onClick={() => handleShareEvent(ev)}
-                        className="w-8 h-8 rounded-xl bg-input-background flex items-center justify-center text-muted-foreground"
-                      >
-                        <Share2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
+                <div key={ev.id} className="bg-card border border-border rounded-2xl overflow-hidden"
+                  style={{ borderLeft: `3px solid ${meta.color}` }}>
+                  <div className="p-4">
 
-                  {/* Friends going */}
-                  {ev.friendsGoing.length > 0 && (
-                    <button
-                      onClick={() => setInviteEvent({ title: ev.title, going: ev.friendsGoing })}
-                      className="flex items-center gap-2 mt-3 w-full text-left active:opacity-70 transition-opacity"
-                    >
-                      <div className="flex -space-x-2">
-                        {ev.friendsGoing.slice(0, 4).map((f) => (
-                          <div
-                            key={f.initials + f.name}
-                            className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold border-2 border-card"
-                            style={{ background: f.color + '30', color: f.color, borderColor: 'var(--card)' }}
-                          >
-                            {f.initials}
-                          </div>
-                        ))}
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        <span className="text-foreground font-medium">
-                          {ev.friendsGoing.slice(0, 2).map(f => f.name.split(' ')[0]).join(', ')}
+                    {/* Top row: badge + price/free + actions */}
+                    <div className="flex items-center justify-between mb-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                          style={{ background: meta.color + '18', color: meta.color }}>
+                          {meta.emoji} {meta.label}
                         </span>
-                        {ev.friendsGoing.length > 2 && ` +${ev.friendsGoing.length - 2} more`}
-                        {' '}going
-                      </p>
-                    </button>
-                  )}
-
-                  {gone ? (
-                    <div className="mt-3 flex gap-2">
-                      <div className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-[#10b981] text-white text-sm font-medium">
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        You're going
+                        {ev.price
+                          ? <span className="text-xs font-bold text-foreground">{ev.price.toLocaleString('ru')} ₸</span>
+                          : <span className="text-xs font-semibold text-[#10b981]">Free</span>}
                       </div>
-                      <button
-                        onClick={() => setRsvped(prev => { const s = new Set(prev); s.delete(ev.id); const saved = JSON.parse(localStorage.getItem('sagi_calendar_events') || '[]'); localStorage.setItem('sagi_calendar_events', JSON.stringify(saved.filter((e: any) => e.id !== ev.id))); return s; })}
-                        className="px-4 py-2 rounded-xl text-sm text-muted-foreground bg-input-background hover:text-red-400 transition-colors"
-                      >
-                        Cancel
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleToggleReminder(ev)}
+                          className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+                          style={reminded ? { background: meta.color + '18', color: meta.color } : { background: 'var(--input-background)', color: 'var(--muted-foreground)' }}>
+                          {reminded ? <Bell className="w-3.5 h-3.5" /> : <BellOff className="w-3.5 h-3.5" />}
+                        </button>
+                        <button onClick={() => handleShareEvent(ev)}
+                          className="w-7 h-7 rounded-lg bg-input-background flex items-center justify-center text-muted-foreground">
+                          <Share2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
-                  ) : (
-                    <button
-                      onClick={() => setRsvped(prev => { const s = new Set(prev); s.add(ev.id); const saved = JSON.parse(localStorage.getItem('sagi_calendar_events') || '[]'); if (!saved.find((e: any) => e.id === ev.id)) { localStorage.setItem('sagi_calendar_events', JSON.stringify([...saved, { id: ev.id, title: ev.title, date: ev.date, dateISO: ev.dateISO, location: ev.location, friendsGoing: ev.friendsGoing }])); } return s; })}
-                      className="mt-3 w-full py-2 rounded-xl text-sm font-medium bg-[#10b981]/10 text-[#10b981] hover:bg-[#10b981]/20 transition-colors"
-                    >
-                      I'm Going
-                    </button>
-                  )}
+
+                    {/* Title */}
+                    <p className="font-semibold text-[15px] leading-snug mb-1.5">{ev.title}</p>
+
+                    {/* Date + countdown + location */}
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Calendar className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                      <span className="text-xs text-muted-foreground">{ev.date}</span>
+                      {countdown && (
+                        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full ml-1"
+                          style={{ background: diffDays === 0 ? '#ef444420' : diffDays === 1 ? '#f9731620' : meta.color + '18', color: diffDays === 0 ? '#ef4444' : diffDays === 1 ? '#f97316' : meta.color }}>
+                          {countdown}
+                        </span>
+                      )}
+                    </div>
+                    <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 mb-3"
+                      onClick={e => e.stopPropagation()}>
+                      <MapPin className="w-3.5 h-3.5 text-[#10b981] shrink-0" />
+                      <span className="text-xs text-[#10b981] underline underline-offset-2 truncate">{ev.location}</span>
+                    </a>
+
+                    {/* Description */}
+                    {ev.description && (
+                      <div className="mb-3">
+                        <p className={`text-xs text-muted-foreground leading-relaxed ${descExpanded ? '' : 'line-clamp-2'}`}>
+                          {ev.description}
+                        </p>
+                        {ev.description.length > 80 && (
+                          <button
+                            onClick={() => setExpandedDescs(prev => { const s = new Set(prev); descExpanded ? s.delete(ev.id) : s.add(ev.id); return s; })}
+                            className="text-[11px] font-medium mt-0.5"
+                            style={{ color: meta.color }}>
+                            {descExpanded ? 'Свернуть' : 'Читать далее'}
+                          </button>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Slot bar */}
+                    {ev.slots && (
+                      <div className="mb-3">
+                        <div className="flex justify-between items-center mb-1.5">
+                          <span className="text-[11px] font-medium" style={{ color: barColor }}>
+                            {isFull
+                              ? `Full · ${ev.waitlistCount ?? 0} on waitlist`
+                              : spotsLeft === 1 ? '1 spot left!' : `${spotsLeft} spots left`}
+                          </span>
+                          <span className="text-[11px] text-muted-foreground">{slotsFilled}/{slotsTotal}</span>
+                        </div>
+                        <div className="h-2 rounded-full bg-muted overflow-hidden">
+                          <div className="h-full rounded-full transition-all duration-500"
+                            style={{ width: `${slotPct}%`, background: barColor }} />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Friends going */}
+                    {ev.friendsGoing.length > 0 && (
+                      <button
+                        onClick={() => setInviteEvent({ title: ev.title, going: ev.friendsGoing })}
+                        className="flex items-center gap-2 mb-3 w-full text-left active:opacity-70 transition-opacity"
+                      >
+                        <div className="flex -space-x-2">
+                          {ev.friendsGoing.slice(0, 4).map((f) => (
+                            <div key={f.initials + f.name}
+                              className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold border-2"
+                              style={{ background: f.color + '28', color: f.color, borderColor: 'var(--card)' }}>
+                              {f.initials}
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          <span className="text-foreground font-medium">
+                            {ev.friendsGoing.slice(0, 2).map(f => f.name.split(' ')[0]).join(', ')}
+                          </span>
+                          {ev.friendsGoing.length > 2 && ` +${ev.friendsGoing.length - 2}`}
+                          {' '}going
+                        </p>
+                      </button>
+                    )}
+
+                    {/* CTA */}
+                    {gone ? (
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <div className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white text-sm font-semibold"
+                            style={{ background: meta.color }}>
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            You're going
+                          </div>
+                          {ev.friendsGoing.length > 0 && (
+                            <button onClick={() => setEventChat(ev.id)}
+                              className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                              style={{ background: meta.color + '18', color: meta.color }}>
+                              <MessageCircle className="w-4 h-4" />
+                            </button>
+                          )}
+                          <button
+                            onClick={() => setRsvped(prev => { const s = new Set(prev); s.delete(ev.id); const saved = JSON.parse(localStorage.getItem('sagi_calendar_events') || '[]'); localStorage.setItem('sagi_calendar_events', JSON.stringify(saved.filter((e: any) => e.id !== ev.id))); return s; })}
+                            className="px-3 py-2 rounded-xl text-xs text-muted-foreground bg-input-background">
+                            Cancel
+                          </button>
+                        </div>
+                        <a href={buildCalendarUrl(ev)} target="_blank" rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium text-muted-foreground bg-input-background hover:text-foreground transition-colors w-full">
+                          <Calendar className="w-3.5 h-3.5" />
+                          Add to Calendar
+                        </a>
+                      </div>
+                    ) : isFull ? (
+                      <button
+                        onClick={() => setWaitlisted(prev => { const s = new Set(prev); onWaitlist ? s.delete(ev.id) : s.add(ev.id); return s; })}
+                        className={`w-full py-2.5 rounded-xl text-sm font-semibold transition-colors border ${onWaitlist ? 'bg-amber-500/10 text-amber-500 border-amber-500/30' : 'bg-input-background text-muted-foreground border-border'}`}
+                      >
+                        {onWaitlist ? '⏳ On Waitlist' : 'Join Waitlist →'}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setRsvped(prev => { const s = new Set(prev); s.add(ev.id); const saved = JSON.parse(localStorage.getItem('sagi_calendar_events') || '[]'); if (!saved.find((e: any) => e.id === ev.id)) { localStorage.setItem('sagi_calendar_events', JSON.stringify([...saved, { id: ev.id, title: ev.title, date: ev.date, dateISO: ev.dateISO, location: ev.location, friendsGoing: ev.friendsGoing }])); } return s; })}
+                        className="w-full py-2.5 rounded-xl text-sm font-semibold transition-colors"
+                        style={{ background: meta.color + '18', color: meta.color }}>
+                        I'm Going →
+                      </button>
+                    )}
+                  </div>
                 </div>
               );
             })}
@@ -926,138 +1179,284 @@ export function CategoryOffers() {
           </div>
         )}
 
-        {/* TASKS TAB */}
+        {/* CHALLENGES TAB */}
         {tab === 'tasks' && (
           <div>
-            <div className="space-y-3">
-              {tasks.filter(task => {
-                const done = taskDone.has(task.id) || task.done;
-                if (filterValue === 'pending') return !done;
-                if (filterValue === 'completed') return done;
-                return true;
-              }).map((task) => {
-                const done = taskDone.has(task.id) || task.done;
-                return (
-                  <div key={task.id} className={`bg-card border rounded-2xl p-4 flex items-center gap-3 ${done ? 'border-[#10b981]/30 opacity-70' : 'border-border'}`}>
-                    <button
-                      onClick={() => !task.done && setTaskDone(prev => { const s = new Set(prev); done ? s.delete(task.id) : s.add(task.id); return s; })}
-                      className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-colors ${done ? 'bg-[#10b981] border-[#10b981]' : 'border-muted-foreground'}`}
-                    >
-                      {done && <span className="text-white text-xs">✓</span>}
+
+            {/* ── Leaderboard ── */}
+            <div className="mb-5">
+              <button
+                onClick={() => setShowLeaderboard(v => !v)}
+                className="flex items-center gap-2 mb-3 w-full text-left"
+              >
+                <Trophy className="w-4 h-4 text-yellow-500" />
+                <span className="text-sm font-semibold flex-1">Leaderboard</span>
+                <span className="text-xs text-muted-foreground">{leaderboardEntries.length} members</span>
+                {showLeaderboard
+                  ? <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                  : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+              </button>
+              {showLeaderboard && (
+                <div className="bg-card border border-border rounded-2xl overflow-hidden">
+                  {(showMoreLeaderboard ? leaderboardEntries : leaderboardEntries.slice(0, 5)).map((member, idx) => {
+                    const rank = idx + 1;
+                    const isMe = !!member.isYou;
+                    const medalColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
+                    return (
+                      <button
+                        key={member.name}
+                        onClick={() => { if (!isMe) setAttendeeCard({ name: member.name, initials: member.initials, color: member.color }); }}
+                        className={`w-full flex items-center gap-3 px-4 py-3 border-b border-border last:border-b-0 text-left transition-colors ${!isMe ? 'active:bg-muted/40' : ''}`}
+                        style={isMe ? { background: 'rgba(16,185,129,0.07)' } : undefined}
+                      >
+                        <div className="w-7 flex items-center justify-center flex-shrink-0">
+                          {rank <= 3 ? (
+                            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white shadow-sm"
+                              style={{ background: medalColors[rank - 1] }}>
+                              {rank}
+                            </div>
+                          ) : (
+                            <span className="text-xs text-muted-foreground tabular-nums">{rank}</span>
+                          )}
+                        </div>
+                        <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                          style={{ background: member.color + '28', color: member.color }}>
+                          {member.initials}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-sm font-medium truncate ${isMe ? 'text-[#10b981]' : ''}`}>{member.name}</p>
+                        </div>
+                        <div className={`flex items-center gap-1 text-sm font-bold tabular-nums ${isMe ? 'text-[#10b981]' : 'text-foreground'}`}>
+                          <Zap className="w-3 h-3" />
+                          {member.points}
+                        </div>
+                      </button>
+                    );
+                  })}
+                  {leaderboardEntries.length > 5 && (
+                    <button onClick={() => setShowMoreLeaderboard(v => !v)}
+                      className="w-full py-2.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors border-t border-border">
+                      {showMoreLeaderboard ? 'Show less' : `Show ${leaderboardEntries.length - 5} more`}
                     </button>
-                    <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${done ? 'line-through text-muted-foreground' : ''}`}>{task.title}</p>
-                    </div>
-                    <span className={`text-xs font-medium ${done ? 'text-[#10b981]' : 'text-muted-foreground'}`}>
-                      {done ? 'Done' : 'Pending'}
-                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* ── Group Weekly Challenges ── */}
+            <div className="space-y-3 mb-5">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Групповые · Эта неделя</p>
+              {GROUP_CHALLENGES.filter(gc => filterValue === 'all' || gc.type === filterValue).map(gc => {
+                const isCollapsed = collapsedGroups.has(gc.id);
+                const myMarked = markedGroupDays[gc.id] ?? new Set<number>();
+                const todayDone = myMarked.has(todayDayIdx);
+                const isGroupJoined = !gc.description || joinedGroups.has(gc.id);
+                const myGroupPoints = myMarked.size * gc.pointsPerDay;
+
+                const toggleCollapse = () => setCollapsedGroups(prev => {
+                  const s = new Set(prev);
+                  isCollapsed ? s.delete(gc.id) : s.add(gc.id);
+                  return s;
+                });
+
+                const markToday = () => setMarkedGroupDays(prev => {
+                  const days = new Set(prev[gc.id] ?? []);
+                  days.add(todayDayIdx);
+                  return { ...prev, [gc.id]: days };
+                });
+
+                const myRow: WeekStatus[] = DAYS_RU.map((_, i) => myMarked.has(i) ? 'done' : 'empty');
+                const allRows = [
+                  ...gc.participants,
+                  { name: 'Вы', color: '#10b981', week: myRow },
+                ];
+
+                return (
+                  <div key={gc.id} className="bg-card border border-border rounded-2xl overflow-hidden"
+                    style={{ borderLeft: `3px solid ${gc.color}` }}>
+
+                    {/* Header — always visible, tap to collapse */}
+                    <button onClick={toggleCollapse} className="flex items-center gap-3 w-full px-4 pt-4 pb-3 text-left active:opacity-70 transition-opacity">
+                      <span className="text-xl shrink-0">{gc.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-[15px] leading-tight">{gc.title}</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">
+                          {isGroupJoined
+                            ? `${gc.participants.length + 1} участников · ${gc.tasks.join(', ')}`
+                            : gc.tasks.join(', ')}
+                        </p>
+                      </div>
+                      {isGroupJoined && (
+                        <span className="flex items-center gap-0.5 text-xs font-bold shrink-0 mr-1" style={{ color: gc.color }}>
+                          <Zap className="w-3 h-3" />{myGroupPoints} pts
+                        </span>
+                      )}
+                      {isCollapsed
+                        ? <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+                        : <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0" />}
+                    </button>
+
+                    {!isCollapsed && (
+                      <>
+                        {/* PRE-JOIN: description + join button */}
+                        {!isGroupJoined ? (
+                          <div className="px-4 pb-4">
+                            <p className="text-xs text-muted-foreground leading-relaxed mb-4">{gc.description}</p>
+                            <button
+                              onClick={() => setJoinedGroups(prev => new Set(prev).add(gc.id))}
+                              className="w-full py-2.5 rounded-xl text-sm font-semibold active:scale-[0.98] transition-all text-white"
+                              style={{ background: gc.color }}>
+                              Присоединиться →
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            {/* Task list */}
+                            <div className="px-4 pb-3 space-y-0.5">
+                              {gc.tasks.map((t, i) => (
+                                <p key={i} className="text-xs text-muted-foreground">· {t}</p>
+                              ))}
+                            </div>
+
+                            {/* Grid */}
+                            <div className="overflow-x-auto px-4 pb-3">
+                              <div style={{ minWidth: 240 }}>
+                                {/* Day headers */}
+                                <div className="flex mb-1.5">
+                                  <div className="shrink-0" style={{ width: 42 }} />
+                                  {DAYS_RU.map((d, di) => (
+                                    <div key={d} className="flex-1 text-center text-[10px] font-bold uppercase rounded"
+                                      style={{ color: di === todayDayIdx ? gc.color : 'var(--muted-foreground)', background: di === todayDayIdx ? gc.color + '15' : 'transparent' }}>
+                                      {d}
+                                    </div>
+                                  ))}
+                                </div>
+                                {/* Rows */}
+                                {allRows.map((p, pi) => {
+                                  const isMe = pi === allRows.length - 1;
+                                  return (
+                                    <div key={pi} className="flex items-center rounded-lg transition-colors"
+                                      style={{ minHeight: 28, background: isMe ? '#10b98110' : 'transparent' }}>
+                                      <div className="shrink-0 text-[12px] font-semibold truncate px-0.5" style={{ width: 42, color: p.color }}>
+                                        {p.name}
+                                      </div>
+                                      {p.week.map((status, di) => (
+                                        <div key={di} className="flex-1 flex justify-center items-center rounded"
+                                          style={{ height: 28, background: di === todayDayIdx ? gc.color + '10' : 'transparent' }}>
+                                          {status === 'done'   && <span className="text-[14px] leading-none">✅</span>}
+                                          {status === 'missed' && <span className="text-[14px] leading-none">❌</span>}
+                                          {status === 'empty'  && <span className="text-[12px] text-muted-foreground/20 leading-none">·</span>}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+
+                            {/* Mark today button */}
+                            <div className="px-4 pb-4">
+                              {todayDone ? (
+                                <div className="w-full py-2.5 rounded-xl text-sm font-semibold text-center"
+                                  style={{ background: '#10b98118', color: '#10b981' }}>
+                                  ✓ Отмечено — {DAYS_RU[todayDayIdx].toUpperCase()}
+                                </div>
+                              ) : (
+                                <button onClick={markToday}
+                                  className="w-full py-2.5 rounded-xl text-sm font-semibold active:scale-[0.98] transition-all"
+                                  style={{ background: gc.color + '18', color: gc.color }}>
+                                  ✓ Отметить сегодня — {DAYS_RU[todayDayIdx].toUpperCase()}
+                                </button>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </>
+                    )}
                   </div>
                 );
               })}
             </div>
 
-            {/* Leaderboard */}
-            {(() => {
-              const totalTasks = tasks.length;
-              const myCompleted = tasks.filter(t => taskDone.has(t.id) || t.done).length;
-
-              const staticMembers: { name: string; initials: string; color: string; completed: number; isYou?: boolean }[] = [
-                { name: 'Kamila D.', initials: 'KD', color: '#f06ac8', completed: 4 },
-                { name: 'Arman K.', initials: 'AK', color: '#6aaff0', completed: 3 },
-                { name: 'Daniyar S.', initials: 'DS', color: '#f06a6a', completed: 3 },
-                { name: 'Farida B.', initials: 'FB', color: '#f06a80', completed: 2 },
-                { name: 'Aizat B.', initials: 'AB', color: '#7c6af0', completed: 2 },
-                { name: 'Zarina S.', initials: 'ZS', color: '#f0c86a', completed: 1 },
-                { name: 'Madina I.', initials: 'MI', color: '#c86af0', completed: 0 },
-                { name: 'Ruslan A.', initials: 'RA', color: '#6af0e0', completed: 0 },
-              ];
-
-              const allEntries = [
-                ...staticMembers,
-                { name: 'You', initials: 'Zh', color: '#10b981', completed: myCompleted, isYou: true },
-              ].sort((a, b) => b.completed - a.completed);
-
-              const medalColors = ['#FFD700', '#A8A8A8', '#CD7F32'];
-
-              return (
-                <div className="mt-6">
-                  <button
-                    onClick={() => setShowLeaderboard(v => !v)}
-                    className="flex items-center gap-2 mb-3 w-full text-left"
-                  >
-                    <Users className="w-4 h-4 text-muted-foreground" />
-                    <p className="text-sm font-semibold flex-1">Leaderboard</p>
-                    {showLeaderboard
-                      ? <ChevronUp className="w-4 h-4 text-muted-foreground" />
-                      : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
-                  </button>
-                  {showLeaderboard && (
-                    <div className="bg-card border border-border rounded-2xl overflow-hidden">
-                      {(showMoreLeaderboard ? allEntries : allEntries.slice(0, 3)).map((member, idx) => {
-                        const rank = idx + 1;
-                        const isMe = !!member.isYou;
-                        return (
-                          <button
-                            key={member.name}
-                            onClick={() => {
-                              if (!isMe) {
-                                setAttendeeCard({ name: member.name, initials: member.initials, color: member.color });
-                                setAttendeeScheduleOpen(true);
-                              }
-                            }}
-                            className={`w-full flex items-center gap-3 px-4 py-3 border-b border-border last:border-b-0 text-left transition-colors ${isMe ? '' : 'active:bg-muted/40'}`}
-                            style={isMe ? { background: 'rgba(16,185,129,0.07)' } : undefined}
-                          >
-                            {/* Medal / Rank */}
-                            <div className="w-7 flex items-center justify-center flex-shrink-0">
-                              {rank <= 3 ? (
-                                <div
-                                  className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white shadow-sm"
-                                  style={{ background: medalColors[rank - 1] }}
-                                >
-                                  {rank}
-                                </div>
-                              ) : (
-                                <span className="text-sm text-muted-foreground">—</span>
-                              )}
-                            </div>
-
-                            {/* Avatar */}
-                            <div
-                              className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                              style={{ background: member.color + '28', color: member.color }}
-                            >
-                              {member.initials}
-                            </div>
-
-                            {/* Name */}
-                            <div className="flex-1 min-w-0">
-                              <p className={`text-sm font-medium truncate ${isMe ? 'text-[#10b981]' : ''}`}>{member.name}</p>
-                            </div>
-
-                            {/* Score */}
-                            <div className="text-right flex-shrink-0">
-                              <p className={`text-sm font-semibold tabular-nums ${isMe ? 'text-[#10b981]' : ''}`}>
-                                {member.completed} / {totalTasks}
-                              </p>
-                            </div>
-                          </button>
-                        );
-                      })}
-
-                      {allEntries.length > 3 && (
+            {/* ── Challenge cards ── */}
+            <div className="space-y-3">
+              {filteredChallenges.map(challenge => {
+                const meta = CHALLENGE_TYPE[challenge.type];
+                const isJoined = joined.has(challenge.id);
+                const displayFilled = (challenge.slots?.filled ?? 0) + (isJoined && challenge.slots ? 1 : 0);
+                const isFull = challenge.slots ? displayFilled >= challenge.slots.total : false;
+                const slotPct = challenge.slots ? (displayFilled / challenge.slots.total) * 100 : null;
+                const isLocked = challenge.startISO
+                  ? new Date(challenge.startISO).getTime() - Date.now() < 60 * 60 * 1000
+                  : false;
+                return (
+                  <div key={challenge.id} className={`bg-card border rounded-2xl p-4 transition-all ${isJoined ? 'border-[#10b981]/40' : 'border-border'}`}>
+                    {/* Type badge + deadline */}
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg leading-none">{challenge.icon}</span>
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                          style={{ background: meta.bg, color: meta.color }}>
+                          {meta.label}
+                        </span>
+                        {challenge.isRecurring && <span className="text-[10px] text-muted-foreground">🔁</span>}
+                      </div>
+                      {challenge.deadline && (
+                        <span className="text-[10px] text-muted-foreground whitespace-nowrap">{challenge.deadline}</span>
+                      )}
+                    </div>
+                    {/* Title */}
+                    <h3 className="text-sm font-bold mb-1">{challenge.title}</h3>
+                    {/* Description */}
+                    <p className="text-xs text-muted-foreground leading-relaxed mb-3">{challenge.description}</p>
+                    {/* Slot progress */}
+                    {challenge.slots && (
+                      <div className="mb-3">
+                        <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+                          <span>{displayFilled} / {challenge.slots.total} joined</span>
+                          {isFull && <span className="text-red-500 font-medium">Full</span>}
+                        </div>
+                        <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                          <div className="h-full rounded-full transition-all duration-500"
+                            style={{ width: `${slotPct}%`, background: slotPct! >= 90 ? '#ef4444' : slotPct! >= 60 ? '#f97316' : '#10b981' }} />
+                        </div>
+                      </div>
+                    )}
+                    {/* Footer */}
+                    <div className="flex items-center gap-2">
+                      <span className="flex items-center gap-1 text-xs font-bold text-[#10b981]">
+                        <Zap className="w-3 h-3" />+{challenge.points} pts
+                      </span>
+                      <div className="flex-1" />
+                      {isJoined ? (
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#10b981]/10 text-[#10b981] border border-[#10b981]/30">
+                            ✓ Joined
+                          </div>
+                          {!isLocked && (
+                            <button
+                              onClick={() => handleChallengeUnjoin(challenge.id)}
+                              className="px-3 py-1.5 rounded-xl text-xs text-muted-foreground bg-input-background hover:text-red-400 transition-colors">
+                              Unjoin
+                            </button>
+                          )}
+                        </div>
+                      ) : (
                         <button
-                          onClick={() => setShowMoreLeaderboard(v => !v)}
-                          className="w-full py-2.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors border-t border-border"
+                          onClick={() => { if (!isFull) handleChallengeJoin(challenge.id); }}
+                          className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-all active:scale-95 whitespace-nowrap ${
+                            isFull ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-[#10b981] text-white'
+                          }`}
                         >
-                          {showMoreLeaderboard ? 'Show less' : `Show ${allEntries.length - 3} more`}
+                          {isFull ? 'Full' : 'Join →'}
                         </button>
                       )}
                     </div>
-                  )}
-                </div>
-              );
-            })()}
+                  </div>
+                );
+              })}
+            </div>
+
           </div>
         )}
 
@@ -1078,6 +1477,96 @@ export function CategoryOffers() {
             ))}
           </div>
         )}
+
+        {/* STEPS TAB */}
+        {tab === 'steps' && (() => {
+          const myVal = MY_STEPS[stepsPeriod];
+          const cal = Math.round(myVal * 0.04);
+          const km = (myVal * 0.00065).toFixed(1);
+          const floors = Math.max(1, Math.round(myVal / 950));
+          const periodLabel: Record<StepsPeriod, string> = { today: 'сегодня', yesterday: 'вчера', week: 'за неделю', month: 'за месяц' };
+          const periodBtn: Record<StepsPeriod, string> = { today: 'Сегодня', yesterday: 'Вчера', week: 'Неделя', month: 'Месяц' };
+
+          const meEntry = { name: 'Вы', initials: 'Zh', color: '#10b981', steps: MY_STEPS as Partial<Record<StepsPeriod, number | null>>, isYou: true };
+          const ranked = [...COMMUNITY_STEPS.map(m => ({ ...m, isYou: false })), meEntry]
+            .map(m => ({ ...m, val: m.steps[stepsPeriod] ?? null }))
+            .sort((a, b) => {
+              if (a.val === null && b.val === null) return 0;
+              if (a.val === null) return 1;
+              if (b.val === null) return -1;
+              return b.val - a.val;
+            });
+
+          const medals = ['🥇', '🥈', '🥉'];
+
+          return (
+            <div className="space-y-3">
+              {/* My step counter */}
+              <div className="bg-card border border-border rounded-2xl p-5">
+                <p className="text-xs text-muted-foreground text-center mb-3">шагов {periodLabel[stepsPeriod]}</p>
+                <div className="flex items-center justify-center gap-3 mb-3">
+                  <svg className="w-6 h-6 text-[#10b981] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span className="text-5xl font-bold tracking-tight tabular-nums">{myVal.toLocaleString('ru')}</span>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                </div>
+                <div className="flex items-center justify-center gap-3 text-sm text-muted-foreground">
+                  <span>{cal} 🔥</span>
+                  <span className="text-border">·</span>
+                  <span>{km} км</span>
+                  <span className="text-border">·</span>
+                  <span>{floors} ⬆</span>
+                </div>
+              </div>
+
+              {/* Period filter */}
+              <div className="flex gap-1.5">
+                {(Object.keys(periodBtn) as StepsPeriod[]).map(p => (
+                  <button key={p} onClick={() => setStepsPeriod(p)}
+                    className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-colors ${stepsPeriod === p ? 'bg-[#10b981] text-white' : 'bg-input-background text-muted-foreground'}`}>
+                    {periodBtn[p]}
+                  </button>
+                ))}
+              </div>
+
+              {/* Community leaderboard */}
+              <div className="bg-card border border-border rounded-2xl overflow-hidden">
+                {ranked.map((entry, idx) => {
+                  const hasData = entry.val !== null;
+                  const rank = hasData ? idx + 1 : null;
+                  return (
+                    <div key={entry.name}
+                      className="flex items-center gap-3 px-4 py-3 border-b border-border last:border-b-0"
+                      style={entry.isYou ? { background: 'rgba(16,185,129,0.06)' } : undefined}>
+                      {/* Rank / medal */}
+                      <div className="w-7 text-center shrink-0">
+                        {rank && rank <= 3
+                          ? <span className="text-base leading-none">{medals[rank - 1]}</span>
+                          : rank
+                            ? <span className="text-xs font-bold text-muted-foreground">{rank}</span>
+                            : <span className="text-sm text-muted-foreground">—</span>}
+                      </div>
+                      {/* Avatar */}
+                      <div className="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0"
+                        style={{ background: entry.color + '25', color: entry.color }}>
+                        {entry.initials}
+                      </div>
+                      {/* Name */}
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-sm font-medium truncate ${entry.isYou ? 'text-[#10b981]' : ''}`}>{entry.name}</p>
+                      </div>
+                      {/* Steps */}
+                      <div className="text-right shrink-0">
+                        {hasData
+                          ? <span className="text-sm font-bold tabular-nums">{(entry.val as number).toLocaleString('ru')}</span>
+                          : <span className="text-xs text-muted-foreground">нет данных</span>}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* NEWS TAB */}
         {tab === 'news' && (
@@ -1244,12 +1733,66 @@ export function CategoryOffers() {
         />
       )}
 
+      {/* Event chat sheet */}
+      {eventChat !== null && (() => {
+        const ev = events.find(e => e.id === eventChat);
+        if (!ev) return null;
+        return (
+          <div className="fixed inset-0 z-50 flex flex-col justify-end items-center" onClick={() => setEventChat(null)}>
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+            <div className="relative bg-card rounded-t-3xl w-full max-w-md max-h-[72vh] flex flex-col" onClick={e => e.stopPropagation()}>
+              <div className="w-10 h-1 bg-border rounded-full mx-auto mt-3 mb-1 shrink-0" />
+              <div className="flex items-center justify-between px-5 py-3 border-b border-border shrink-0">
+                <div>
+                  <p className="font-bold text-sm">{ev.title}</p>
+                  <p className="text-xs text-muted-foreground">{ev.date}</p>
+                </div>
+                <button onClick={() => setEventChat(null)}
+                  className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="overflow-y-auto flex-1 px-5 py-4">
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+                  {ev.friendsGoing.length + 1} participants
+                </p>
+                <div className="space-y-3 mb-5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                      style={{ background: 'rgba(16,185,129,0.2)', color: '#10b981' }}>Zh</div>
+                    <p className="text-sm font-medium text-[#10b981] flex-1">You</p>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981' }}>Going</span>
+                  </div>
+                  {ev.friendsGoing.map(f => (
+                    <button key={f.name}
+                      onClick={() => { setEventChat(null); setAttendeeCard(f); }}
+                      className="flex items-center gap-3 w-full text-left active:opacity-70 transition-opacity">
+                      <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                        style={{ background: f.color + '25', color: f.color }}>{f.initials}</div>
+                      <p className="text-sm flex-1">{f.name}</p>
+                      <span className="text-muted-foreground text-base">›</span>
+                    </button>
+                  ))}
+                </div>
+                <a href={`https://wa.me/?text=${encodeURIComponent(ev.title + ' – ' + ev.date)}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-white text-sm font-semibold mb-10"
+                  style={{ background: '#25D366' }}>
+                  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                  Open WhatsApp Group
+                </a>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Attendee profile card — Network style */}
       {attendeeCard && (() => {
         const profile = ATTENDEE_PROFILES[attendeeCard.initials];
         const isConnected = eventConnected.has(attendeeCard.initials);
         return (
-          <div className="fixed inset-0 z-50 flex flex-col justify-end items-center" onClick={() => setAttendeeCard(null)}>
+          <div className="fixed inset-0 z-[70] flex flex-col justify-end items-center" onClick={() => setAttendeeCard(null)}>
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
             <div
               className="relative bg-card rounded-t-3xl p-6 pb-10 max-h-[80vh] overflow-y-auto w-full max-w-md"
@@ -1393,6 +1936,66 @@ export function CategoryOffers() {
           </div>
         );
       })()}
+
+      {/* Share sheet */}
+      {shareEvent && (
+        <div className="fixed inset-0 z-[80] flex flex-col justify-end items-center" onClick={() => setShareEvent(null)}>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <div className="relative bg-card rounded-t-3xl w-full max-w-md p-5 pb-10" onClick={e => e.stopPropagation()}>
+            <div className="w-10 h-1 bg-border rounded-full mx-auto mb-4" />
+            <p className="font-bold text-sm mb-1 line-clamp-1">{shareEvent.title}</p>
+            <p className="text-xs text-muted-foreground mb-5">{shareEvent.date}</p>
+            <div className="grid grid-cols-3 gap-3 mb-5">
+              {/* WhatsApp */}
+              <a href={`https://wa.me/?text=${encodeURIComponent(shareEvent.title + ' — ' + shareEvent.date + '\n' + shareEvent.location)}`}
+                target="_blank" rel="noopener noreferrer"
+                onClick={() => { setShareEvent(null); showToast('Открываем WhatsApp…'); }}
+                className="flex flex-col items-center gap-2">
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: '#25D36620' }}>
+                  <svg viewBox="0 0 24 24" className="w-7 h-7" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                </div>
+                <span className="text-[11px] text-muted-foreground">WhatsApp</span>
+              </a>
+              {/* Telegram */}
+              <a href={`https://t.me/share/url?url=${encodeURIComponent('https://sagi.app/events/' + shareEvent.id)}&text=${encodeURIComponent(shareEvent.title + ' — ' + shareEvent.date)}`}
+                target="_blank" rel="noopener noreferrer"
+                onClick={() => { setShareEvent(null); showToast('Открываем Telegram…'); }}
+                className="flex flex-col items-center gap-2">
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: '#229ED920' }}>
+                  <svg viewBox="0 0 24 24" className="w-7 h-7" fill="#229ED9"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                </div>
+                <span className="text-[11px] text-muted-foreground">Telegram</span>
+              </a>
+              {/* Copy link */}
+              <button
+                onClick={() => {
+                  navigator.clipboard?.writeText(`${shareEvent.title} — ${shareEvent.date} · ${shareEvent.location}`);
+                  setShareEvent(null);
+                  showToast('✓ Скопировано');
+                }}
+                className="flex flex-col items-center gap-2">
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-muted">
+                  <Share2 className="w-6 h-6 text-foreground" />
+                </div>
+                <span className="text-[11px] text-muted-foreground">Копировать</span>
+              </button>
+            </div>
+            <button onClick={() => setShareEvent(null)}
+              className="w-full py-3 rounded-2xl bg-muted text-sm font-semibold text-muted-foreground">
+              Отмена
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Toast */}
+      {toast && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[90] pointer-events-none">
+          <div className="bg-foreground text-background text-sm font-medium px-4 py-2.5 rounded-2xl shadow-lg whitespace-nowrap animate-fade-in">
+            {toast}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

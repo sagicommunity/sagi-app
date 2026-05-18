@@ -166,6 +166,18 @@ export function HighvillCommunity() {
               <Users className="w-3.5 h-3.5" />
               324 участника
             </Link>
+            <Link
+              to="/user/community/highvill/marketplace"
+              className="flex items-center gap-1.5 mt-2 px-4 py-1.5 rounded-full text-xs font-medium transition-opacity hover:opacity-80"
+              style={{ background: `${HV_COLOR}25`, color: HV_COLOR, border: `1px solid ${HV_COLOR}50` }}
+            >
+              <Store className="w-3.5 h-3.5" />
+              <span>Маркет</span>
+              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full ml-0.5"
+                style={{ background: `${HV_COLOR}30`, color: HV_COLOR }}>
+                10 объявл.
+              </span>
+            </Link>
           </div>
         </div>
       </div>
@@ -173,7 +185,7 @@ export function HighvillCommunity() {
       {/* ─── TABS ─── */}
       <div className="sticky top-0 z-40 bg-card border-b border-border">
         <div className="max-w-md mx-auto px-4 pt-3 pb-2">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             {TABS.map(tb => (
               <button
                 key={tb.key}
@@ -185,19 +197,6 @@ export function HighvillCommunity() {
                 {tb.label}
               </button>
             ))}
-            {/* Marketplace tab — navigates to dedicated page */}
-            <Link
-              to="/user/community/highvill/marketplace"
-              className="col-span-2 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors bg-input-background text-muted-foreground hover:text-foreground"
-              style={{ border: `1px dashed ${HV_COLOR}50` }}
-            >
-              <MARKET_TAB.icon className="w-3.5 h-3.5" style={{ color: HV_COLOR }} />
-              <span style={{ color: HV_COLOR }}>{MARKET_TAB.label}</span>
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full ml-1"
-                style={{ background: `${HV_COLOR}15`, color: HV_COLOR }}>
-                10 объявл.
-              </span>
-            </Link>
           </div>
         </div>
       </div>
